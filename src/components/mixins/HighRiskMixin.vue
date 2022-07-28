@@ -100,6 +100,7 @@ export default {
 		},
 		async getAssets(codename) {
 			const usdcData = await getAsset(this.MetaMaskAddress, codename)
+			console.log('usdcData: ', usdcData)
 			const list = [...this.list]
 			list.forEach((item, idx) => {
 				if (
@@ -331,10 +332,10 @@ export default {
 				code === 'ETH'
 					? await getETHBalance(this.MetaMaskAddress)
 					: await getHIERCBalanceOf(
-							this.MetaMaskAddress,
-							code,
-							this.selectConfirm
-					  )
+						this.MetaMaskAddress,
+						code,
+						this.selectConfirm
+					)
 			const number =
 				code === 'ETH'
 					? HContract[code].Decimal
@@ -342,7 +343,7 @@ export default {
 			this.totalOf = dividedBy(bcf, number)
 			this.downLoading()
 			try {
-			} catch (error) {}
+			} catch (error) { }
 		},
 		closeMain(val) {
 			this.title = ''

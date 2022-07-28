@@ -25,12 +25,7 @@
           <p class="pp">We are providing USDC, WBTC, ETH strategy as:</p>
           <div class="ppb">
             <div v-if="lowList.length > 0">
-              <p
-                class="lowp"
-                v-for="(item, idx) in lowList"
-                :key="idx"
-                @click="goCff(item, 'low')"
-              >
+              <p class="lowp" v-for="(item, idx) in lowList" :key="idx" @click="goCff(item, 'low')">
                 {{ item.code }}
                 <span>
                   {{ $numFixed(item.sevendayProfit, 1) + '%' }}
@@ -39,12 +34,7 @@
               </p>
             </div>
             <div v-if="highList.length > 0">
-              <p
-                v-for="(item, idx) in highList"
-                :key="idx"
-                @click="goCff(item, 'high')"
-                style="cursor: pointer"
-              >
+              <p v-for="(item, idx) in highList" :key="idx" @click="goCff(item, 'high')" style="cursor: pointer">
                 {{ item.code }}
                 <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
                 <span> {{ $numFixed(item.sevendayProfit, 1) + '%' }}</span>
@@ -53,9 +43,7 @@
             </div>
           </div>
           <div class="dapps">
-            <el-button class="dapp" type="primary" @click="gohome" round
-              >DAPP</el-button
-            >
+            <el-button class="dapp" type="primary" @click="gohome" round>DAPP</el-button>
           </div>
           <div class="text">
             <h2>Why ENF？</h2>
@@ -77,10 +65,8 @@
               <div class="cardsi">
                 <img src="../assets/imgs/card2.png" alt="" />
                 <p>Low Risk</p>
-                <span
-                  >Audited by Slowmist and PeckShield. Always select proven DEFI
-                  protocols and mature pools.</span
-                >
+                <span>Audited by Slowmist and PeckShield. Always select proven DEFI
+                  protocols and mature pools.</span>
               </div>
             </div>
             <div class="card3">
@@ -115,21 +101,16 @@
             >
               PeckShield Audit Report
             </span> -->
-            <span
-              @click="openGit('https://gitlab.com/asresearch/cff-contract-v2')"
-            >
+            <span @click="openGit('https://gitlab.com/asresearch/cff-contract-v2')">
               <img src="../assets/imgs/github@2x.png" alt />
               Gitlab
             </span>
             <span @click="openGit('https://discord.gg/cUBdGs3ehM')">
-              <img src="../assets/imgs/discord@2x.png" alt /> Discord</span
-            >
+              <img src="../assets/imgs/discord@2x.png" alt /> Discord</span>
           </div>
           <div class="fots">
-            <span class="ear"
-              >Earning.Farm strongly recommends you DO NOT risk assets more than
-              you can afford to lose.</span
-            >
+            <span class="ear">Earning.Farm strongly recommends you DO NOT risk assets more than
+              you can afford to lose.</span>
           </div>
         </div>
       </el-main>
@@ -271,12 +252,15 @@ export default {
       display: flex;
       margin-top: 20px;
       justify-content: center;
+
       div {
         margin: 0 20px;
         min-width: 400px;
+
         .lowp {
           margin-left: 80px;
         }
+
         p {
           // cursor: pointer;
           font-weight: 500;
@@ -284,20 +268,23 @@ export default {
           display: flex;
           align-items: center;
           padding: 10px;
+
           .leve {
             border: 1px solid #2196f3;
             color: #2196f3;
             font-size: 12px;
-            padding: 3px 10px;
+            padding: 3px 10px !important;
             margin: 0 10px;
             border-radius: 4px;
           }
+
           span {
             padding: 0 20px;
             font-size: 26px;
             color: #566570;
             font-weight: 500;
           }
+
           .svg-icon {
             font-size: 66px;
             margin-top: -40px;
@@ -309,6 +296,7 @@ export default {
     .fots {
       margin-bottom: 20px;
       padding: 0 20px;
+
       .ear {
         cursor: initial;
       }
@@ -345,6 +333,7 @@ export default {
 
         .cardsi {
           text-align: center;
+
           img {
             margin-top: 42px;
             height: 76px;
@@ -445,33 +434,42 @@ export default {
   .body {
     width: 100% !important;
   }
+
   .el-header .header {
     width: 96% !important;
   }
+
   .ppb {
     flex-direction: column;
     align-items: center;
+
     div {
       min-width: 200px !important;
+
       .lowp {
         margin: 10px 0px !important;
       }
+
       p {
         justify-content: center;
         font-size: 18px !important;
+
         span {
           font-size: 20px !important;
           padding: 0 10px !important;
         }
+
         .svg-icon {
           font-size: 46px !important;
         }
+
         .leve {
           font-size: 12px !important;
         }
       }
     }
   }
+
   // .dappa {
   // 	display: none;
   // }
@@ -479,6 +477,7 @@ export default {
     width: 280px !important;
     height: 46px !important;
   }
+
   .en {
     margin-left: auto;
   }
@@ -505,10 +504,12 @@ export default {
       margin-bottom: 36px !important;
     }
   }
+
   .fots {
     text-align: center;
     // display: flex;
     margin-bottom: 10px !important;
+
     span {
       display: block;
       margin-right: 0px !important;
@@ -522,6 +523,7 @@ export default {
       text-align: left;
     }
   }
+
   // .fots {
   // 	text-align: center;
   // 	display: flex;

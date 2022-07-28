@@ -1,22 +1,14 @@
 <template>
 	<div class="hig-home">
-		<ul
-			v-for="(item, idx) in list"
-			:key="idx"
-			:class="{ 'ul-border': item.showContent }"
-		>
+		<ul v-for="(item, idx) in list" :key="idx" :class="{ 'ul-border': item.showContent }">
 			<div class="svg-icon">High Risk</div>
 			<div class="title">
 				<el-row>
 					<el-col :span="11">
 						<div class="title_text">
-							<img
-								class="title_img"
-								:src="require('../../assets/imgs/' + item.code + '.png')"
-								alt
-							/>
+							<img class="title_img" :src="require('../../assets/imgs/' + item.code + '.png')" alt />
 							<span>{{
-								item.code === 'WBTC' ? 'BTC/' + item.code : item.code
+									item.code === 'WBTC' ? 'BTC/' + item.code : item.code
 							}}</span>
 							<span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
 						</div>
@@ -29,17 +21,12 @@
 					</el-col>
 					<el-col :span="12">
 						<span style="font-size: 14px; color: #566570">
-							APY：{{ $numFixed(item.sevendayProfit, 1) + '%' }}</span
-						>
+							APY：{{ $numFixed(item.sevendayProfit, 1) + '%' }}</span>
 					</el-col>
 					<el-col :span="1">
-						<i
-							:class="
-								item.showContent ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
-							"
-							style="cursor: pointer"
-							@click="changeContent(item)"
-						></i>
+						<i :class="
+							item.showContent ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+						" style="cursor: pointer" @click="changeContent(item)"></i>
 					</el-col>
 				</el-row>
 			</div>
@@ -63,23 +50,16 @@
 						<el-col :span="9">
 							<span class="bom_li">Asset</span><br />
 							<span class="spanText">{{
-								$nameFixed(item.user_assets, item.code)
-							}}</span
-							><br />
+									$nameFixed(item.user_assets, item.code)
+							}}</span><br />
 							<span class="spanText" v-if="item.code !== 'ETH'">
 								≈
 								{{ $nameFixed(item.user_assets_origin, item.code) }} CRV
 							</span>
 						</el-col>
 						<el-col :span="9">
-							<span class="bom_li"
-								>Accu Yield
-								<el-tooltip
-									class="item"
-									effect="dark"
-									placement="top"
-									v-if="item.code !== 'ETH'"
-								>
+							<span class="bom_li">Accu Yield
+								<el-tooltip class="item" effect="dark" placement="top" v-if="item.code !== 'ETH'">
 									<div slot="content">
 										1. Deposited USDC will be converted into CRV,<br />
 										so Accu Yield will be negative in a short term.
@@ -91,10 +71,11 @@
 										We recommend you wait for a better time to withdraw <br />
 										when the Accu Yield if negative.
 									</div>
-									<i class="el-icon-question"></i> </el-tooltip></span
-							><br />
+									<i class="el-icon-question"></i>
+								</el-tooltip>
+							</span><br />
 							<span class="spanText">{{
-								$nameFixed(item.user_profit, item.code)
+									$nameFixed(item.user_profit, item.code)
 							}}</span>
 						</el-col>
 					</el-row>
@@ -112,13 +93,13 @@
 						<el-col :span="9">
 							<span class="bom_li">Asset</span><br />
 							<span class="spanText">{{
-								$nameFixed(item.totalassets, item.code)
+									$nameFixed(item.totalassets, item.code)
 							}}</span>
 						</el-col>
 						<el-col :span="9">
 							<span class="bom_li">7 Days APY</span><br />
 							<span class="spanText">{{
-								$numFixed(item.sevendayProfit, 1) + '%'
+									$numFixed(item.sevendayProfit, 1) + '%'
 							}}</span>
 						</el-col>
 					</el-row>
@@ -130,22 +111,17 @@
 						<el-col :span="18">
 							<span class="spanText">{{ textList[item.code] }}</span>
 							<br />
-							<span class="spanText"
-								>{{ $feeRatio(item.feeRatio) }}%
+							<span class="spanText">{{ $feeRatio(item.feeRatio) }}%
 								{{
-									item.code === 'ETH'
-										? 'of interest gained will be charged as processing fee.'
-										: 'of yielding rewards will be charged as processing fee.'
+										item.code === 'ETH'
+											? 'of interest gained will be charged as processing fee.'
+											: 'of yielding rewards will be charged as processing fee.'
 								}}
 							</span>
 
 							<div class="linetable">
-								<span class="bom_tu" @click="selectLine(item)"
-									><i class="el-icon-data-line"></i>View Trend</span
-								>
-								<span class="bom_tu" @click="selectTable(item)"
-									><i class="el-icon-notebook-2"></i>View History</span
-								>
+								<span class="bom_tu" @click="selectLine(item)"><i class="el-icon-data-line"></i>View Trend</span>
+								<span class="bom_tu" @click="selectTable(item)"><i class="el-icon-notebook-2"></i>View History</span>
 							</div>
 						</el-col>
 					</el-row>
@@ -160,86 +136,44 @@
 					</div>
 					<div class="maxinput">
 						<div>
-							<el-input
-								v-model="confirmInput"
-								@input="inputConfirm"
-								@focus="Max = 1"
-								onkeyup="value=value.replace(/[^\d^\.]/g,'')"
-								:style="{ 'border-color': Max === 1 ? '#fd8465' : '' }"
-							>
+							<el-input v-model="confirmInput" @input="inputConfirm" @focus="Max = 1" onkeyup="value=value.replace(/[^\d^\.]/g,'')" :style="{ 'border-color': Max === 1 ? '#fd8465' : '' }">
 								<template slot="append">
-									<span
-										:style="{
-											'margin-right': item.code === 'ETH' ? '0px' : '30px'
-										}"
-										class="Max"
-										v-show="Max === 1"
-										@click="setMax(Max, totalOf)"
-										>{{ item.code === 'ETH' ? 'SAFE MAX' : 'MAX' }}</span
-									>
+									<span :style="{
+										'margin-right': item.code === 'ETH' ? '0px' : '30px'
+									}" class="Max" v-show="Max === 1" @click="setMax(Max, totalOf)">{{ item.code === 'ETH' ? 'SAFE MAX' : 'MAX' }}</span>
 								</template>
 								<template slot="append" v-if="item.code !== 'ETH'">
-									<el-select
-										v-model="selectConfirm"
-										:popper-append-to-body="false"
-										slot="prepend"
-										@change="selectConfirmChange"
-									>
+									<el-select v-model="selectConfirm" :popper-append-to-body="false" slot="prepend" @change="selectConfirmChange">
 										<el-option label="USDC" value="USDC"></el-option>
 										<el-option label="CRV" value="CRV"></el-option>
 									</el-select>
 								</template>
 							</el-input>
-							<el-slider
-								v-model="confirmVal"
-								:step="25"
-								:marks="marks"
-								@change="setConfirmVal"
-								show-stops
-								:show-tooltip="false"
-							></el-slider>
+							<el-slider v-model="confirmVal" :step="25" :marks="marks" @change="setConfirmVal" show-stops :show-tooltip="false"></el-slider>
 						</div>
 					</div>
 					<div>
-						<el-button
-							type="warning"
-							plain
-							class="crbtn"
-							v-if="item.code !== 'ETH' && isApprove"
-							@click="approve"
-							>Approve
+						<el-button type="warning" plain class="crbtn" v-if="item.code !== 'ETH' && isApprove" @click="approve">Approve
 						</el-button>
-						<el-button
-							type="warning"
-							plain
-							class="crbtn"
-							v-else
-							@click="confirm(item)"
-						>
-							Deposit</el-button
-						>
+						<el-button type="warning" plain class="crbtn" v-else @click="confirm(item)">
+							Deposit</el-button>
 					</div>
 
 					<div class="btcwbtc">
 						<span class="bom_li">
 							Asset Deposited: ≈
 							{{
-								$nameFixed(
-									selectWithdraw === 'USDC' || selectWithdraw === 'ETH'
-										? item.user_assets
-										: item.user_assets_origin,
-									item.code
-								)
+									$nameFixed(
+										selectWithdraw === 'USDC' || selectWithdraw === 'ETH'
+											? item.user_assets
+											: item.user_assets_origin,
+										item.code
+									)
 							}}
 							<span>{{
-								item.code === 'ETH' ? item.code : selectWithdraw
+									item.code === 'ETH' ? item.code : selectWithdraw
 							}}</span>
-							<el-tooltip
-								class="item"
-								effect="dark"
-								placement="top-end"
-								v-if="item.code !== 'ETH'"
-							>
+							<el-tooltip class="item" effect="dark" placement="top-end" v-if="item.code !== 'ETH'">
 								<div slot="content">
 									Calculated based on Curve virtual price. May have slight
 									difference when withdrawing.
@@ -251,80 +185,34 @@
 
 					<div class="maxinput">
 						<div>
-							<el-input
-								v-model="withdrawInput"
-								@input="inputWithdraw"
-								@focus="Max = 2"
-								onkeyup="value=value.replace(/[^\d^\.]/g,'')"
-								:style="{ 'border-color': Max === 2 ? '#fd8465' : '' }"
-							>
+							<el-input v-model="withdrawInput" @input="inputWithdraw" @focus="Max = 2" onkeyup="value=value.replace(/[^\d^\.]/g,'')" :style="{ 'border-color': Max === 2 ? '#fd8465' : '' }">
 								<template slot="append">
-									<span
-										class="Max"
-										:style="{
-											'margin-right': item.code === 'ETH' ? '0px' : '30px'
-										}"
-										v-show="Max === 2"
-										@click="setMax(Max, item)"
-										>MAX</span
-									>
+									<span class="Max" :style="{
+										'margin-right': item.code === 'ETH' ? '0px' : '30px'
+									}" v-show="Max === 2" @click="setMax(Max, item)">MAX</span>
 								</template>
 								<template slot="append" v-if="item.code !== 'ETH'">
-									<el-select
-										v-model="selectWithdraw"
-										slot="prepend"
-										:popper-append-to-body="false"
-									>
+									<el-select v-model="selectWithdraw" slot="prepend" :popper-append-to-body="false">
 										<el-option label="USDC" value="USDC"></el-option>
 										<el-option label="CRV" value="CRV"></el-option>
 									</el-select>
 								</template>
 							</el-input>
-							<el-slider
-								v-model="withdrawVal"
-								:step="25"
-								:marks="marks"
-								@change="setWithdrawVal"
-								show-stops
-								:show-tooltip="false"
-							></el-slider>
+							<el-slider v-model="withdrawVal" :step="25" :marks="marks" @change="setWithdrawVal" show-stops :show-tooltip="false"></el-slider>
 						</div>
 					</div>
-					<el-button
-						type="warning"
-						class="crbtn"
-						plain
-						@click="withdrawItem(item)"
-					>
+					<el-button type="warning" class="crbtn" plain @click="withdrawItem(item)">
 						Withdraw
 					</el-button>
 				</div>
 			</div>
 		</ul>
 
-		<dialog-form
-			:dialogVisible="dialogVisible"
-			:diaWidth="diaWidth"
-			:title="title"
-			@closeMain="closeMain"
-			v-if="dialogVisible"
-		>
-			<component
-				:is="currentName"
-				:echartsData="echartsData"
-				:codeurl="codeurl"
-				codeType="true"
-				:eHeight="'400px'"
-				:code="itemData.code"
-			/>
+		<dialog-form :dialogVisible="dialogVisible" :diaWidth="diaWidth" :title="title" @closeMain="closeMain" v-if="dialogVisible">
+			<component :is="currentName" :echartsData="echartsData" :codeurl="codeurl" codeType="true" :eHeight="'400px'" :code="itemData.code" />
 		</dialog-form>
 
-		<dialog-form
-			:dialogVisible="isYield"
-			diaWidth="70%"
-			@closeMain="closeisYield"
-			v-if="isYield"
-		>
+		<dialog-form :dialogVisible="isYield" diaWidth="70%" @closeMain="closeisYield" v-if="isYield">
 			<div>
 				CRV price fluctuates, so Accu Yield also fluctuates because the backend
 				asset of this strategy is CRV. We recommend you wait for a better time
@@ -368,14 +256,16 @@ export default {
 	padding-left: 20px;
 	color: #fd8465;
 }
+
 .leve {
 	color: #2196f3 !important;
 	font-size: 12px !important;
 	background: #ecf5ff;
-	padding: 3px 5px;
+	padding: 3px 5px !important;
 	margin-left: 3px;
 	border-radius: 4px;
 }
+
 .yieldbtn {
 	color: #fff;
 	background-color: #409eff;
@@ -388,10 +278,12 @@ export default {
 	display: block;
 	margin-top: 26px;
 }
+
 .crbtn {
 	border-radius: 36px;
 	margin-bottom: 10px;
 }
+
 .hig-home {
 	ul {
 		border-radius: 22px;
@@ -400,6 +292,7 @@ export default {
 		background-color: #fff;
 		margin-bottom: 10px;
 		position: relative;
+
 		.svg-icon {
 			font-size: 12px;
 			background-color: #ffefeb;
@@ -409,10 +302,12 @@ export default {
 			position: absolute;
 			left: 70%;
 		}
+
 		li {
 			list-style-type: none;
 		}
 	}
+
 	ul:hover {
 		border-color: #fd8465;
 		box-shadow: 0px 0px 8px rgba(226, 106, 75, 0.23);
@@ -422,10 +317,12 @@ export default {
 		border-color: #fd8465;
 		box-shadow: 0px 0px 8px rgba(226, 106, 75, 0.23);
 	}
+
 	.ul-border {
 		border-color: #fd8465;
 		box-shadow: 0px 0px 8px rgba(226, 106, 75, 0.23);
 	}
+
 	.title {
 		padding: 10px 14px;
 
@@ -434,9 +331,11 @@ export default {
 			display: flex;
 			align-items: center;
 			width: 100%;
+
 			.el-divider--vertical {
 				height: 52px;
 			}
+
 			// .el-col {
 			//   padding: 0 10px;
 			// }
@@ -513,17 +412,22 @@ export default {
 		background: #fff6f4;
 		border-radius: 0 0 22px 22px;
 	}
+
 	.body {
 		padding: 20px 0;
+
 		.el-row {
 			margin-bottom: 12px;
 		}
+
 		.el-button {
 			border-radius: 30px;
 		}
+
 		.linetable {
 			margin-top: 12px;
 		}
+
 		.spanText {
 			font-size: 14px;
 			color: #939ca3;
@@ -546,6 +450,7 @@ export default {
 		.el-button {
 			border-radius: 30px;
 		}
+
 		.btcwbtc {
 			text-align: end;
 			margin-right: 30px;
@@ -626,14 +531,17 @@ export default {
 		border: 1px solid #fd8465;
 		border-radius: 36px;
 	}
+
 	/deep/ .el-slider__button {
 		width: 10px;
 		height: 10px;
 		border-color: #fd8465;
 	}
+
 	/deep/ .el-slider__bar {
 		background-color: #fd8465;
 	}
+
 	/deep/ .el-slider__button {
 		width: 10px;
 		height: 10px;
@@ -642,6 +550,7 @@ export default {
 	.el-col-10 {
 		position: relative;
 	}
+
 	.ratio {
 		position: absolute;
 		bottom: 0px;
@@ -650,16 +559,19 @@ export default {
 		color: #ffa267;
 	}
 }
+
 /deep/ .el-button--warning.is-plain {
 	border-color: #fd8465;
 	color: #fd8465;
 	background-color: #fff1ee;
 }
+
 /deep/ .el-button--warning.is-plain:hover {
 	border-color: #fd8465;
 	color: #fff;
 	background-color: #fd8465;
 }
+
 /deep/ .el-select {
 	width: 90px;
 }
