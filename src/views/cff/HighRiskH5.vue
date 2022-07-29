@@ -6,7 +6,7 @@
       :class="{ 'ul-border': item.showContent }"
     >
       <div :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'">
-        {{ item.code === 'ETH' ? 'Medium Low Risk' : 'Medium Risk' }}
+        {{ item.code === "ETH" ? "Medium Low Risk" : "Medium Risk" }}
       </div>
       <div class="title">
         <el-row>
@@ -18,7 +18,7 @@
                 alt
               />
               <span>{{
-                item.code === 'WBTC' ? 'BTC/' + item.code : item.code
+                item.code === "WBTC" ? "BTC/" + item.code : item.code
               }}</span>
               <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
             </div>
@@ -31,7 +31,7 @@
           </el-col>
           <el-col :span="12">
             <span style="font-size: 14px; color: #566570">
-              APY：{{ $numFixed(item.sevendayProfit, 1) + '%' }}</span
+              APY：{{ $numFixed(item.sevendayProfit, 1) + "%" }}</span
             >
           </el-col>
           <el-col :span="1">
@@ -112,7 +112,7 @@
             <el-col :span="9">
               <span class="bom_li">7 Days APY</span><br />
               <span class="spanText">{{
-                $numFixed(item.sevendayProfit, 1) + '%'
+                $numFixed(item.sevendayProfit, 1) + "%"
               }}</span>
             </el-col>
           </el-row>
@@ -126,14 +126,14 @@
               <br />
               <span class="spanText"
                 >{{
-                  item.code === 'ETH'
+                  item.code === "ETH"
                     ? `An annual ${$feeRatio(item.feeRatio)}`
                     : $feeRatio(item.feeRatio)
                 }}%
                 {{
-                  item.code === 'ETH'
+                  item.code === "ETH"
                     ? `fee will be charged. `
-                    : 'of yielding rewards will be charged as processing fee.'
+                    : "of yielding rewards will be charged as processing fee."
                 }}
               </span>
 
@@ -153,7 +153,7 @@
             <span class="bom_li">
               Wallet Balance:
               {{ $nameFixed(totalOf, item.code) }}
-              <span>{{ item.code === 'ETH' ? item.code : selectConfirm }}</span>
+              <span>{{ item.code === "ETH" ? item.code : selectConfirm }}</span>
             </span>
           </div>
           <div class="maxinput">
@@ -173,7 +173,7 @@
                     class="Max"
                     v-show="Max === 1"
                     @click="setMax(Max, totalOf)"
-                    >{{ item.code === 'ETH' ? 'SAFE MAX' : 'MAX' }}</span
+                    >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
                   >
                 </template>
                 <template slot="append" v-if="item.code !== 'ETH'">
@@ -223,14 +223,14 @@
               Asset Deposited: ≈
               {{
                 $nameFixed(
-                  selectWithdraw === 'USDC' || selectWithdraw === 'ETH'
+                  selectWithdraw === "USDC" || selectWithdraw === "ETH"
                     ? item.user_assets
                     : item.user_assets_origin,
                   item.code
                 )
               }}
               <span>{{
-                item.code === 'ETH' ? item.code : selectWithdraw
+                item.code === "ETH" ? item.code : selectWithdraw
               }}</span>
               <el-tooltip
                 class="item"
@@ -337,12 +337,12 @@
 </template>
 
 <script>
-import EchartsLine from './EchartsLine.vue'
-import CffTable from './CffTable.vue'
-import DialogForm from '../../components/DialogForm.vue'
-import HighRiskMixin from '../../components/mixins/HighRiskMixin'
+import EchartsLine from "./EchartsLine.vue";
+import CffTable from "./CffTable.vue";
+import DialogForm from "../../components/DialogForm.vue";
+import HighRiskMixin from "../../components/mixins/HighRiskMixin";
 export default {
-  name: 'HighRisk',
+  name: "HighRisk",
   mixins: [HighRiskMixin],
   components: {
     DialogForm,
@@ -352,16 +352,16 @@ export default {
   computed: {
     currentName() {
       switch (this.dialogName) {
-        case 'EchartsLine':
-          return EchartsLine
-        case 'CffTable':
-          return CffTable
+        case "EchartsLine":
+          return EchartsLine;
+        case "CffTable":
+          return CffTable;
         default:
-          return ''
+          return "";
       }
     },
   },
-}
+};
 </script>
 <style scoped lang="scss">
 /deep/ .el-select-dropdown__item.selected {
@@ -373,7 +373,7 @@ export default {
   color: #2196f3 !important;
   font-size: 12px !important;
   background: #ecf5ff;
-  padding: 3px 5px;
+  padding: 3px 5px !important;
   margin-left: 3px;
   border-radius: 4px;
 }

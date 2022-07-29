@@ -6,7 +6,7 @@
       :class="{ 'ul-border': item.showContent }"
     >
       <div :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'">
-        {{ item.code === 'ETH' ? 'Medium Low Risk' : 'Medium Risk' }}
+        {{ item.code === "ETH" ? "Medium Low Risk" : "Medium Risk" }}
       </div>
       <div
         class="title"
@@ -21,7 +21,7 @@
                 alt
               />
               <span>{{
-                item.code === 'WBTC' ? 'BTC/' + item.code : item.code
+                item.code === "WBTC" ? "BTC/" + item.code : item.code
               }}</span>
               <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
             </div>
@@ -105,10 +105,10 @@
             <div>
               <li class="top_l2"></li>
               <li class="top_li">
-                {{ item.code === 'USDC' ? 'CRV 7 Days APY' : '7 Days APY' }}
+                {{ item.code === "USDC" ? "CRV 7 Days APY" : "7 Days APY" }}
               </li>
               <li class="bom_li">
-                {{ $numFixed(item.sevendayProfit, 1) + '%' }}
+                {{ $numFixed(item.sevendayProfit, 1) + "%" }}
               </li>
               <div class="top_l2" v-show="item.code !== 'ETH'"></div>
             </div>
@@ -136,16 +136,16 @@
               <br />
               <span class="spanText"
                 >{{
-                  item.code === 'ETH'
+                  item.code === "ETH"
                     ? `An annual ${$feeRatio(item.feeRatio)}`
                     : $feeRatio(item.feeRatio)
                 }}%
                 {{
-                  item.code === 'ETH'
+                  item.code === "ETH"
                     ? `fee will be charged. `
-                    : item.code === 'USDC'
-                    ? 'of staking rewards will be charged as processing fee.'
-                    : 'of yielding rewards will be charged as processing fee.'
+                    : item.code === "USDC"
+                    ? "of staking rewards will be charged as processing fee."
+                    : "of yielding rewards will be charged as processing fee."
                 }}
               </span>
             </el-col>
@@ -184,7 +184,7 @@
                     Wallet Balance:
                     {{ $nameFixed(totalOf, item.code) }}
                     <span>{{
-                      item.code === 'ETH' ? item.code : selectConfirm
+                      item.code === "ETH" ? item.code : selectConfirm
                     }}</span>
                   </span>
                 </li>
@@ -204,7 +204,7 @@
                         class="Max"
                         v-show="Max === 1"
                         @click="setMax(Max, totalOf)"
-                        >{{ item.code === 'ETH' ? 'SAFE MAX' : 'MAX' }}</span
+                        >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
                       >
                     </template>
                     <template slot="append" v-if="item.code !== 'ETH'">
@@ -238,14 +238,14 @@
                       Asset Deposited: ≈
                       {{
                         $nameFixed(
-                          selectWithdraw === 'USDC' || item.code === 'ETH'
+                          selectWithdraw === "USDC" || item.code === "ETH"
                             ? item.user_assets
                             : item.user_assets_origin,
                           item.code
                         )
                       }}
                       <span>{{
-                        item.code === 'ETH' ? item.code : selectWithdraw
+                        item.code === "ETH" ? item.code : selectWithdraw
                       }}</span>
                       <el-tooltip
                         class="item"
@@ -390,12 +390,12 @@
 </template>
 
 <script>
-import EchartsLine from './EchartsLine.vue'
-import CffTable from './CffTable.vue'
-import DialogForm from '../../components/DialogForm.vue'
-import HighRiskMixin from '../../components/mixins/HighRiskMixin'
+import EchartsLine from "./EchartsLine.vue";
+import CffTable from "./CffTable.vue";
+import DialogForm from "../../components/DialogForm.vue";
+import HighRiskMixin from "../../components/mixins/HighRiskMixin";
 export default {
-  name: 'HighRisk',
+  name: "HighRisk",
   mixins: [HighRiskMixin],
   components: {
     DialogForm,
@@ -405,16 +405,16 @@ export default {
   computed: {
     currentName() {
       switch (this.dialogName) {
-        case 'EchartsLine':
-          return EchartsLine
-        case 'CffTable':
-          return CffTable
+        case "EchartsLine":
+          return EchartsLine;
+        case "CffTable":
+          return CffTable;
         default:
-          return ''
+          return "";
       }
     },
   },
-}
+};
 </script>
 <style scoped lang="scss">
 /deep/ .el-select-dropdown__item {
@@ -431,7 +431,7 @@ export default {
   color: #2196f3 !important;
   font-size: 13px !important;
   background: #ecf5ff;
-  padding: 5px 14px;
+  padding: 5px 14px !important;
   margin: 0 10px;
   border-radius: 4px;
 }

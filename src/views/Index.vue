@@ -33,7 +33,7 @@
               >
                 {{ item.code }}
                 <span>
-                  {{ $numFixed(item.sevendayProfit, 1) + '%' }}
+                  {{ $numFixed(item.sevendayProfit, 1) + "%" }}
                 </span>
                 <svg-icon iconClass="low" class="websvg"></svg-icon>
               </p>
@@ -47,7 +47,7 @@
               >
                 {{ item.code }}
                 <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
-                <span> {{ $numFixed(item.sevendayProfit, 1) + '%' }}</span>
+                <span> {{ $numFixed(item.sevendayProfit, 1) + "%" }}</span>
                 <svg-icon
                   :iconClass="item.code === 'ETH' ? 'mlr' : 'mr'"
                   :class="item.code === 'ETH' ? 'mlr' : 'mr'"
@@ -142,11 +142,11 @@
 </template>
 
 <script>
-import { getSevendayProfit } from '@/common/api'
-import { HMarkets, LMarkets } from '../config.js'
-import AuditReport from '../components/AuditReport.vue'
+import { getSevendayProfit } from "@/common/api";
+import { HMarkets, LMarkets } from "../config.js";
+import AuditReport from "../components/AuditReport.vue";
 export default {
-  name: 'Index',
+  name: "Index",
   components: {
     AuditReport,
   },
@@ -155,61 +155,61 @@ export default {
       lowList: [],
       highList: [],
       dialogVisible: false,
-    }
+    };
   },
   mounted() {
-    this.getSevendayProfits()
+    this.getSevendayProfits();
   },
   methods: {
     goCff(item, type) {
       this.$router.push({
-        name: 'invest',
+        name: "invest",
         params: {
           code: item.code,
           type: type,
         },
-      })
+      });
     },
     async getSevendayProfits() {
-      const h = HMarkets.map((item) => 'h' + item)
-      const all = [...LMarkets, ...h]
-      console.log(all, '=-')
+      const h = HMarkets.map((item) => "h" + item);
+      const all = [...LMarkets, ...h];
+      console.log(all, "=-");
       Promise.all(
         // LMarkets.map((item) => {
         // 	return getSevendayProfit(item)
         // })
         all.map((item) => {
-          return getSevendayProfit(item)
+          return getSevendayProfit(item);
         })
       )
         .then(([...all]) => {
           this.lowList = all
             .filter((item) => item.data.risk_tpye === 0)
-            .map((item) => item.data)
+            .map((item) => item.data);
           this.highList = all
             .filter((item) => item.data.risk_tpye === 1)
-            .map((item) => item.data)
+            .map((item) => item.data);
         })
         .catch((err) => {
-          console.log(err, '=-')
-        })
+          console.log(err, "=-");
+        });
     },
 
     closeShow(val) {
-      this.dialogVisible = val
+      this.dialogVisible = val;
     },
     openGit(url) {
-      let Win = window.open()
-      Win.opener = null
-      Win.location = url
+      let Win = window.open();
+      Win.opener = null;
+      Win.location = url;
     },
     gohome() {
       this.$router.push({
-        path: '/invest',
-      })
+        path: "/invest",
+      });
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .mr {
@@ -221,7 +221,7 @@ export default {
 .home {
   height: 100%;
   width: 100%;
-  background: url('~@/assets/imgs/bg.png') no-repeat center bottom;
+  background: url("~@/assets/imgs/bg.png") no-repeat center bottom;
   background-size: cover;
 }
 
@@ -297,7 +297,7 @@ export default {
             border: 1px solid #2196f3;
             color: #2196f3;
             font-size: 12px;
-            padding: 3px 10px;
+            padding: 3px 10px !important;
             margin: 0 10px;
             border-radius: 4px;
           }

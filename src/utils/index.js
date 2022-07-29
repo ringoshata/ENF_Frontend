@@ -24,7 +24,9 @@ const ellipsis = (value, one = 0, two = 6, three = 38, four = 42) => {
 	}
 	return value
 }
-
+const numberWithCommas = (x) => {
+	return x.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+}
 const dividedBy = (balance, num) => {
 	if (!Number(balance)) return 0
 	return new BigNumber(balance).dividedBy(num).toString(10)
@@ -85,5 +87,6 @@ export {
 	multipliedByFixed,
   isLt,
   minusLet,
+	numberWithCommas,
   minus
 }
