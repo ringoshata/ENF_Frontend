@@ -2,11 +2,14 @@ import Vue from 'vue'
 import { Contract, HContract } from '../config.js'
 
 const CFVault_abi = require('./CFVault_abi.json')
+const DiCFVault_abi = require('./DiCFVault_abi.json')
 const IERC20_abi = require('./IERC20_abi.json')
 const ERC20DepositApprover_abi = require('./ERC20DepositApprover_abi.json')
 //高风险
 const EFCRVVault_abi = require('./EFCRVVault_abi.json')
 const ETHEFCRVVaule_abi = require('./ETHEFCRVVaule_abi.json')
+const Curve_abi = require('./Curve.json')
+
 // 动态获取web3实例对象
 const getWeb3 = (abi, accounts) => {
 	return new Vue.prototype.$web3.eth.Contract(abi, accounts)
@@ -98,11 +101,21 @@ const getHIERCBalanceOf = async (accounts, code, type) => {
 }
 
 //存ETH
+
 const setDepositETH = async (number, accounts, code, type) => {
-	const abi = type === 'low' ? Contract[code].CFVault : HContract[code].CFVault
-	const params = await getWeb3(CFVault_abi, abi)
-		.methods.deposit(number)
-		.encodeABI()
+	let params = null
+	let abi = null
+	if (type === 'low') {
+		abi = Contract[code].CFVault
+		params = await getWeb3(DiCFVault_abi, Contract[code].CFVault)
+			.methods.deposit()
+			.encodeABI()
+	} else {
+		abi = HContract[code].CFVault
+		params = await getWeb3(CFVault_abi, HContract[code].CFVault)
+			.methods.deposit(number)
+			.encodeABI()
+	}
 	return {
 		from: accounts,
 		to: abi,
@@ -183,6 +196,15 @@ const getHWithdraw = async (number, accounts, code, type) => {
 		data: params
 	}
 }
+const calc_withdraw_one_coin = (amount) => {
+	return getWeb3(Curve_abi, '0xA79828DF1850E8a3A3064576f380D90aECDD3359')
+		.methods.calc_withdraw_one_coin(
+			'0x43b4fdfd4ff969587185cdb6f0bd875c5fc83f8c',
+			amount,
+			'2'
+		)
+		.call()
+}
 export {
 	getWeb3,
 	getGasPrice,
@@ -199,5 +221,6 @@ export {
 	setHApprove,
 	getHIERCBalanceOf,
 	setHDeposit,
-	getHWithdraw
+	getHWithdraw,
+	calc_withdraw_one_coin
 }

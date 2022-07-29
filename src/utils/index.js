@@ -24,9 +24,6 @@ const ellipsis = (value, one = 0, two = 6, three = 38, four = 42) => {
 	}
 	return value
 }
-const numberWithCommas = (x) => {
-	return x.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-}
 
 const dividedBy = (balance, num) => {
 	if (!Number(balance)) return 0
@@ -61,16 +58,16 @@ const isLt = (num1, num2) => {
 	return new BigNumber(num1).lt(num2)
 }
 //小于钱包余额-0.1
-const minusLet = (num1, num2) => {
-	return new BigNumber(num1).lte(new BigNumber(num2).minus(0.1))
+const minusLet=(num1, num2) => {
+	return new BigNumber(num1).lte( new BigNumber(num2).minus(0.1))
 }
 //ETH-0.1
-const minus = (num2) => {
-	if (new BigNumber(num2).minus(0.1).lt(0)) {
-		return 0
-	} else {
-		return new BigNumber(num2).minus(0.1)
-	}
+const minus=( num2) => {
+  if(new BigNumber(num2).minus(0.1).lt(0)){
+    return 0
+  }else{
+    return  new BigNumber(num2).minus(0.1)
+  }
 }
 //生成随机数
 const random = (lower, upper) => {
@@ -86,8 +83,7 @@ export {
 	isLessThanOrEqualTo,
 	random,
 	multipliedByFixed,
-	numberWithCommas,
-	isLt,
-	minusLet,
-	minus
+  isLt,
+  minusLet,
+  minus
 }
