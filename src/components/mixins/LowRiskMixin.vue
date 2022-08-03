@@ -161,7 +161,6 @@ export default {
         })
         .catch((err) => {
           this.downLoading();
-          console.log(err, "=-");
         });
     },
     async approve() {
@@ -307,7 +306,6 @@ export default {
     inputWithdraw(type = null) {
       if (type !== "set") {
         this.withdrawVal = 0;
-        console.log(type);
       }
       if (!this.withdrawInput) {
         this.ratio = Number(this.itemData.ratio) * 100 + "%";

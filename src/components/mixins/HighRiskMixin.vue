@@ -162,7 +162,6 @@ export default {
         })
         .catch((err) => {
           this.downLoading();
-          console.log(err, "=-");
         });
     },
     getVirtualPrice() {
@@ -274,7 +273,6 @@ export default {
       }
     },
     async withdraw(item) {
-      console.log('here')
       this.isYield = false;
       const user =
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
@@ -318,7 +316,6 @@ export default {
     inputWithdraw(type = null) {
       if (type !== "set") {
         this.withdrawVal = 0;
-        console.log(type);
       }
       if (!this.withdrawInput) {
         this.ratio = Number(this.itemData.ratio) * 100 + "%";
@@ -397,7 +394,6 @@ export default {
         allowance,
         HContract[val.code][`${this.selectConfirm}Decimal`]
       );
-      console.log(myAllowance, "myAllowance");
       const less = isLessThanOrEqualTo(myAllowance, 0);
       this.isApprove = less;
     },
