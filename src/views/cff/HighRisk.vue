@@ -328,9 +328,10 @@
                 >
               </el-col>
               <el-col :span="10" :offset="3">
-                <span class="ratio" v-if="item.code !== 'ETH'"
-                  >Fees: {{ ratio }}</span
-                >
+              <div class="ratio">
+                <span v-if="item.code !== 'ETH'">Fees: {{ ratio }}</span>
+                <span>Slippage: {{slippage}}%</span>
+                </div>
                 <el-button
                   type="warning"
                   plain
@@ -683,6 +684,9 @@ export default {
     // margin-left: 25%;
     font-size: 14px;
     color: #fd8465;
+    span {
+			margin-right: 15px;
+		}
   }
 }
 /deep/ .el-button--warning.is-plain {

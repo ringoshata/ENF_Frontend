@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { Contract, HContract } from '../config.js'
+import { Contract, HContract, LPoolContract, HPoolContract } from '../config.js'
+import BigNumber from "bignumber.js"
 
 const CFVault_abi = require('./CFVault_abi.json')
 const DiCFVault_abi = require('./DiCFVault_abi.json')
@@ -9,6 +10,8 @@ const ERC20DepositApprover_abi = require('./ERC20DepositApprover_abi.json')
 const EFCRVVault_abi = require('./EFCRVVault_abi.json')
 const ETHEFCRVVaule_abi = require('./ETHEFCRVVaule_abi.json')
 const Curve_abi = require('./Curve.json')
+const VirtualPrice_abi = require('./VirtualPrice_abi.json')
+const Exchange_Rate_abi = require('./Exchange_Rate_abi.json')
 
 // 动态获取web3实例对象
 const getWeb3 = (abi, accounts) => {
@@ -196,6 +199,7 @@ const getHWithdraw = async (number, accounts, code, type) => {
 		data: params
 	}
 }
+
 const calc_withdraw_one_coin = (amount) => {
 	return getWeb3(Curve_abi, '0xA79828DF1850E8a3A3064576f380D90aECDD3359')
 		.methods.calc_withdraw_one_coin(
@@ -205,6 +209,55 @@ const calc_withdraw_one_coin = (amount) => {
 		)
 		.call()
 }
+
+const getVirtualPriceFromLContract = async (code) => {
+	return getWeb3(VirtualPrice_abi,LPoolContract[code])
+		.methods.get_virtual_price()
+		.call()
+}
+
+const getVirtualPriceFromHContract = async (code) => {
+	return getWeb3(VirtualPrice_abi,HPoolContract[code])
+		.methods.get_virtual_price()
+		.call()
+}
+
+const getExchangeRateFromLContract = async (code, amount) => {
+	let exRate = 0
+	if(code==='USDC') {
+		const amountInString = new BigNumber(amount).times(1e18)
+		exRate = await getWeb3(Exchange_Rate_abi, '0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c')
+			.methods.get_dy_underlying('0', '2', amountInString).call()
+		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e6)).toNumber()
+	} else if(code === 'WBTC') {
+		const amountInString = new BigNumber(amount).times(1e8)
+		exRate = await getWeb3(Exchange_Rate_abi, '0x93054188d876f558f4a66B2EF1d97d16eDf0895B')
+			.methods.get_dy_underlying('0','1',amountInString).call()
+		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e8)).toNumber()
+	} else if(code === 'ETH') {
+		const amountInString = new BigNumber(amount).times(1e18)
+		exRate = await getWeb3(Exchange_Rate_abi, '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022')
+			.methods.get_dy('1', '0', amountInString).call()
+		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e18)).toNumber()
+	}
+	return 0
+}
+const getExchangeRateFromHContract = async (code, amount) => {
+	let exRate = 0
+	if(code==='USDC') {
+		const amountInString = new BigNumber(amount).times(1e18)
+		exRate = await getWeb3(Exchange_Rate_abi, '0x9D0464996170c6B9e75eED71c68B99dDEDf279e8')
+			.methods.get_dy('1', '0', amountInString).call()
+		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e18)).toNumber()
+	} else if(code === 'ETH') {
+		const amountInString = new BigNumber(amount).times(1e18)
+		exRate = await getWeb3(Exchange_Rate_abi, '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022')
+			.methods.get_dy('1', '0', amountInString).call()
+		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e18)).toNumber()
+	}
+	return 0
+}
+
 export {
 	getWeb3,
 	getGasPrice,
@@ -222,5 +275,9 @@ export {
 	getHIERCBalanceOf,
 	setHDeposit,
 	getHWithdraw,
-	calc_withdraw_one_coin
+	calc_withdraw_one_coin,
+	getVirtualPriceFromLContract,
+	getVirtualPriceFromHContract,
+	getExchangeRateFromLContract,
+	getExchangeRateFromHContract
 }

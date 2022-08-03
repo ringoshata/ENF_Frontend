@@ -16,6 +16,8 @@ const DappId = '48bec8e3-294f-42f5-9c94-0f657ed9db49'
 let Network = 3
 let Contract = {}
 let HContract = {}
+let LPoolContract = {}
+let HPoolContract = {}
 let API_URL = ''
 let OPEN_URL = ''
 let HMarkets = []
@@ -129,63 +131,72 @@ let LMarkets = []
 // 		break
 // }
 API_URL = 'https://api-hr.earning.farm'
-		OPEN_URL = 'https://etherscan.io/tx/'
-		Network = 1
-		HMarkets = ['usdc', 'eth']
-		LMarkets = ['usdc', 'wbtc', 'eth']
-		Contract = {
-			USDC: {
-				CFToken: '0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF',
-				ERC20DepositApprover: '0xe5afC078684683dc232E053c2c9D86015Aa00Ec6',
-				CFVault: '0x889B9194Fb1D66509d3d043e7c839582fED6E607',
-				USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-				Decimal: 1e6,
-				Name: '稳定币去中心化收益基金',
-				Introduce:
-					'基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
-			},
-			WBTC: {
-				CFToken: '0x2Eb8e7fEeC11D6dCE4799AfA3b7Bb83BbA02b081',
-				ERC20DepositApprover: '0xe5afC078684683dc232E053c2c9D86015Aa00Ec6',
-				CFVault: '0xAFcf9Ec311c42b4221697cf7F5392f9110DC8e8c',
-				WBTC: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-				Decimal: 1e8,
-				Name: 'BTC去中心化收益基金',
-				Introduce:
-					'基于Curve的多个BTC ERC20池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
-			},
-			ETH: {
-				CFToken: '0xA709eCF2253B18A757214D64F42026Be8F008bD8',
-				CFVault: '0xE303a8Cc37C96669C7Ba5aeE1134bb530e766BdF',
-				Decimal: 1e18,
-				Name: 'ETH去中心化收益基金',
-				Introduce:
-					'基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
-			}
-		}
-	
-		HContract = {
-      USDC: {
-      CFToken: '0xfF55c4e42D7C2c4f9fd251f62b3469Fb2783954F',
-      CFVault: '0x16b0C918B4aEE4Fa87AE20576A369723A3A7F648',
-      USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      CRV: '0xD533a949740bb3306d119CC777fa900bA034cd52',
-      USDCDecimal: 1e6,
-      CRVDecimal: 1e18,
-      Length: 2,
-      Name: '稳定币去中心化收益基金',
-      Introduce:
-        '基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
-    },
-    ETH: {
-      CFToken: '0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19',
-      CFVault: '0xe39fd820B58f83205Db1D9225f28105971c3D309',
-      Decimal: 1e18,
-      Name: 'ETH去中心化收益基金',
-      Introduce:
-        '基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
-    }
-    }
+OPEN_URL = 'https://etherscan.io/tx/'
+Network = 1
+HMarkets = ['usdc', 'eth']
+LMarkets = ['usdc', 'wbtc', 'eth']
+Contract = {
+	USDC: {
+		CFToken: '0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF',
+		ERC20DepositApprover: '0xe5afC078684683dc232E053c2c9D86015Aa00Ec6',
+		CFVault: '0x889B9194Fb1D66509d3d043e7c839582fED6E607',
+		USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+		Decimal: 1e6,
+		Name: '稳定币去中心化收益基金',
+		Introduce:
+			'基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
+	},
+	WBTC: {
+		CFToken: '0x2Eb8e7fEeC11D6dCE4799AfA3b7Bb83BbA02b081',
+		ERC20DepositApprover: '0xe5afC078684683dc232E053c2c9D86015Aa00Ec6',
+		CFVault: '0xAFcf9Ec311c42b4221697cf7F5392f9110DC8e8c',
+		WBTC: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+		Decimal: 1e8,
+		Name: 'BTC去中心化收益基金',
+		Introduce:
+			'基于Curve的多个BTC ERC20池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
+	},
+	ETH: {
+		CFToken: '0xA709eCF2253B18A757214D64F42026Be8F008bD8',
+		CFVault: '0xE303a8Cc37C96669C7Ba5aeE1134bb530e766BdF',
+		Decimal: 1e18,
+		Name: 'ETH去中心化收益基金',
+		Introduce:
+			'基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
+	}
+}
+LPoolContract = {
+	'usdc': '0x7DF468277AbC1cf01744fFA21e4c62B8318918F2',
+	'wbtc': '0xd525c8582c725d0b2fc0C601E5df60A7181577CC',
+	'eth': '0x0f5CfB3A503b126B6bCd1Adf5e3C6AB35a48A48B'
+}
+HPoolContract = {
+	'usdc': '0x9D0464996170c6B9e75eED71c68B99dDEDf279e8',
+	'eth': '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
+}
+HContract = {
+	USDC: {
+	CFToken: '0xfF55c4e42D7C2c4f9fd251f62b3469Fb2783954F',
+	CFVault: '0x16b0C918B4aEE4Fa87AE20576A369723A3A7F648',
+	USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+	CRV: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+	USDCDecimal: 1e6,
+	CRVDecimal: 1e18,
+	Length: 2,
+	Name: '稳定币去中心化收益基金',
+	Introduce:
+		'基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
+	},
+	ETH: {
+		CFToken: '0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19',
+		CFVault: '0xe39fd820B58f83205Db1D9225f28105971c3D309',
+		Decimal: 1e18,
+		Name: 'ETH去中心化收益基金',
+		Introduce:
+			'基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。'
+	}
+}
+
 export {
 	Network,
 	Contract,
@@ -196,5 +207,7 @@ export {
 	DappId,
 	TTIMER,
 	HMarkets,
-	LMarkets
+	LMarkets,
+	LPoolContract,
+	HPoolContract
 }

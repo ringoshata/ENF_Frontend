@@ -246,7 +246,10 @@
 								>
 							</el-col>
 							<el-col :span="10" :offset="3">
-								<span class="ratio">Fees: {{ ratio }}</span>
+								<div class="ratio">
+									<span>Fees: {{ ratio }}</span>
+									<span>Slippage: {{slippage}}%</span>
+								</div>
 								<el-button
 									type="primary"
 									plain
@@ -561,6 +564,9 @@ export default {
 		// margin-left: 25%;
 		font-size: 14px;
 		color: #ffa267;
+		span {
+			margin-right: 15px;
+		}
 	}
 }
 </style>
