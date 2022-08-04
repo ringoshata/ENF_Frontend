@@ -234,9 +234,13 @@ export default {
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
+        if(value<1e-6) {
+          this.slippage = '0';
+          return;
+        }
         const exchangeRate = await getExchangeRateFromHContract(code, value);
         const standardExchangeRate = await getExchangeRateFromHContract(code, 1);
-        this.slippage = ((standardExchangeRate-exchangeRate)*100).toFixed(2);
+        this.slippage = Number(((standardExchangeRate-exchangeRate)*100).toFixed(2));
     },
     async withdrawItem(item) {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
@@ -317,19 +321,19 @@ export default {
       if (type !== "set") {
         this.withdrawVal = 0;
       }
-      if (!this.withdrawInput) {
-        this.ratio = Number(this.itemData.ratio) * 100 + "%";
-        return;
-      }
-      if (Number(this.withdrawInput) === 0) {
-        this.ratio = Number(this.itemData.ratio) * 100 + "%";
-        return;
-      }
-      this.ratio = multipliedByFixed(
-        this.withdrawInput,
-        this.itemData.ratio,
-        HContract[this.itemData.code].Length
-      );
+      // if (!this.withdrawInput) {
+      //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
+      //   return;
+      // }
+      // if (Number(this.withdrawInput) === 0) {
+      //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
+      //   return;
+      // }
+      // this.ratio = multipliedByFixed(
+      //   this.withdrawInput,
+      //   this.itemData.ratio,
+      //   HContract[this.itemData.code].Length
+      // );
     },
     setMax(type, val) {
       if (type === 1) {
