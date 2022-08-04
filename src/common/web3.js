@@ -182,6 +182,7 @@ const getWithdraw = async (number, accounts, code) => {
 //取高风险
 const getHWithdraw = async (number, accounts, code, type) => {
 	let params = null
+	console.log('number: ', number);
 	if (code === 'ETH') {
 		params = await getWeb3(ETHEFCRVVaule_abi, HContract[code].CFVault)
 			.methods.withdraw(number)
@@ -228,7 +229,6 @@ const getExchangeRateFromLContract = async (code, amount) => {
 		const amountInString = new BigNumber(amount).times(1e18).toString(10)
 		exRate = await getWeb3(Exchange_Rate_abi, '0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c')
 			.methods.get_dy_underlying('0', '2', amountInString).call()
-		console.log('input-values: ', amountInString, exRate)
 		return new BigNumber(exRate).dividedBy(new BigNumber(amount)).dividedBy(new BigNumber(1e6)).toNumber()
 	} else if(code === 'WBTC') {
 		const amountInString = new BigNumber(amount).times(1e8).toString(10)

@@ -265,7 +265,7 @@ export default {
         const amount = new BigNumber(bigInput)
           .multipliedBy(this.itemData.lpTokenBalance)
           .dividedBy(this.itemData.totalSupply)
-          .toFixed(10);
+          .toFixed(0);
         const a = await calc_withdraw_one_coin(amount);
         const b = new BigNumber(this.withdrawInput).multipliedBy(1e6);
         this.calcNum = new BigNumber(b).minus(a).dividedBy(b).toString();
