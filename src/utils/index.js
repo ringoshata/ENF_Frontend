@@ -25,7 +25,8 @@ const ellipsis = (value, one = 0, two = 6, three = 38, four = 42) => {
 	return value
 }
 const numberWithCommas = (x) => {
-	return x.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+	const values = x.toString().split(".")
+	return values[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ( values.length == 2 ? '.' + values[1] : '' )
 }
 
 const dividedBy = (balance, num) => {
