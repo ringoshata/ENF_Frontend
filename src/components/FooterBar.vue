@@ -20,13 +20,13 @@
 			>
 				PeckShield Audit Report
 			</span> -->
-      <span @click="openGit('https://gitlab.com/asresearch/cff-contract-v2')">
+      <span @click="openGit('https://gitlab.com/asresearch/cff-contract')">
         <img src="../assets/imgs/github@2x.png" alt />
         Gitlab</span
       >
-      <span @click="openGit('https://discord.gg/cUBdGs3ehM')">
+      <!-- <span @click="openGit('https://discord.gg/cUBdGs3ehM')">
         <img src="../assets/imgs/dis.png" alt /> Discord</span
-      >
+      > -->
     </div>
     <div class="fots">
       <span class="ear">

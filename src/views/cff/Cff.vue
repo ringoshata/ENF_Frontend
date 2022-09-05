@@ -7,9 +7,9 @@
     <low-risk-h5 v-if="IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
     <h1 class="high-title" v-if="!isHigh">
-      <el-divider direction="vertical"></el-divider> High Risk
+      <el-divider direction="vertical"></el-divider> Medium Risk
 
-      <el-tooltip class="item" effect="dark" placement="top">
+      <!-- <el-tooltip class="item" effect="dark" placement="top">
         <div slot="content">
           Note: High Risk strategies might have
           <br />higher possibility to lose principle in
@@ -17,7 +17,7 @@
           compare to Low Risk strategies.
         </div>
         <i class="el-icon-question"></i>
-      </el-tooltip>
+      </el-tooltip> -->
     </h1>
     <high-risk v-if="!IsPhone && !isHigh" />
     <high-risk-h5 v-if="IsPhone && !isHigh" />

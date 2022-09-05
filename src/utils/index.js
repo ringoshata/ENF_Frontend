@@ -28,7 +28,6 @@ const numberWithCommas = (x) => {
 	const values = x.toString().split(".")
 	return values[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ( values.length == 2 ? '.' + values[1] : '' )
 }
-
 const dividedBy = (balance, num) => {
 	if (!Number(balance)) return 0
 	return new BigNumber(balance).dividedBy(num).toString(10)
@@ -62,16 +61,16 @@ const isLt = (num1, num2) => {
 	return new BigNumber(num1).lt(num2)
 }
 //小于钱包余额-0.1
-const minusLet = (num1, num2) => {
-	return new BigNumber(num1).lte(new BigNumber(num2).minus(0.1))
+const minusLet=(num1, num2) => {
+	return new BigNumber(num1).lte( new BigNumber(num2).minus(0.1))
 }
 //ETH-0.1
-const minus = (num2) => {
-	if (new BigNumber(num2).minus(0.1).lt(0)) {
-		return 0
-	} else {
-		return new BigNumber(num2).minus(0.1)
-	}
+const minus=( num2) => {
+  if(new BigNumber(num2).minus(0.1).lt(0)){
+    return 0
+  }else{
+    return  new BigNumber(num2).minus(0.1)
+  }
 }
 //生成随机数
 const random = (lower, upper) => {
@@ -87,8 +86,8 @@ export {
 	isLessThanOrEqualTo,
 	random,
 	multipliedByFixed,
+  isLt,
+  minusLet,
 	numberWithCommas,
-	isLt,
-	minusLet,
-	minus
+  minus
 }

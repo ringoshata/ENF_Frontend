@@ -6,7 +6,6 @@ Vue.prototype.$web3 = new Web3(Web3.givenProvider)
 Vue.prototype.$nameFixed = (num, name) => {
 	if (!Number(num)) return 0
 	const wei = name === 'USDC' ? 2 : name === 'ETH' ? 3 : 4
-	console.log('')
 	return numberWithCommas(new BigNumber(num).toFixed(wei, 1))
 }
 
@@ -17,6 +16,7 @@ Vue.prototype.$numFixed = (val, key = 0) => {
 }
 
 Vue.prototype.$feeRatio = (val) => {
+  console.log(val,'val')
 	if (!Number(val)) return 0
-	return new BigNumber(val).multipliedBy(100).toFixed(0, 1)
+	return new BigNumber(val).multipliedBy(100).toFixed(0,1)
 }
