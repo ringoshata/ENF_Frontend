@@ -226,8 +226,9 @@
 						Withdraw
 					</el-button>
 
-					<div class="btcwbtc">
+					<div class="btcwbtc ratio">
 						<span class="bom_li ratio">Fees: {{ ratio }}</span>
+						<span>Slippage: {{slippage}}%</span>
 					</div>
 				</div>
 			</div>
@@ -527,6 +528,9 @@ export default {
 	.ratio {
 		font-size: 14px;
 		color: #ffa267;
+		span {
+			margin-right: 15px;
+		}
 	}
 }
 </style>

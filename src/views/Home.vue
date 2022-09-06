@@ -1,11 +1,11 @@
 <template>
 	<div class="home">
-		<el-container direction="vertical" class="body">
-			<el-header> <header-bar /> </el-header>
-			<el-main>
+		<el-container direction="vertical" class="body mdl-layout">
+			<el-header class="mdl-layout__header"> <header-bar /> </el-header>
+			<el-main class="mdl-layout__content">
 				<router-view />
 			</el-main>
-			<el-footer> <footer-bar /></el-footer>
+			<el-footer class="mdl-layout__footer"> <footer-bar /></el-footer>
 			<float-pending :text="'Pending'" :itemWidth="itemWidth"></float-pending>
 		</el-container>
 	</div>
@@ -47,7 +47,7 @@ export default {
 	width: 100%;
 }
 .el-container.is-vertical {
-	height: 100%;
+	// height: 100%;
 }
 .el-main {
 	padding: 0 !important;
@@ -67,7 +67,7 @@ export default {
 }
 
 .el-container {
-	height: 100%;
+	// height: 100%;
 	width: 100%;
 }
 @media screen and (max-width: 768px) {

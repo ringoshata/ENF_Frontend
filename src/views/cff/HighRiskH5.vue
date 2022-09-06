@@ -296,7 +296,7 @@
           >
             Withdraw
           </el-button>
-          <div class="btcwbtc">
+          <div class="btcwbtc ratio">
             <span class="bom_li ratio">Fees: {{ ratio }}</span>
           </div>
         </div>
@@ -653,7 +653,7 @@ export default {
     position: relative;
   }
   .ratio {
-    position: absolute;
+    // position: absolute;
     bottom: 0px;
     // margin-left: 25%;
     font-size: 14px;
