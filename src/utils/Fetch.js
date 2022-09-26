@@ -1,6 +1,6 @@
 // import axios from 'axios'
 const service = axios.create({
-	withCredentials: true, // 跨域请求时发送Cookie
+	// withCredentials: true, // 跨域请求时发送Cookie
 	// headers: {
 	// 	'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 	// },
@@ -21,11 +21,12 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
 	(response) => {
-		if (response.data.resultCode === 100) {
-			return response.data
-		} else {
-			return false
-		}
+		return response.data
+
+		// if (response.data.resultCode === 100 || response.data.resultCode === 200) {
+		// } else {
+		// 	return false
+		// }
 	},
 	(error) => {
 		console.log(error)

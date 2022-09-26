@@ -12,8 +12,8 @@
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="Txn Hash：">
-              <span class="tx_span" @click="open(scope.row.txh)">{{
-                scope.row.txh | ellipsis
+              <span class="tx_span" @click="open(scope.row.hash)">{{
+                scope.row.hash | ellipsis
               }}</span>
             </el-form-item>
             <el-form-item label="Fee:" v-show="!codeType">
@@ -29,7 +29,9 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span>{{ scope.row.date | dateFormat(IsPhone) }}</span>
+          <span>{{
+            (new Date(scope.row.createdAt) / 1000) | dateFormat(IsPhone)
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -40,8 +42,8 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span class="tx_span" @click="open(scope.row.txh)">{{
-            scope.row.txh
+          <span class="tx_span" @click="open(scope.row.hash)">{{
+            scope.row.hash
           }}</span>
         </template>
       </el-table-column>
@@ -75,7 +77,7 @@
       >
         <template slot-scope="scope">
           <span>
-            {{ scope.row.operation }}
+            {{ scope.row.tradeType == 0 ? "Deposit" : "Withdraw" }}
           </span>
         </template>
       </el-table-column>
@@ -100,11 +102,11 @@
 <script>
 import dayjs from "dayjs";
 import { mapState } from "vuex";
-import { OPEN_URL } from "../../config.js";
+import { OPEN_URL, NContract } from "../../config.js";
 import { getTransaction } from "@/common/api";
 import { fetchTxs } from "../../common/api";
 export default {
-  name: "CffTable",
+  name: "CffTableNew",
   props: {
     code: {
       type: String,
@@ -151,7 +153,10 @@ export default {
       const query = { address: this.MetaMaskAddress, pageNo: this.currentPage };
       if (this.codeurl[0] === "n") {
         const nUrls = ["nusdc", "nwbtc", "neth"];
-        const list = await fetchTxs(this.code, this.MetaMaskAddress);
+        const list = await fetchTxs(
+          NContract[this.code].asset,
+          this.MetaMaskAddress
+        );
         this.tableData = list.userAssets;
         console.log("List", list);
       } else {

@@ -3,6 +3,10 @@
     <h1 class="low-title">
       <el-divider direction="vertical"></el-divider> Low Risk
     </h1>
+    <low-risk-new v-if="!IsPhone && !isLow" />
+    <h1 class="low-title">
+      <el-divider direction="vertical"></el-divider> Outdated
+    </h1>
     <low-risk v-if="!IsPhone && !isLow" />
     <low-risk-h5 v-if="IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
@@ -31,6 +35,7 @@ export default {
   components: {
     LowRisk: () => import('./LowRisk.vue'),
     LowRiskH5: () => import('./LowRiskH5.vue'),
+    LowRiskNew: () => import('./LowRiskNew.vue'),
     HighRisk: () => import('./HighRisk.vue'),
     HighRiskH5: () => import('./HighRiskH5.vue'),
   },

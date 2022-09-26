@@ -47,7 +47,7 @@ export default {
 	width: 100%;
 }
 .el-container.is-vertical {
-	// height: 100%;
+	min-height: 100%;
 }
 .el-main {
 	padding: 0 !important;

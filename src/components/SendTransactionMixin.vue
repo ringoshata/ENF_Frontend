@@ -12,7 +12,8 @@ export default {
 					const obj = {
 						id: this.MetaMaskAddress,
 						hash: hash,
-						time: new Date().getTime()
+						time: new Date().getTime(),
+						params
 						// type: type
 					}
 					this.Pendings.push(obj)

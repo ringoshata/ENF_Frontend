@@ -56,6 +56,7 @@ export default {
               typeof address === 'undefined' ? '' : address.toLowerCase()
           },
           network: (network) => {
+            console.log("NETWORK: ", network)
             this.networkId =
               typeof network === 'undefined' ? null : network + ''
           },

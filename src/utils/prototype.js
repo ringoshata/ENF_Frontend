@@ -16,7 +16,7 @@ Vue.prototype.$numFixed = (val, key = 0) => {
 }
 
 Vue.prototype.$feeRatio = (val) => {
-  console.log(val,'val')
+	console.log(val, 'val')
 	if (!Number(val)) return 0
-	return new BigNumber(val).multipliedBy(100).toFixed(0,1)
+	return new BigNumber(val).multipliedBy(100).toFixed(0, 1)
 }

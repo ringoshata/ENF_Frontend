@@ -2,16 +2,19 @@
 import {
   getIERCBalanceOf,
   getETHBalance,
-  getAllowance,
-  setDeposit,
+  getNAllowance,
+  setNDeposit,
   setDepositETH,
   getWithdraw,
-  setApprove,
+  setNApprove,
   calc_withdraw_one_coin,
+  getNTotalAsset,
+  getNAsset,
   getExchangeRateFromLContract,
+  formatUnit,
 } from "@/common/web3";
 
-import { getAsset, getProfit } from "@/common/api";
+import { getAsset, getProfit, fetchTxs } from "@/common/api";
 import {
   dividedBy,
   setConfirmValue,
@@ -24,7 +27,13 @@ import {
   minusLet,
   minus,
 } from "@/utils";
-import { Contract, TTIMER, LMarkets } from "../../config.js";
+import {
+  Contract,
+  NContract,
+  TTIMER,
+  LMarkets,
+  NMarkets,
+} from "../../config.js";
 import { mapState } from "vuex";
 import BigNumber from "bignumber.js";
 const LowExchangeRate = {
@@ -53,9 +62,9 @@ export default {
         100: "100%",
       },
       textList: {
-        USDC: "Invest in stable-coin pools based on Convex / Curve, rewards received will be converted into corresponding asset for further investment automatically.",
-        WBTC: "Invest in BTC pools based on Convex / Curve, rewards received will be converted into corresponding asset for further investment automatically.",
-        ETH: "Invest in ETH pools based on Convex / Curve, rewards received will be converted into corresponding asset for further investment automatically.",
+        USDC: "Invest in stable-coin pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
+        WBTC: "Invest in BTC pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
+        ETH: "Invest in ETH pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
       },
       loading: null,
       itemData: null,
@@ -77,6 +86,7 @@ export default {
       calcNum: null,
       isCalc: false,
       slippage: "0",
+      totalassets: 0,
     };
   },
   watch: {
@@ -102,58 +112,98 @@ export default {
       this.isCalc = false;
     },
     getTimer() {
-      LMarkets.forEach((item) => {
+      NMarkets.forEach((item) => {
         const timer = random(TTIMER[0], TTIMER[1]);
         this[item + "timer"] = setInterval(() => {
-          this.getAssets(item);
+          this.getAssets(item.toUpperCase());
         }, timer);
       });
     },
     async getAssets(codename) {
-      const usdcData = await getAsset(this.MetaMaskAddress, codename);
-      this.list.forEach((item, idx) => {
-        if (item.code === usdcData.data.code) {
-          if (
-            item.totalassets !== usdcData.data.totalassets ||
-            item.user_assets !== usdcData.data.user_assets
-          ) {
-            let showContent = false;
-            if (this.itemData && this.itemData.code === usdcData.data.code) {
-              showContent = this.itemData.showContent
-                ? this.itemData.showContent
-                : false;
-              this.itemData = { ...usdcData.data, showContent: showContent };
-            }
-            this.$set(this.list, idx, {
-              ...usdcData.data,
-              showContent: showContent,
-            });
-          }
-        }
-      });
+      this.totalassets = await getNTotalAsset(codename);
+      console.log(totalassets);
+      // const usdcData = await getAsset(this.MetaMaskAddress, codename);
+      // this.list.forEach((item, idx) => {
+      //   if (item.code === usdcData.data.code) {
+      //     if (
+      //       item.totalassets !== usdcData.data.totalassets ||
+      //       item.user_assets !== usdcData.data.user_assets
+      //     ) {
+      //       let showContent = false;
+      //       if (this.itemData && this.itemData.code === usdcData.data.code) {
+      //         showContent = this.itemData.showContent
+      //           ? this.itemData.showContent
+      //           : false;
+      //         this.itemData = { ...usdcData.data, showContent: showContent };
+      //       }
+      //       this.$set(this.list, idx, {
+      //         ...usdcData.data,
+      //         showContent: showContent,
+      //       });
+      //     }
+      //   }
+      // });
     },
+
+    async getAssetInfo(account, item) {
+      const decimal = NContract[item.toUpperCase()].Decimal;
+
+      // Get Total
+      const total = await getNTotalAsset(item.toUpperCase());
+
+      console.log("Total: ", total);
+      // Get User individual
+      const userAssets = await getNAsset(item.toUpperCase(), account);
+      console.log("userAssets: ", userAssets);
+
+      let userHistory = [];
+
+      if (account) {
+        console.log("Aset: ", NContract[item.toUpperCase()].asset, account);
+
+        userHistory = await fetchTxs(
+          NContract[item.toUpperCase()].asset,
+          account
+        );
+      }
+      console.log("USer: ", userAssets, userHistory);
+      return { total: total / decimal, code: item.toUpperCase() };
+    },
+
     async getAssetList() {
+      // const total = await getNTotalAsset("USDC");
+      // console.log("Total: ", total)
+
+      // const asset = await getNAsset("USDC", this.MetaMaskAddress)
+      // console.log("Asset: ", asset)
+
       this.isLoading();
+      console.log("NMarket: ", NMarkets, LMarkets);
       Promise.all(
-        LMarkets.map((item, idx) => {
-          return getAsset(this.MetaMaskAddress, item);
+        NMarkets.map(async (item, idx) => {
+          console.log("Item here: ", item);
+          return this.getAssetInfo(this.MetaMaskAddress, item);
         })
       )
-        .then(([...LMarkets]) => {
-          this.list = LMarkets.map((item) => {
+        .then(([...NMarkets]) => {
+          console.log("NM: ", NMarkets);
+          this.list = NMarkets.map((item) => {
+            console.log("NM Item: ", item);
             return {
-              ...item.data,
+              ...item,
               showContent: false,
             };
           });
-
+          console.log("List: ", this.list);
+          console.log("Type", this.$route.params.type);
           if (this.$route.params.type && this.$route.params.type === "low") {
             const data = this.list.find(
               (item) => item.code === this.$route.params.code
             );
+            console.log("data: ", data);
             this.changeContent(data);
           }
-          LMarkets.forEach((item) => {
+          NMarkets.forEach((item) => {
             clearInterval(this[item + "timer"]);
             this[item + "timer"] = null;
           });
@@ -168,7 +218,7 @@ export default {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       this.isLoading();
       try {
-        const resApprove = await setApprove(
+        const resApprove = await setNApprove(
           new BigNumber(1e32).toString(10),
           this.MetaMaskAddress,
           this.itemData.code
@@ -198,7 +248,7 @@ export default {
           );
       }
 
-      const decimal = Contract[item.code].Decimal;
+      const decimal = NContract[item.code].Decimal;
       const bigInput = setConfirmValue(this.confirmInput, decimal);
       const params =
         this.itemData.code === "ETH"
@@ -208,7 +258,7 @@ export default {
               this.itemData.code,
               "low"
             )
-          : await setDeposit(
+          : await setNDeposit(
               bigInput,
               this.MetaMaskAddress,
               this.itemData.code
@@ -367,7 +417,7 @@ export default {
       this.confirmVal = 0;
       this.isApprove = true;
       if (val.code !== "ETH" && !val.showContent && this.MetaMaskAddress) {
-        const allowance = await getAllowance(this.MetaMaskAddress, val.code);
+        const allowance = await getNAllowance(this.MetaMaskAddress, val.code);
         const myAllowance = dividedBy(allowance, Contract[val.code].Decimal);
         const less = isLessThanOrEqualTo(myAllowance, 0);
         this.isApprove = less;
@@ -417,16 +467,16 @@ export default {
       this.dialogVisible = true;
     },
     async selectTable() {
-      this.codeurl = this.itemData.code.toLowerCase();
+      this.codeurl = `n${this.itemData.code.toLowerCase()}`;
       this.title = "History";
-      this.dialogName = "CffTable";
+      this.dialogName = "CffTableNew";
       this.diaWidth = "80%";
       this.dialogVisible = true;
     },
   },
 
   destroyed() {
-    LMarkets.forEach((item) => {
+    NMarkets.forEach((item) => {
       clearInterval(this[item + "timer"]);
       this[item + "timer"] = null;
     });
