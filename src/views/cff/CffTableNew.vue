@@ -158,7 +158,6 @@ export default {
           this.MetaMaskAddress
         );
         this.tableData = list.userAssets;
-        console.log("List", list);
       } else {
         const list = await getTransaction(query, this.codeurl);
         if (list) {

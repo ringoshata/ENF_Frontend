@@ -5,16 +5,18 @@ import {
   getNAllowance,
   setNDeposit,
   setDepositETH,
-  getWithdraw,
+  getNWithdraw,
   setNApprove,
   calc_withdraw_one_coin,
   getNTotalAsset,
   getNAsset,
   getExchangeRateFromLContract,
   formatUnit,
+  getWithdrawable,
+  getNWithdrawFee,
 } from "@/common/web3";
 
-import { getAsset, getProfit, fetchTxs } from "@/common/api";
+import { getAsset, getProfit, fetchTxs, fetchTotalHis } from "@/common/api";
 import {
   dividedBy,
   setConfirmValue,
@@ -26,6 +28,7 @@ import {
   isLt,
   minusLet,
   minus,
+  calcAPY,
 } from "@/utils";
 import {
   Contract,
@@ -120,8 +123,7 @@ export default {
       });
     },
     async getAssets(codename) {
-      this.totalassets = await getNTotalAsset(codename);
-      console.log(totalassets);
+      const total = await getNTotalAsset(codename);
       // const usdcData = await getAsset(this.MetaMaskAddress, codename);
       // this.list.forEach((item, idx) => {
       //   if (item.code === usdcData.data.code) {
@@ -151,56 +153,73 @@ export default {
       // Get Total
       const total = await getNTotalAsset(item.toUpperCase());
 
-      console.log("Total: ", total);
       // Get User individual
       const userAssets = await getNAsset(item.toUpperCase(), account);
-      console.log("userAssets: ", userAssets);
 
       let userHistory = [];
+      let userProfit = 0;
 
       if (account) {
-        console.log("Aset: ", NContract[item.toUpperCase()].asset, account);
-
         userHistory = await fetchTxs(
           NContract[item.toUpperCase()].asset,
           account
         );
+
+        let totalDeposit = 0;
+        userHistory.userAssets.reverse().forEach((item) => {
+          if (item.tradeType == 0) totalDeposit += Number(item.amount);
+          else {
+            totalDeposit -= Number(item.amount);
+            if (totalDeposit < 0) totalDeposit = 0;
+          }
+        });
+
+        userProfit =
+          totalDeposit < userAssets ? userAssets / decimal - totalDeposit : 0;
       }
-      console.log("USer: ", userAssets, userHistory);
-      return { total: total / decimal, code: item.toUpperCase() };
+
+      const totalHis = await fetchTotalHis(
+        NContract[item.toUpperCase()].vault,
+        30 * 24 * 3600
+      );
+
+      const { avg } = calcAPY(totalHis.totalRec);
+
+      const ratio = await getNWithdrawFee(item.toUpperCase());
+
+      return {
+        total: total / decimal,
+        user_assets: userAssets / decimal,
+        user_profit: userProfit,
+        sevendayProfit: avg,
+        code: item.toUpperCase(),
+        ratio: ratio / 10000,
+        decimal: NContract[item.toUpperCase()].Decimal,
+      };
     },
 
     async getAssetList() {
       // const total = await getNTotalAsset("USDC");
-      // console.log("Total: ", total)
 
       // const asset = await getNAsset("USDC", this.MetaMaskAddress)
-      // console.log("Asset: ", asset)
 
       this.isLoading();
-      console.log("NMarket: ", NMarkets, LMarkets);
       Promise.all(
         NMarkets.map(async (item, idx) => {
-          console.log("Item here: ", item);
           return this.getAssetInfo(this.MetaMaskAddress, item);
         })
       )
         .then(([...NMarkets]) => {
-          console.log("NM: ", NMarkets);
           this.list = NMarkets.map((item) => {
-            console.log("NM Item: ", item);
             return {
               ...item,
               showContent: false,
             };
           });
-          console.log("List: ", this.list);
-          console.log("Type", this.$route.params.type);
           if (this.$route.params.type && this.$route.params.type === "low") {
             const data = this.list.find(
               (item) => item.code === this.$route.params.code
             );
-            console.log("data: ", data);
             this.changeContent(data);
           }
           NMarkets.forEach((item) => {
@@ -324,18 +343,27 @@ export default {
               item.user_assets
             );
       if (item.code === "USDC" && type === 0) {
-        const amount = new BigNumber(bigInput)
-          .multipliedBy(this.itemData.lpTokenBalance)
-          .dividedBy(this.itemData.totalSupply)
-          .toFixed(0);
-        const a = await calc_withdraw_one_coin(amount);
-        const b = new BigNumber(this.withdrawInput).multipliedBy(1e6);
-        this.calcNum = new BigNumber(b).minus(a).dividedBy(b).toString();
+        const amount = new BigNumber(this.withdrawInput).multipliedBy(
+          new BigNumber(item.decimal).toFixed(0)
+        );
+        // .multipliedBy(this.itemData.lpTokenBalance)
+        // .dividedBy(this.itemData.totalSupply)
+        // .toFixed(0);
+
+        const a = await getWithdrawable(
+          item.code,
+          this.MetaMaskAddress,
+          amount
+        );
+        this.calcNum = new BigNumber(amount)
+          .minus(a)
+          .dividedBy(amount)
+          .toString();
         if (new BigNumber(this.calcNum).gt(0.02)) {
           this.isCalc = true;
         } else {
-          const params = await getWithdraw(
-            bigInput,
+          const params = await getNWithdraw(
+            amount,
             this.MetaMaskAddress,
             item.code
           );
@@ -344,7 +372,7 @@ export default {
           this.isCalc = false;
         }
       } else {
-        const params = await getWithdraw(
+        const params = await getNWithdraw(
           bigInput,
           this.MetaMaskAddress,
           item.code
@@ -459,8 +487,20 @@ export default {
 
     async selectLine() {
       this.codeurl = this.itemData.code.toLowerCase();
-      const list = await getProfit(this.codeurl);
-      this.echartsData = list.dataList;
+      // const list = await getProfit(this.codeurl);
+
+      const totalHis = await fetchTotalHis(
+        NContract[this.itemData.code.toUpperCase()].vault,
+        30 * 24 * 3600
+      );
+
+      const apys = totalHis.totalRec.map((rec) => ({
+        profit: rec.apy,
+        date: rec.lastRecorded / 1000,
+      }));
+
+      this.echartsData = apys.reverse();
+      // this.echartsData = list.dataList;
       this.title = "7 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";

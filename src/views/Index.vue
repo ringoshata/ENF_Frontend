@@ -173,7 +173,6 @@ export default {
     async getSevendayProfits() {
       const h = HMarkets.map((item) => "h" + item);
       const all = [...LMarkets, ...h];
-      console.log(all, "=-");
       Promise.all(
         // LMarkets.map((item) => {
         // 	return getSevendayProfit(item)

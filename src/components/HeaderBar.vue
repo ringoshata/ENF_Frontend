@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import WalletMixin from './dialog-wallet/WalletMixin'
-import { mapState, mapMutations } from 'vuex'
-import { copys } from '@/utils'
-import { getGasPrice } from '@/common/web3'
-import { Network } from '../config.js'
+import WalletMixin from "./dialog-wallet/WalletMixin";
+import { mapState, mapMutations } from "vuex";
+import { copys } from "@/utils";
+import { getGasPrice } from "@/common/web3";
+import { Network } from "../config.js";
 
 export default {
   mixins: [WalletMixin],
@@ -75,75 +75,73 @@ export default {
     return {
       gasprice: 50,
       timer: null,
-      addressInput: '',
-    }
+      addressInput: "",
+    };
   },
   computed: {
-    ...mapState(['MetaMaskAddress']),
+    ...mapState(["MetaMaskAddress"]),
   },
   filters: {
     ellipsis(val) {
-      if (!val) return ''
+      if (!val) return "";
       if (val.length > 10) {
-        return val.slice(0, 6) + '...' + val.slice(val.length - 4, val.length)
+        return val.slice(0, 6) + "..." + val.slice(val.length - 4, val.length);
       }
-      return val
+      return val;
     },
   },
   mounted() {
-    console.log(Network, 'Network')
-    this.startTimer()
-    this.getGasPriced()
+    this.startTimer();
+    this.getGasPriced();
   },
   methods: {
-    ...mapMutations(['setMetaMaskAddress']),
+    ...mapMutations(["setMetaMaskAddress"]),
     setAddress() {
-      this.setMetaMaskAddress(this.addressInput)
-      if (!this.addressInput) this.resetApp()
+      this.setMetaMaskAddress(this.addressInput);
+      if (!this.addressInput) this.resetApp();
     },
     startTimer() {
       this.timer = setInterval(() => {
-        this.getGasPriced
-      }, 10000)
+        this.getGasPriced;
+      }, 10000);
     },
     async getGasPriced() {
-      const price = await getGasPrice()
-      console.log(price, 'priceprice')
-      this.gasprice = Math.floor(price / 1e9)
+      const price = await getGasPrice();
+      this.gasprice = Math.floor(price / 1e9);
     },
     goIndex() {
       this.$router.push({
-        path: '/index',
-      })
+        path: "/index",
+      });
     },
     handleCommand(command) {
       switch (command) {
-        case 'copy':
-          copys(this, this.MetaMaskAddress)
-          break
-        case 'exit':
-          this.resetApp()
-          break
+        case "copy":
+          copys(this, this.MetaMaskAddress);
+          break;
+        case "exit":
+          this.resetApp();
+          break;
         default:
-          break
+          break;
       }
     },
     openHash(id) {
-      const Win = window.open()
-      Win.opener = null
+      const Win = window.open();
+      Win.opener = null;
       Win.location = this.tag
         ? `https://ropsten.etherscan.io/tx/${id}`
-        : `https://etherscan.io/tx/${id}`
+        : `https://etherscan.io/tx/${id}`;
     },
     jump() {
-      this.login()
+      this.login();
     },
   },
   destroyed() {
-    clearInterval(this.timer)
-    this.timer = null
+    clearInterval(this.timer);
+    this.timer = null;
   },
-}
+};
 </script>
 
 <style scoped lang="scss">

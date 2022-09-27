@@ -153,7 +153,6 @@ export default {
         const nUrls = ["nusdc", "nwbtc", "neth"];
         const list = await fetchTxs(this.code, this.MetaMaskAddress);
         this.tableData = list.userAssets;
-        console.log("List", list);
       } else {
         const list = await getTransaction(query, this.codeurl);
         if (list) {

@@ -11,6 +11,7 @@ import BigNumber from "bignumber.js";
 
 const CFVault_abi = require("./CFVault_abi.json");
 const VaultV3_abi = require("./VaultV3_abi.json");
+const ControllerV3_abi = require("./ControllerV3_abi.json");
 const DiCFVault_abi = require("./DiCFVault_abi.json");
 const IERC20_abi = require("./IERC20_abi.json");
 const ERC20DepositApprover_abi = require("./ERC20DepositApprover_abi.json");
@@ -69,7 +70,6 @@ const getAllowance = async (accounts, code) => {
 };
 
 const getNAllowance = async (accounts, code) => {
-  console.log("NAll: ", accounts);
   if (!accounts) return 0;
   const asset = NContract[code].asset;
   return getWeb3(IERC20_abi, asset)
@@ -88,7 +88,6 @@ const setApprove = async (number, accounts, code) => {
 
 const setNApprove = async (number, accounts, code) => {
   const asset = NContract[code].asset;
-  console.log("NAPprove: ", asset, number);
   return getWeb3(IERC20_abi, asset)
     .methods.approve(NContract[code].depositApprover, number)
     .send({
@@ -185,7 +184,6 @@ const setNDeposit = async (number, accounts, code) => {
   )
     .methods.deposit(number)
     .encodeABI();
-  console.log("NM	", code);
   return {
     from: accounts,
     to: NContract[code].depositApprover,
@@ -230,7 +228,6 @@ const getWithdraw = async (number, accounts, code) => {
 //取高风险
 const getHWithdraw = async (number, accounts, code, type) => {
   let params = null;
-  console.log("number: ", number);
   if (code === "ETH") {
     params = await getWeb3(ETHEFCRVVaule_abi, HContract[code].CFVault)
       .methods.withdraw(number)
@@ -343,12 +340,10 @@ const getExchangeRateFromHContract = async (code, amount) => {
 };
 
 const formatUnit = (num, decimal) => {
-  console.log("Format: ", num, decimal);
   return new BigNumber(num).div(Big(10).pow(decimal));
 };
 
 const getNTotalAsset = async (code) => {
-  console.log("COde: ", code, NContract[code].vault);
   return getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.totalAssets()
     .call();
@@ -356,13 +351,39 @@ const getNTotalAsset = async (code) => {
 
 const getNAsset = async (code, account) => {
   if (!account) return 0;
-  console.log("COde: ", code, NContract[code].vault);
   const lpBal = await getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.balanceOf(account)
     .call();
 
   return getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.convertToAssets(lpBal)
+    .call();
+};
+
+const getWithdrawable = async (code, account, amount) => {
+  if (!account) return 0;
+  if (amount == 0) return 0;
+
+  return getWeb3(ControllerV3_abi, NContract[code].controller)
+    .methods.withdrawable(amount)
+    .call();
+};
+
+const getNWithdraw = async (number, accounts, code) => {
+  const params = await getWeb3(VaultV3_abi, NContract[code].vault)
+    .methods.withdraw(number, accounts)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: NContract[code].vault,
+    value: 0,
+    data: params,
+  };
+};
+
+const getNWithdrawFee = async (code) => {
+  return getWeb3(ControllerV3_abi, NContract[code].controller)
+    .methods.withdrawFee()
     .call();
 };
 
@@ -394,4 +415,7 @@ export {
   getNTotalAsset,
   getNAsset,
   formatUnit,
+  getWithdrawable,
+  getNWithdraw,
+  getNWithdrawFee,
 };

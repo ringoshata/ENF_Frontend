@@ -43,12 +43,16 @@ const registerTx = async (data) => {
 };
 
 const fetchTxs = async (code, address) => {
-  console.log("Fetch : ", code, address);
-
   const checkSummed = Vue.prototype.$web3.utils.toChecksumAddress(address);
-  console.log("Fetch: ", code, checkSummed);
   return fetch({
     url: `${API_V3_URL}/user_tx/${code}/${checkSummed}`,
+    method: "GET",
+  });
+};
+
+const fetchTotalHis = async (address, period) => {
+  return fetch({
+    url: `${API_V3_URL}/total_assets/${address}/${period}`,
     method: "GET",
   });
 };
@@ -60,4 +64,5 @@ export {
   getSevendayProfit,
   registerTx,
   fetchTxs,
+  fetchTotalHis,
 };

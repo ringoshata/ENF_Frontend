@@ -63,9 +63,7 @@ export default {
         this.startTransactionTimer();
       }
     },
-    Pendings(cur, old) {
-      console.log(cur, "curcurcurcurcurcurcurcurcurcur");
-    },
+    Pendings(cur, old) {},
     clientW(cur, old) {
       this.left = cur - this.itemWidth - 40;
     },
@@ -108,13 +106,10 @@ export default {
       if (!this.MetaMaskAddress) return;
       if (this.Pendings.length === 0) return;
       const data = await getTransaction(this.Pendings[0].hash);
-      console.log(data, "data--------");
-      console.log("Pending: ", this.Pendings[0]);
       try {
         if (data) {
           if (data.blockHash) {
             const status = await getTransactionReceipt(this.Pendings[0].hash);
-            console.log(status, "statusstatusstatusstatus");
             if (status && status.transactionHash === this.Pendings[0].hash) {
               const type = status.status ? "success" : "error";
 
