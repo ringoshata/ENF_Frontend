@@ -91,9 +91,9 @@ switch (process.env.NODE_ENV) {
 
     NContract = {
       USDC: {
-        depositApprover: "0xaB837301d12cDc4b97f1E910FC56C9179894d9cf",
-        vault: "0x0F527785e39B22911946feDf580d87a4E00465f0",
-        controller: "0x1D3EDBa836caB11C26A186873abf0fFeB8bbaE63",
+        depositApprover: "0xBEe6FFc1E8627F51CcDF0b4399a1e1abc5165f15",
+        vault: "0x10e38eE9dd4C549b61400Fc19347D00eD3edAfC4",
+        controller: "0xd710a67624Ad831683C86a48291c597adE30F787",
         asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
         Decimal: 1e6,

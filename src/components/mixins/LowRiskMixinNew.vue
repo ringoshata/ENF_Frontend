@@ -202,7 +202,8 @@ export default {
       // const total = await getNTotalAsset("USDC");
 
       // const asset = await getNAsset("USDC", this.MetaMaskAddress)
-
+      console.log("NMarkets: ", NMarkets);
+      console.log("NContracts: ", NContract);
       this.isLoading();
       Promise.all(
         NMarkets.map(async (item, idx) => {
