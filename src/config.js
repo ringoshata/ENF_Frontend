@@ -25,7 +25,8 @@ let OPEN_URL = "";
 let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
-switch (process.env.NODE_ENV) {
+switch ("develop") {
+  // switch (process.env.NODE_ENV) {
   // 测试环境
   case "develop":
     API_URL = "https://api-hr.earning.farm";
