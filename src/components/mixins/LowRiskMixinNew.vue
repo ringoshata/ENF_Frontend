@@ -123,8 +123,31 @@ export default {
       });
     },
     async getAssets(codename) {
-      const total = await getNTotalAsset(codename);
+      // const total = await getNTotalAsset(codename);
       // const usdcData = await getAsset(this.MetaMaskAddress, codename);
+      const data = await this.getAssetInfo(this.MetaMaskAddress, codename);
+
+      this.list.forEach((item, idx) => {
+        if (item.code === data.code) {
+          if (
+            item.totalassets !== data.totalassets ||
+            item.user_assets !== data.user_assets
+          ) {
+            let showContent = false;
+            if (this.itemData && this.itemData.code === data.code) {
+              showContent = this.itemData.showContent
+                ? this.itemData.showContent
+                : false;
+              this.itemData = { ...data, showContent: showContent };
+            }
+            this.$set(this.list, idx, {
+              ...data,
+              showContent: showContent,
+            });
+            console.log(`${item.code} data is updated`);
+          }
+        }
+      });
       // this.list.forEach((item, idx) => {
       //   if (item.code === usdcData.data.code) {
       //     if (
@@ -283,7 +306,9 @@ export default {
               this.MetaMaskAddress,
               this.itemData.code
             );
-      this.sendTransaction(params);
+      this.sendTransaction(params, () => {
+        console.log("Tx finished: ", item.code);
+      });
     },
     async fetchExchangeRate(code, value) {
       if (value < 1e-6) {
@@ -335,18 +360,23 @@ export default {
     },
     async withdraw(item, type = 0) {
       const maxWithdraw = this.withdrawInput === item.user_assets;
-      const bigInput =
+      const amount =
         maxWithdraw === true
-          ? item.lp_token
-          : setWithdrawValue(
-              this.withdrawInput,
-              item.lp_token,
-              item.user_assets
-            );
+          ? new BigNumber(item.user_assets)
+              .multipliedBy(new BigNumber(item.decimal))
+              .toFixed(0)
+          : new BigNumber(this.withdrawInput)
+              .multipliedBy(new BigNumber(item.decimal))
+              .toFixed(0);
+      // const bigInput =
+      //   maxWithdraw === true
+      //     ? item.lp_token
+      //     : setWithdrawValue(
+      //         this.withdrawInput,
+      //         item.lp_token,
+      //         item.user_assets
+      //       );
       if (item.code === "USDC" && type === 0) {
-        const amount = new BigNumber(this.withdrawInput).multipliedBy(
-          new BigNumber(item.decimal).toFixed(0)
-        );
         // .multipliedBy(this.itemData.lpTokenBalance)
         // .dividedBy(this.itemData.totalSupply)
         // .toFixed(0);

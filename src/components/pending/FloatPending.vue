@@ -113,6 +113,9 @@ export default {
             if (status && status.transactionHash === this.Pendings[0].hash) {
               const type = status.status ? "success" : "error";
 
+              if (status.status) {
+                this.Pendings[0].params.callback();
+              }
               //   if (status.status && this.Pendings[0].params.tradeType === 0) {
               //     const param = this.Pendings[0].params;
               //     const hash = this.Pendings[0].hash;
