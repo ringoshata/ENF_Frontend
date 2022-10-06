@@ -186,8 +186,8 @@
                         placement="top-end"
                       >
                         <div slot="content">
-                          Calculated based on Curve virtual price. May have
-                          slight difference when withdrawing.
+                          Calculated by querying the underling Defi protocols.
+                          May have slight difference when withdrawing.
                         </div>
                         <i class="el-icon-question"></i>
                       </el-tooltip>
@@ -216,7 +216,7 @@
                   <li>
                     <el-slider
                       v-model="withdrawVal"
-                      :step="25"
+                      :step="0.1"
                       :marks="marks"
                       @change="setWithdrawVal"
                       show-stops
@@ -248,7 +248,14 @@
               </el-col>
               <el-col :span="10" :offset="3">
                 <div class="ratio">
-                  <span>Fees: {{ ratio }}</span>
+                  <span
+                    >Fees:
+                    {{
+                      withdrawInput === 0
+                        ? `${(ratio * 100).toString()}%`
+                        : (withdrawInput * ratio).toFixed(2)
+                    }}</span
+                  >
                   <span>Slippage: {{ slippage }}%</span>
                 </div>
                 <el-button

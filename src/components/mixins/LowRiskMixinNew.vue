@@ -84,7 +84,7 @@ export default {
       echartsData: [],
       tableData: [],
       isApprove: true,
-      ratio: "0%",
+      ratio: 0,
       codeurl: "",
       calcNum: null,
       isCalc: false,
@@ -126,7 +126,6 @@ export default {
       // const total = await getNTotalAsset(codename);
       // const usdcData = await getAsset(this.MetaMaskAddress, codename);
       const data = await this.getAssetInfo(this.MetaMaskAddress, codename);
-
       this.list.forEach((item, idx) => {
         if (item.code === data.code) {
           if (
@@ -144,7 +143,6 @@ export default {
               ...data,
               showContent: showContent,
             });
-            console.log(`${item.code} data is updated`);
           }
         }
       });
@@ -198,15 +196,19 @@ export default {
         });
 
         userProfit =
-          totalDeposit < userAssets ? userAssets / decimal - totalDeposit : 0;
+          totalDeposit < userAssets / decimal
+            ? userAssets / decimal - totalDeposit
+            : 0;
       }
 
-      const totalHis = await fetchTotalHis(
+      let { totalRec } = await fetchTotalHis(
         NContract[item.toUpperCase()].vault,
         30 * 24 * 3600
       );
 
-      const { avg } = calcAPY(totalHis.totalRec);
+      const list = await getProfit(item);
+
+      const { avg } = calcAPY(totalRec, list.dataList);
 
       const ratio = await getNWithdrawFee(item.toUpperCase());
 
@@ -225,8 +227,6 @@ export default {
       // const total = await getNTotalAsset("USDC");
 
       // const asset = await getNAsset("USDC", this.MetaMaskAddress)
-      console.log("NMarkets: ", NMarkets);
-      console.log("NContracts: ", NContract);
       this.isLoading();
       Promise.all(
         NMarkets.map(async (item, idx) => {
@@ -306,9 +306,7 @@ export default {
               this.MetaMaskAddress,
               this.itemData.code
             );
-      this.sendTransaction(params, () => {
-        console.log("Tx finished: ", item.code);
-      });
+      this.sendTransaction(params, () => {});
     },
     async fetchExchangeRate(code, value) {
       if (value < 1e-6) {
@@ -486,7 +484,7 @@ export default {
           item.showContent = !item.showContent;
           if (item.showContent) {
             this.itemData = { ...val };
-            this.ratio = Number(val.ratio) * 100 + "%";
+            this.ratio = val.ratio;
             this.downLoading();
             this.getTotalOf(val.code);
           } else {
@@ -518,21 +516,18 @@ export default {
 
     async selectLine() {
       this.codeurl = this.itemData.code.toLowerCase();
-      // const list = await getProfit(this.codeurl);
+      const list = await getProfit(this.codeurl);
 
       const totalHis = await fetchTotalHis(
         NContract[this.itemData.code.toUpperCase()].vault,
         30 * 24 * 3600
       );
 
-      const apys = totalHis.totalRec.map((rec) => ({
-        profit: rec.apy,
-        date: rec.lastRecorded / 1000,
-      }));
+      const { apys } = calcAPY(totalHis.totalRec, list.dataList);
 
-      this.echartsData = apys.reverse();
+      this.echartsData = apys;
       // this.echartsData = list.dataList;
-      this.title = "7 Days APY";
+      this.title = "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;

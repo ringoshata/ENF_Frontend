@@ -92,9 +92,9 @@ switch ("develop") {
 
     NContract = {
       USDC: {
-        depositApprover: "0xBEe6FFc1E8627F51CcDF0b4399a1e1abc5165f15",
-        vault: "0x10e38eE9dd4C549b61400Fc19347D00eD3edAfC4",
-        controller: "0xd710a67624Ad831683C86a48291c597adE30F787",
+        depositApprover: "0xd753c12650c280383Ce873Cc3a898F6f53973d16",
+        vault: "0x06b3244b086cecC40F1e5A826f736Ded68068a0F",
+        controller: "0x00CAC06Dd0BB4103f8b62D280fE9BCEE8f26fD59",
         asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
         Decimal: 1e6,

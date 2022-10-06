@@ -142,8 +142,9 @@
 </template>
 
 <script>
-import { getSevendayProfit } from "@/common/api";
-import { HMarkets, LMarkets } from "../config.js";
+import { getSevendayProfit, fetchTotalHis, getProfit } from "@/common/api";
+import { HMarkets, LMarkets, NContract } from "../config.js";
+import { calcAPY } from "@/utils";
 import AuditReport from "../components/AuditReport.vue";
 export default {
   name: "Index",
@@ -192,6 +193,16 @@ export default {
         .catch((err) => {
           console.log(err, "=-");
         });
+
+      let { totalRec } = await fetchTotalHis(
+        NContract["USDC"].vault,
+        30 * 24 * 3600
+      );
+
+      const list = await getProfit("usdc");
+
+      const { avg } = calcAPY(totalRec, list.dataList);
+      this.lowList[0].sevendayProfit = avg;
     },
 
     closeShow(val) {

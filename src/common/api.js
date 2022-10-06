@@ -14,7 +14,7 @@ const getAsset = (data, code = "") => {
 };
 const getProfit = (code = "") => {
   return fetch({
-    url: `${URL + code}/profit`,
+    url: `${URL + code.toLowerCase()}/profit`,
     method: "POST",
   });
 };

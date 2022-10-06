@@ -21,16 +21,16 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import DialogForm from './DialogForm.vue'
+import { mapState } from "vuex";
+import DialogForm from "./DialogForm.vue";
 export default {
   components: {
     DialogForm,
   },
   computed: {
-    ...mapState(['IsPhone']),
+    ...mapState(["IsPhone"]),
     itemWidth() {
-      return this.IsPhone ? '90%' : '40%'
+      return this.IsPhone ? "90%" : "40%";
     },
   },
   props: {
@@ -41,36 +41,40 @@ export default {
   },
   data() {
     return {
-      title: 'Audit Report',
-      diaWidth: '40%',
+      title: "Audit Report",
+      diaWidth: "40%",
       audit: [
         {
-          name: 'Low risk USDC and BTC strategy',
-          url: 'https://github.com/slowmist/Knowledge-Base/blob/master/open-report/Smart%20Contract%20Security%20Audit%20Report%20-%20earning.farm.pdf',
+          name: "Low risk USDC and BTC strategy",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report/Smart%20Contract%20Security%20Audit%20Report%20-%20earning.farm.pdf",
         },
         {
-          name: 'Low risk ETH strategy',
-          url: 'https://github.com/slowmist/Knowledge-Base/blob/master/open-report/SlowMist%20Audit%20Report%20-%20CFFv2.pdf',
+          name: "Low risk ETH strategy",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report/SlowMist%20Audit%20Report%20-%20CFFv2.pdf",
         },
         {
-          name: 'High risk USDC and ETH strategy',
-          url: 'https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf',
+          name: "Medium risk USDC and ETH strategy",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf",
+        },
+        {
+          name: "Low rist USDC - V3",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20Earning.Farm%20V3_en-us.pdf",
         },
       ],
-    }
+    };
   },
   methods: {
     closeShow() {
-      this.$emit('closeShow', false)
+      this.$emit("closeShow", false);
     },
 
     openGit(url) {
-      let Win = window.open()
-      Win.opener = null
-      Win.location = url
+      let Win = window.open();
+      Win.opener = null;
+      Win.location = url;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
