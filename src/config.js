@@ -25,7 +25,7 @@ let OPEN_URL = "";
 let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
-switch ("develop") {
+switch ("test") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
   case "develop":
@@ -104,18 +104,19 @@ switch ("develop") {
     break;
 
   case "test":
-    API_URL = "http://api-dev.earning.farm";
-    OPEN_URL = "https://ropsten.etherscan.io/tx/";
-    Network = 3;
-    LMarkets = ["usdc"];
+    API_URL = "https://api-hr.earning.farm";
+    API_V3_URL = "https://api-v3test.earning.farm/v1";
+    OPEN_URL = "https://etherscan.io/tx/";
+    Network = 1;
+    LMarkets = ["usdc", "wbtc", "eth"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["usdc"];
     Contract = {
       USDC: {
         CFToken: "0xE15c9afC4DfF21707e70A976e42baa203094e362",
         ERC20DepositApprover: "0x3BF97E2284D2C1a5297536bCA9712aF69490E389",
-        CFVault: "0x4BCb94F59Be87e630c4ef6414C68C631F584ACB5",
-        USDC: "0xDaE821623e5bE28bD8C7994a075893290202B07b",
+        CFVault: "0x889B9194Fb1D66509d3d043e7c839582fED6E607",
+        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         Decimal: 1e6,
         Length: 2,
         Name: "稳定币去中心化收益基金",
@@ -128,7 +129,7 @@ switch ("develop") {
       USDC: {
         CFToken: "0x5de1C7CAfdBDD4faec3ef51f8C8c1A91EA20F8C0",
         CFVault: "0x47dC47921e285af62Db608f3DA7b59bdD6a74d19",
-        USDC: "0x588C12309DaE98970D1Cca34d73944dD3576666A",
+        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         CRV: "0xB0724732367C6330801B38B0a0268c890d6bA4dB",
         USDCDecimal: 1e6,
         CRVDecimal: 1e18,
@@ -146,11 +147,24 @@ switch ("develop") {
           "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
       },
     };
+
+    NContract = {
+      USDC: {
+        depositApprover: "0x2D39B83dd6e865cA005e35d630e1f6735118d5d4",
+        vault: "0xBDB515028A6fA6CD1634B5A9651184494aBfD336",
+        controller: "0xf491AfE5101b2eE8abC1272FA8E2f85d68828396",
+        asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
+        Decimal: 1e6,
+        CRVDecimal: 1e18,
+      },
+    };
     break;
 
   // 生产环境
   case "production":
     API_URL = "https://api-hr.earning.farm";
+    API_V3_URL = "https://api-v3test.earning.farm";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
     HMarkets = ["usdc", "eth"];

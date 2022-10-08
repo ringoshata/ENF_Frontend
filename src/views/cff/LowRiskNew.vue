@@ -102,8 +102,7 @@
               <span class="spanText">{{ textList[item.code] }}</span>
               <br />
               <span class="spanText"
-                >{{ $feeRatio(item.feeRatio) }}% of yielding rewards will be
-                charged as processing fee.
+                >10% of yielding rewards will be charged as processing fee.
               </span>
             </el-col>
             <el-col :span="5">
@@ -219,7 +218,6 @@
                       :step="0.1"
                       :marks="marks"
                       @change="setWithdrawVal"
-                      show-stops
                       :show-tooltip="false"
                     ></el-slider>
                   </li>
@@ -251,9 +249,9 @@
                   <span
                     >Fees:
                     {{
-                      withdrawInput === 0
-                        ? `${(ratio * 100).toString()}%`
-                        : (withdrawInput * ratio).toFixed(2)
+                      withdrawInput > 0
+                        ? (withdrawInput * ratio).toFixed(2)
+                        : `${(ratio * 100).toString()}%`
                     }}</span
                   >
                   <span>Slippage: {{ slippage }}%</span>
@@ -284,6 +282,7 @@
         :is="currentName"
         :echartsData="echartsData"
         :codeurl="codeurl"
+        :maximize="maximize"
         :eHeight="'400px'"
         :code="itemData.code"
       />
@@ -298,6 +297,7 @@
     >
       <component
         :is="currentName"
+        :maximize="maximize"
         :echartsData="echartsData"
         :codeurl="codeurl"
         :eHeight="'400px'"

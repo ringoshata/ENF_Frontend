@@ -24,7 +24,7 @@ import {
   minusLet,
   minus,
 } from "@/utils";
-import { Contract, TTIMER, LMarkets } from "../../config.js";
+import { Contract, TTIMER } from "../../config.js";
 import { mapState } from "vuex";
 import BigNumber from "bignumber.js";
 const LowExchangeRate = {
@@ -41,9 +41,13 @@ export default {
       type: Object,
       default: () => {},
     },
+    newUSDC: {
+      type: Boolean,
+    },
   },
   data() {
     return {
+      markets: [],
       list: [],
       marks: {
         0: "0",
@@ -94,6 +98,8 @@ export default {
     },
   },
   mounted() {
+    if (this.newUSDC) this.markets = ["wbtc", "eth"];
+    else this.markets = ["usdc"];
     this.getAssetList();
   },
   methods: {
@@ -102,7 +108,7 @@ export default {
       this.isCalc = false;
     },
     getTimer() {
-      LMarkets.forEach((item) => {
+      this.markets.forEach((item) => {
         const timer = random(TTIMER[0], TTIMER[1]);
         this[item + "timer"] = setInterval(() => {
           this.getAssets(item);
@@ -135,12 +141,12 @@ export default {
     async getAssetList() {
       this.isLoading();
       Promise.all(
-        LMarkets.map((item, idx) => {
+        this.markets.map((item, idx) => {
           return getAsset(this.MetaMaskAddress, item);
         })
       )
-        .then(([...LMarkets]) => {
-          this.list = LMarkets.map((item) => {
+        .then(([...markets]) => {
+          this.list = markets.map((item) => {
             return {
               ...item.data,
               showContent: false,
@@ -153,7 +159,7 @@ export default {
             );
             this.changeContent(data);
           }
-          LMarkets.forEach((item) => {
+          markets.forEach((item) => {
             clearInterval(this[item + "timer"]);
             this[item + "timer"] = null;
           });
@@ -426,7 +432,7 @@ export default {
   },
 
   destroyed() {
-    LMarkets.forEach((item) => {
+    this.markets.forEach((item) => {
       clearInterval(this[item + "timer"]);
       this[item + "timer"] = null;
     });

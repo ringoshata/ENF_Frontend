@@ -196,7 +196,7 @@ export default {
 
       let { totalRec } = await fetchTotalHis(
         NContract["USDC"].vault,
-        30 * 24 * 3600
+        105 * 24 * 3600
       );
 
       const list = await getProfit("usdc");

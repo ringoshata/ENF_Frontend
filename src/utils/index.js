@@ -80,40 +80,31 @@ const random = (lower, upper) => {
   return Math.floor(Math.random() * (upper - lower)) + lower;
 };
 
-const calcAPY = (his, list) => {
+const calcAPY = (his, list, all) => {
   const oneYear = 365 * 24 * 3600 * 1000;
 
-  let sameDate = 1;
-  let apys = [];
-  for (let i = 0; i < his.length; i++) {
-    const prevItem = apys[apys.length - 1];
-    if (!prevItem)
-      apys.push({
-        profit: his[i].apy,
-        date: his[i].lastRecorded / 1000,
-      });
-    else {
-      const prevMonth = new Date(prevItem.date * 1000).getMonth();
-      const prevDate = new Date(prevItem.date * 1000).getDate();
-      const month = new Date(his[i].lastRecorded).getMonth();
-      const date = new Date(his[i].lastRecorded).getDate();
+  let apys = avgByDate(his);
 
-      if (prevMonth === month && prevDate === date) {
-        const apy = (prevItem.profit * sameDate + his[i].apy) / (sameDate + 1);
-        sameDate++;
-        apys[apys.length - 1].profit = apy;
-      } else {
-        apys.push({
-          profit: rec.apy,
-          date: Math.ceil(rec.lastRecorded / 1000),
-        });
-      }
+  if (!all && apys.length < 105) {
+    apys = [...list.slice(0, 105 - apys.length), ...apys];
+  } else if (all) {
+    apys = [...list, ...apys];
+    apys = avgByDate(apys, true);
+  }
+
+  const avgApys = [];
+  for (let i = 0; i < apys.length; i++) {
+    const start = i < 15 ? 0 : i > apys.length - 15 ? apys.length - 30 : i - 15;
+    const end = i < apys.length - 15 ? start + 30 : apys.length;
+    const subArr = apys.slice(start, end);
+    let avg = 0;
+    for (let j = 0; j < subArr.length; j++) {
+      avg += subArr[j].profit;
     }
+    avg /= subArr.length;
+    avgApys.push({ profit: avg, date: apys[i].date });
   }
-
-  if (apys.length < 31) {
-    apys = [...list.slice(0, 31 - apys.length), ...apys];
-  }
+  console.log("Avg Apys: ", avgApys);
 
   // const apys = his.map((rec) => ({
   //   profit: rec.apy,
@@ -121,14 +112,55 @@ const calcAPY = (his, list) => {
   // }));
   let avg = 0;
 
-  const len = apys.length > 30 ? 30 : apys.length;
+  const len = apys.length > 90 && !all ? 90 : apys.length;
   for (let i = 0; i < len; i++) {
     avg += Number(apys[i].profit);
   }
 
   avg /= len;
 
-  return { apys, avg };
+  return { apys: all ? avgApys : avgApys.slice(15), avg };
+};
+
+const avgByDate = (his, all) => {
+  const apys = [];
+  let sameDate = 1;
+  for (let i = 0; i < his.length; i++) {
+    const prevItem = apys[apys.length - 1];
+    if (!prevItem)
+      apys.push({
+        profit: all ? his[i].profit : his[i].apy,
+        date: all ? his[i].date : his[i].lastRecorded / 1000,
+      });
+    else {
+      const prevMonth = all
+        ? new Date(prevItem.date * 1000).getMonth()
+        : new Date(prevItem.date * 1000).getMonth();
+      const prevDate = all
+        ? new Date(prevItem.date * 1000).getDate()
+        : new Date(prevItem.date * 1000).getDate();
+      const month = all
+        ? new Date(his[i].date * 1000).getMonth()
+        : new Date(his[i].lastRecorded).getMonth();
+      const date = all
+        ? new Date(his[i].date * 1000).getDate()
+        : new Date(his[i].lastRecorded).getDate();
+
+      if (prevMonth === month && prevDate === date) {
+        const apy = all
+          ? (prevItem.profit * sameDate + his[i].profit) / (sameDate + 1)
+          : (prevItem.profit * sameDate + his[i].apy) / (sameDate + 1);
+        sameDate++;
+        apys[apys.length - 1].profit = apy;
+      } else {
+        apys.push({
+          profit: all ? his[i].profit : his[i].apy,
+          date: all ? his[i].date : Math.ceil(his[i].lastRecorded / 1000),
+        });
+      }
+    }
+  }
+  return apys;
 };
 
 export {

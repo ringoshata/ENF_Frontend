@@ -16,7 +16,13 @@ import {
   getNWithdrawFee,
 } from "@/common/web3";
 
-import { getAsset, getProfit, fetchTxs, fetchTotalHis } from "@/common/api";
+import {
+  getAsset,
+  getProfit,
+  fetchTxs,
+  fetchTotalHis,
+  fetchV2TotalHis,
+} from "@/common/api";
 import {
   dividedBy,
   setConfirmValue,
@@ -44,6 +50,7 @@ const LowExchangeRate = {
   WBTC: 0.98,
   ETH: 0.97,
 };
+const period = 105 * 24 * 3600;
 export default {
   computed: {
     ...mapState(["MetaMaskAddress", "Pendings"]),
@@ -90,6 +97,7 @@ export default {
       isCalc: false,
       slippage: "0",
       totalassets: 0,
+      max: false,
     };
   },
   watch: {
@@ -103,13 +111,30 @@ export default {
       this.getAssetList();
     },
     withdrawInput(newValue, oldValue) {
-      this.fetchExchangeRate(this.itemData.code, newValue);
+      if (this.itemData && this.itemData.code)
+        this.fetchExchangeRate(this.itemData.code, newValue);
+    },
+    async max(newOne, oldOne) {
+      const list = await fetchV2TotalHis(
+        Contract[this.codeurl.toUpperCase()].CFVault,
+        newOne ? Number(new Date()) / 1000 : period
+      );
+      const totalHis = await fetchTotalHis(
+        NContract[this.itemData.code.toUpperCase()].vault,
+        newOne ? Number(new Date()) : period * 1000
+      );
+
+      const { apys } = calcAPY(totalHis.totalRec, list.totalRec, newOne);
+      this.echartsData = apys;
     },
   },
   mounted() {
     this.getAssetList();
   },
   methods: {
+    maximize(event) {
+      this.max = event;
+    },
     closeisisCalc() {
       this.calcNum = null;
       this.isCalc = false;
@@ -203,7 +228,7 @@ export default {
 
       let { totalRec } = await fetchTotalHis(
         NContract[item.toUpperCase()].vault,
-        30 * 24 * 3600
+        period
       );
 
       const list = await getProfit(item);
@@ -468,7 +493,10 @@ export default {
     },
     async changeContent(val) {
       this.isLoading();
-      this.withdrawInput = 0;
+      this.withdrawInput =
+        this.withdrawInput > 0
+          ? this.withdrawInput
+          : "Please slide to adjust the amount";
       this.withdrawVal = 0;
       this.confirmInput = 0;
       this.confirmVal = 0;
@@ -516,14 +544,17 @@ export default {
 
     async selectLine() {
       this.codeurl = this.itemData.code.toLowerCase();
-      const list = await getProfit(this.codeurl);
-
+      // const list = await getProfit(this.codeurl);
+      const list = await fetchV2TotalHis(
+        Contract[this.codeurl.toUpperCase()].CFVault,
+        period
+      );
       const totalHis = await fetchTotalHis(
         NContract[this.itemData.code.toUpperCase()].vault,
-        30 * 24 * 3600
+        period * 1000
       );
 
-      const { apys } = calcAPY(totalHis.totalRec, list.dataList);
+      const { apys } = calcAPY(totalHis.totalRec, list.totalRec);
 
       this.echartsData = apys;
       // this.echartsData = list.dataList;

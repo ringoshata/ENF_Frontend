@@ -4,6 +4,9 @@
       <el-divider direction="vertical"></el-divider> Low Risk
     </h1>
     <low-risk-new v-if="!IsPhone && !isLow" />
+    <low-risk-new-h5 v-if="IsPhone && !isLow" />
+    <low-risk v-if="!IsPhone && !isLow" newUSDC />
+    <low-risk-h5 v-if="IsPhone && !isLow" newUSDC />
     <h1 class="low-title">
       <el-divider direction="vertical"></el-divider> Outdated
     </h1>
@@ -28,31 +31,32 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
-import { HMarkets, LMarkets } from '../../config.js'
+import { mapState } from "vuex";
+import { HMarkets, LMarkets } from "../../config.js";
 export default {
-  name: 'Cff',
+  name: "Cff",
   components: {
-    LowRisk: () => import('./LowRisk.vue'),
-    LowRiskH5: () => import('./LowRiskH5.vue'),
-    LowRiskNew: () => import('./LowRiskNew.vue'),
-    HighRisk: () => import('./HighRisk.vue'),
-    HighRiskH5: () => import('./HighRiskH5.vue'),
+    LowRisk: () => import("./LowRisk.vue"),
+    LowRiskH5: () => import("./LowRiskH5.vue"),
+    LowRiskNew: () => import("./LowRiskNew.vue"),
+    LowRiskNewH5: () => import("./LowRiskNewH5.vue"),
+    HighRisk: () => import("./HighRisk.vue"),
+    HighRiskH5: () => import("./HighRiskH5.vue"),
   },
   computed: {
-    ...mapState(['IsPhone']),
+    ...mapState(["IsPhone"]),
   },
   data() {
     return {
       isHigh: false,
       isLow: false,
-    }
+    };
   },
   mounted() {
-    this.isHigh = HMarkets.length === 0
-    this.isLow = LMarkets.length === 0
+    this.isHigh = HMarkets.length === 0;
+    this.isLow = LMarkets.length === 0;
   },
-}
+};
 </script>
 <style scoped lang="scss">
 .el-icon-question {
