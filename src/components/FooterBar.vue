@@ -20,9 +20,9 @@
 			>
 				PeckShield Audit Report
 			</span> -->
-      <span @click="openGit('https://gitlab.com/asresearch/cff-contract')">
-        <img src="../assets/imgs/github@2x.png" alt />
-        Gitlab</span
+      <span @click="openGit('https://github.com/Shata-Capital/')">
+        <img src="../assets/imgs/GitHub-Mark-120px-plus.png" alt />
+        Github</span
       >
       <!-- <span @click="openGit('https://discord.gg/cUBdGs3ehM')">
         <img src="../assets/imgs/dis.png" alt /> Discord</span
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import AuditReport from './AuditReport.vue'
+import AuditReport from "./AuditReport.vue";
 export default {
   components: {
     AuditReport,
@@ -47,20 +47,20 @@ export default {
   data() {
     return {
       dialogVisible: false,
-    }
+    };
   },
   mounted() {},
   methods: {
     closeShow(val) {
-      this.dialogVisible = val
+      this.dialogVisible = val;
     },
     openGit(url) {
-      let Win = window.open()
-      Win.opener = null
-      Win.location = url
+      let Win = window.open();
+      Win.opener = null;
+      Win.location = url;
     },
   },
-}
+};
 </script>
 
 <style scoped lang="scss">

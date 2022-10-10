@@ -348,6 +348,9 @@ const getNTotalAsset = async (code) => {
     .methods.totalAssets()
     .call();
 };
+const getNPause = async (code) => {
+  return getWeb3(VaultV3_abi, NContract[code].vault).methods.paused().call();
+};
 
 const getNAsset = async (code, account) => {
   if (!account) return 0;
@@ -413,6 +416,7 @@ export {
   getExchangeRateFromLContract,
   getExchangeRateFromHContract,
   getNTotalAsset,
+  getNPause,
   getNAsset,
   formatUnit,
   getWithdrawable,

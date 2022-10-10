@@ -8,7 +8,7 @@ import {
   setHApprove,
   getETHBalance,
   getVirtualPriceFromHContract,
-  getExchangeRateFromHContract
+  getExchangeRateFromHContract,
 } from "@/common/web3";
 import { getAsset, getProfit } from "@/common/api";
 import {
@@ -26,9 +26,9 @@ import {
 import { HContract, TTIMER, HMarkets } from "../../config";
 import { mapState } from "vuex";
 const HighExchangeRate = {
-	'USDC': 0.98,
-	'ETH': 0.97
-}
+  USDC: 0.98,
+  ETH: 0.97,
+};
 export default {
   computed: {
     ...mapState(["MetaMaskAddress", "Pendings"]),
@@ -67,7 +67,7 @@ export default {
       ratio: "0%",
       codeurl: "",
       isYield: false,
-      slippage: '0',
+      slippage: "0",
     };
   },
   watch: {
@@ -82,7 +82,7 @@ export default {
     },
     withdrawInput(newValue, oldValue) {
       this.fetchExchangeRate(this.itemData.code, newValue);
-    }
+    },
   },
   mounted() {
     this.getAssetList();
@@ -169,10 +169,14 @@ export default {
         HMarkets.map((item) => {
           return getVirtualPriceFromHContract(item);
         })
-      ).then((lists)=>{
-        this.virtualPriceList['USDC'] = new BigNumber(1e18).dividedBy(new BigNumber(lists[0])).toNumber();
-        this.virtualPriceList['ETH'] = new BigNumber(1e18).dividedBy(new BigNumber(lists[1])).toNumber();
-      })
+      ).then((lists) => {
+        this.virtualPriceList["USDC"] = new BigNumber(1e18)
+          .dividedBy(new BigNumber(lists[0]))
+          .toNumber();
+        this.virtualPriceList["ETH"] = new BigNumber(1e18)
+          .dividedBy(new BigNumber(lists[1]))
+          .toNumber();
+      });
     },
     async approve() {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
@@ -234,13 +238,15 @@ export default {
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
-        if(value<1e-6) {
-          this.slippage = '0';
-          return;
-        }
-        const exchangeRate = await getExchangeRateFromHContract(code, value);
-        const standardExchangeRate = await getExchangeRateFromHContract(code, 1);
-        this.slippage = Number(((standardExchangeRate-exchangeRate)*100).toFixed(2));
+      if (value < 1e-6) {
+        this.slippage = "0";
+        return;
+      }
+      const exchangeRate = await getExchangeRateFromHContract(code, value);
+      const standardExchangeRate = await getExchangeRateFromHContract(code, 1);
+      this.slippage = Number(
+        ((standardExchangeRate - exchangeRate) * 100).toFixed(2)
+      );
     },
     async withdrawItem(item) {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
@@ -254,26 +260,35 @@ export default {
       if (item.code !== "ETH" && isLt(item.user_profit, 0)) {
         return (this.isYield = true);
       }
-      const exchangeRate = await getExchangeRateFromHContract(item.code, this.withdrawInput);
-      if(exchangeRate > HighExchangeRate[item.code]){
+      const exchangeRate = await getExchangeRateFromHContract(
+        item.code,
+        this.withdrawInput
+      );
+      if (exchangeRate > HighExchangeRate[item.code]) {
         this.withdraw(item);
       } else {
-        this.$confirm('The market is fluctuating now. Withdraw may experience big slippage results in a big loss of principle. Are you sure to continue?', 'Warning', {
-          confirmButtonText: 'Continue',
-          cancelButtonText: 'Cancel',
-          type: 'warning',
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: 'Action completed'
+        this.$confirm(
+          "The market is fluctuating now. Withdraw may experience big slippage results in a big loss of principle. Are you sure to continue?",
+          "Warning",
+          {
+            confirmButtonText: "Continue",
+            cancelButtonText: "Cancel",
+            type: "warning",
+          }
+        )
+          .then(() => {
+            this.$message({
+              type: "success",
+              message: "Action completed",
+            });
+            this.withdraw(item);
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "Action canceled",
+            });
           });
-          this.withdraw(item);
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: 'Action canceled'
-          });          
-        });
       }
     },
     async withdraw(item) {
@@ -318,9 +333,9 @@ export default {
       }
     },
     inputWithdraw(type = null) {
-      if (type !== "set") {
-        this.withdrawVal = 0;
-      }
+      // if (type !== "set") {
+      //   this.withdrawVal = 0;
+      // }
       // if (!this.withdrawInput) {
       //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
       //   return;
@@ -338,12 +353,14 @@ export default {
     setMax(type, val) {
       if (type === 1) {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
+        this.confirmVal = 100;
       } else {
         const user =
           this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
         this.withdrawInput =
           this.itemData.code === "ETH" ? val.user_assets : val[user];
         this.inputWithdraw();
+        this.withdrawVal = 100;
       }
     },
     isLoading() {

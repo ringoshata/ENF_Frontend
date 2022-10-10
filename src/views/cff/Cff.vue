@@ -7,11 +7,6 @@
     <low-risk-new-h5 v-if="IsPhone && !isLow" />
     <low-risk v-if="!IsPhone && !isLow" newUSDC />
     <low-risk-h5 v-if="IsPhone && !isLow" newUSDC />
-    <h1 class="low-title">
-      <el-divider direction="vertical"></el-divider> Outdated
-    </h1>
-    <low-risk v-if="!IsPhone && !isLow" />
-    <low-risk-h5 v-if="IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
     <h1 class="high-title" v-if="!isHigh">
       <el-divider direction="vertical"></el-divider> Medium Risk
@@ -28,6 +23,11 @@
     </h1>
     <high-risk v-if="!IsPhone && !isHigh" />
     <high-risk-h5 v-if="IsPhone && !isHigh" />
+    <h1 class="low-title">
+      <el-divider direction="vertical"></el-divider> Outdated
+    </h1>
+    <low-risk v-if="!IsPhone && !isLow" />
+    <low-risk-h5 v-if="IsPhone && !isLow" />
   </div>
 </template>
 <script>

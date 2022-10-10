@@ -9,6 +9,7 @@ import {
   setNApprove,
   calc_withdraw_one_coin,
   getNTotalAsset,
+  getNPause,
   getNAsset,
   getExchangeRateFromLContract,
   formatUnit,
@@ -199,6 +200,9 @@ export default {
       // Get Total
       const total = await getNTotalAsset(item.toUpperCase());
 
+      // Get pause
+      const paused = await getNPause(item.toUpperCase());
+
       // Get User individual
       const userAssets = await getNAsset(item.toUpperCase(), account);
 
@@ -228,16 +232,20 @@ export default {
 
       let { totalRec } = await fetchTotalHis(
         NContract[item.toUpperCase()].vault,
-        period
+        period * 1000
       );
 
-      const list = await getProfit(item);
-
-      const { avg } = calcAPY(totalRec, list.dataList);
+      // const list = await getProfit(item);
+      const list = await fetchV2TotalHis(
+        Contract[item.toUpperCase()].CFVault,
+        period
+      );
+      const { avg } = calcAPY(totalRec, list.totalRec);
 
       const ratio = await getNWithdrawFee(item.toUpperCase());
 
       return {
+        paused,
         total: total / decimal,
         user_assets: userAssets / decimal,
         user_profit: userProfit,
@@ -442,19 +450,23 @@ export default {
     setConfirmVal(item) {
       const num =
         this.itemData.code === "ETH" ? minus(this.totalOf) : this.totalOf;
-      this.confirmInput = setAssetsValue(item, num);
+      const decimal = NContract[this.itemData.code].assetDecimal;
+      this.confirmInput = Number(setAssetsValue(item, num)).toFixed(decimal);
     },
     setWithdrawVal(item) {
+      const decimal = NContract[this.itemData.code].assetDecimal;
       this.withdrawInput =
         item === 100
           ? this.itemData.user_assets
-          : setAssetsValue(item, this.itemData.user_assets);
+          : Number(setAssetsValue(item, this.itemData.user_assets)).toFixed(
+              decimal
+            );
       this.inputWithdraw("set");
     },
     inputWithdraw(type = null) {
-      if (type !== "set") {
-        this.withdrawVal = 0;
-      }
+      // if (type !== "set") {
+      //   this.withdrawVal = 0;
+      // }
       // if (!this.withdrawInput) {
       //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
       //   return;
@@ -472,8 +484,10 @@ export default {
     setMax(type, val) {
       if (type === 1) {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
+        this.confirmVal = 100;
       } else {
         this.withdrawInput = val.user_assets;
+        this.withdrawVal = 100;
         this.inputWithdraw();
       }
     },

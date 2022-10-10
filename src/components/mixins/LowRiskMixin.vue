@@ -329,25 +329,27 @@ export default {
       if (type !== "set") {
         this.withdrawVal = 0;
       }
-      // if (!this.withdrawInput) {
-      //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
-      //   return;
-      // }
-      // if (Number(this.withdrawInput) === 0) {
-      //   this.ratio = Number(this.itemData.ratio) * 100 + "%";
-      //   return;
-      // }
-      // this.ratio = multipliedByFixed(
-      //   this.withdrawInput,
-      //   this.itemData.ratio,
-      //   Contract[this.itemData.code].Length
-      // );
+      if (!this.withdrawInput) {
+        this.ratio = Number(this.itemData.ratio) * 100 + "%";
+        return;
+      }
+      if (Number(this.withdrawInput) === 0) {
+        this.ratio = Number(this.itemData.ratio) * 100 + "%";
+        return;
+      }
+      this.ratio = multipliedByFixed(
+        this.withdrawInput,
+        this.itemData.ratio,
+        Contract[this.itemData.code].Length
+      );
     },
     setMax(type, val) {
       if (type === 1) {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
+        this.confirmVal = 100;
       } else {
         this.withdrawInput = val.user_assets;
+        this.withdrawVal = 100;
         this.inputWithdraw();
       }
     },

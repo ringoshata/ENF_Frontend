@@ -142,8 +142,13 @@
 </template>
 
 <script>
-import { getSevendayProfit, fetchTotalHis, getProfit } from "@/common/api";
-import { HMarkets, LMarkets, NContract } from "../config.js";
+import {
+  getSevendayProfit,
+  fetchTotalHis,
+  getProfit,
+  fetchV2TotalHis,
+} from "@/common/api";
+import { HMarkets, LMarkets, NContract, Contract } from "../config.js";
 import { calcAPY } from "@/utils";
 import AuditReport from "../components/AuditReport.vue";
 export default {
@@ -198,10 +203,13 @@ export default {
         NContract["USDC"].vault,
         105 * 24 * 3600
       );
+      // const list = await getProfit("usdc");
+      const list = await fetchV2TotalHis(
+        Contract["USDC"].CFVault,
+        105 * 24 * 3600
+      );
 
-      const list = await getProfit("usdc");
-
-      const { avg } = calcAPY(totalRec, list.dataList);
+      const { avg } = calcAPY(totalRec, list.totalRec);
       this.lowList[0].sevendayProfit = avg;
     },
 

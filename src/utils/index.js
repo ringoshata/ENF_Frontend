@@ -82,7 +82,6 @@ const random = (lower, upper) => {
 
 const calcAPY = (his, list, all) => {
   const oneYear = 365 * 24 * 3600 * 1000;
-
   let apys = avgByDate(his);
 
   if (!all && apys.length < 105) {
@@ -92,11 +91,12 @@ const calcAPY = (his, list, all) => {
     apys = avgByDate(apys, true);
   }
 
-  const avgApys = [];
+  let avgApys = [];
   for (let i = 0; i < apys.length; i++) {
-    const start = i < 15 ? 0 : i > apys.length - 15 ? apys.length - 30 : i - 15;
-    const end = i < apys.length - 15 ? start + 30 : apys.length;
+    const start = i < 15 ? 0 : i - 15;
+    const end = i < apys.length - 15 ? i + 15 : apys.length;
     const subArr = apys.slice(start, end);
+
     let avg = 0;
     for (let j = 0; j < subArr.length; j++) {
       avg += subArr[j].profit;
@@ -104,21 +104,21 @@ const calcAPY = (his, list, all) => {
     avg /= subArr.length;
     avgApys.push({ profit: avg, date: apys[i].date });
   }
-  console.log("Avg Apys: ", avgApys);
 
   // const apys = his.map((rec) => ({
   //   profit: rec.apy,
   //   date: rec.lastRecorded / 1000,
   // }));
-  let avg = 0;
 
-  const len = apys.length > 90 && !all ? 90 : apys.length;
-  for (let i = 0; i < len; i++) {
-    avg += Number(apys[i].profit);
-  }
+  // const len = apys.length > 90 && !all ? 90 : apys.length;
+  // for (let i = 0; i < len; i++) {
+  //   avg += Number(apys[i].profit);
+  // }
 
-  avg /= len;
+  // avg /= len;
 
+  avgApys = avgApys.sort((a, b) => a.date - b.date);
+  let avg = avgApys[avgApys.length - 1].profit;
   return { apys: all ? avgApys : avgApys.slice(15), avg };
 };
 

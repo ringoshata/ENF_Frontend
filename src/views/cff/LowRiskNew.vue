@@ -240,6 +240,7 @@
                   style="float: right; width: 45%"
                   v-else
                   @click="confirm(item)"
+                  :disabled="item.paused"
                 >
                   Deposit</el-button
                 >
@@ -261,6 +262,7 @@
                   plain
                   style="float: right; width: 50%"
                   @click="withdrawItem(item)"
+                  :disabled="item.paused"
                 >
                   Withdraw</el-button
                 >

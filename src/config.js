@@ -123,6 +123,24 @@ switch ("test") {
         Introduce:
           "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
       },
+      WBTC: {
+        CFToken: "0x2Eb8e7fEeC11D6dCE4799AfA3b7Bb83BbA02b081",
+        ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
+        CFVault: "0xAFcf9Ec311c42b4221697cf7F5392f9110DC8e8c",
+        WBTC: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        Decimal: 1e8,
+        Name: "BTC去中心化收益基金",
+        Introduce:
+          "基于Curve的多个BTC ERC20池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+      },
+      ETH: {
+        CFToken: "0xA709eCF2253B18A757214D64F42026Be8F008bD8",
+        CFVault: "0xE303a8Cc37C96669C7Ba5aeE1134bb530e766BdF",
+        Decimal: 1e18,
+        Name: "ETH去中心化收益基金",
+        Introduce:
+          "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+      },
     };
 
     HContract = {
@@ -156,6 +174,7 @@ switch ("test") {
         asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
         Decimal: 1e6,
+        assetDecimal: 6,
         CRVDecimal: 1e18,
       },
     };
