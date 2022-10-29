@@ -109,7 +109,7 @@ switch ("test") {
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
     LMarkets = ["usdc", "wbtc", "eth"];
-    HMarkets = ["usdc", "eth"];
+    HMarkets = ["usdc"];
     NMarkets = ["usdc"];
     Contract = {
       USDC: {
@@ -186,7 +186,7 @@ switch ("test") {
     API_V3_URL = "https://api-v3test.earning.farm";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
-    HMarkets = ["usdc", "eth"];
+    HMarkets = ["usdc"];
     LMarkets = ["usdc", "wbtc", "eth"];
     NMarkets = ["usdc"];
     Contract = {

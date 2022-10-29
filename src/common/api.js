@@ -51,6 +51,7 @@ const fetchTxs = async (code, address) => {
 };
 
 const fetchTotalHis = async (address, period) => {
+  console.log("Total Fetch: ", address, period);
   return fetch({
     url: `${API_V3_URL}/total_assets/${address}/${period}`,
     method: "GET",
