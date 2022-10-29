@@ -58,7 +58,7 @@ export default {
         },
         {
           name: "Low rist USDC - V3",
-          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20Earning.Farm%20V3_en-us.pdf",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20EarningFarm%20v3%20Iterative_en-us.pdf",
         },
       ],
     };
