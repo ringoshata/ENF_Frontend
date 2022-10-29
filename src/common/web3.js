@@ -23,8 +23,12 @@ const Curve_abi = require("./Curve.json");
 const VirtualPrice_abi = require("./VirtualPrice_abi.json");
 const Exchange_Rate_abi = require("./Exchange_Rate_abi.json");
 
+const rpcMainnet =
+  "https://mainnet.infura.io/v3/c446f3b7b45b4edb86abd1cebe353429";
+
 // 动态获取web3实例对象
 const getWeb3 = (abi, accounts) => {
+  console.log("Web3 call: ", accounts);
   return new Vue.prototype.$web3.eth.Contract(abi, accounts);
 };
 const getGasPrice = () => {
@@ -344,9 +348,10 @@ const formatUnit = (num, decimal) => {
 };
 
 const getNTotalAsset = async (code) => {
-  return getWeb3(VaultV3_abi, NContract[code].vault)
-    .methods.totalAssets()
-    .call();
+  console.log("Get Total: ", code, NContract[code].vault);
+  const web3 = getWeb3(VaultV3_abi, NContract[code].vault);
+  console.log("Web3: ", web3);
+  return web3.methods.totalAssets().call();
 };
 const getNPause = async (code) => {
   return getWeb3(VaultV3_abi, NContract[code].vault).methods.paused().call();

@@ -118,11 +118,10 @@
             >
               PeckShield Audit Report
             </span> -->
-            <span
-              @click="openGit('https://gitlab.com/asresearch/cff-contract')"
-            >
-              <img src="../assets/imgs/github@2x.png" alt />
-              Gitlab
+            <span @click="openGit('https://github.com/Shata-Capital/')">
+              <img src="../assets/imgs/GitHub-Mark-120px-plus.png" alt />
+              <!-- <img src="../assets/imgs/github@2x.png" alt /> -->
+              Github
             </span>
             <!-- <span @click="openGit('https://discord.gg/cUBdGs3ehM')">
               <img src="../assets/imgs/discord@2x.png" alt /> Discord</span
@@ -201,7 +200,7 @@ export default {
 
       let { totalRec } = await fetchTotalHis(
         NContract["USDC"].vault,
-        105 * 24 * 3600
+        105 * 24 * 3600 * 1000
       );
       // const list = await getProfit("usdc");
       const list = await fetchV2TotalHis(

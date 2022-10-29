@@ -81,6 +81,7 @@ const random = (lower, upper) => {
 };
 
 const calcAPY = (his, list, all) => {
+  console.log("APY: ", his, list, all);
   const oneYear = 365 * 24 * 3600 * 1000;
   let apys = avgByDate(his);
 
@@ -119,6 +120,7 @@ const calcAPY = (his, list, all) => {
 
   avgApys = avgApys.sort((a, b) => a.date - b.date);
   let avg = avgApys[avgApys.length - 1].profit;
+  console.log("AVG: ", avg);
   return { apys: all ? avgApys : avgApys.slice(15), avg };
 };
 
@@ -147,10 +149,18 @@ const avgByDate = (his, all) => {
         : new Date(his[i].lastRecorded).getDate();
 
       if (prevMonth === month && prevDate === date) {
-        const apy = all
-          ? (prevItem.profit * sameDate + his[i].profit) / (sameDate + 1)
-          : (prevItem.profit * sameDate + his[i].apy) / (sameDate + 1);
-        sameDate++;
+        let apy = 0;
+        if (all) {
+          if (prevItem.profit > his[i].profit) apy = prevItem.profit;
+          else apy = his[i].profit;
+        } else {
+          if (prevItem.profit > his[i].apy) apy = prevItem.profit;
+          else apy = his[i].apy;
+        }
+        // const apy = all
+        //   ? (prevItem.profit * sameDate + his[i].profit) / (sameDate + 1)
+        //   : (prevItem.profit * sameDate + his[i].apy) / (sameDate + 1);
+        // sameDate++;
         apys[apys.length - 1].profit = apy;
       } else {
         apys.push({

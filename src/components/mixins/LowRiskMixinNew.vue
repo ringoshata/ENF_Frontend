@@ -196,15 +196,18 @@ export default {
 
     async getAssetInfo(account, item) {
       const decimal = NContract[item.toUpperCase()].Decimal;
-
+      console.log("Decimal: ", decimal, item);
       // Get Total
       const total = await getNTotalAsset(item.toUpperCase());
+      console.log("total: ", total);
 
       // Get pause
       const paused = await getNPause(item.toUpperCase());
+      console.log("paused: ", paused);
 
       // Get User individual
       const userAssets = await getNAsset(item.toUpperCase(), account);
+      console.log("userAssets: ", userAssets);
 
       let userHistory = [];
       let userProfit = 0;
@@ -243,7 +246,6 @@ export default {
       const { avg } = calcAPY(totalRec, list.totalRec);
 
       const ratio = await getNWithdrawFee(item.toUpperCase());
-
       return {
         paused,
         total: total / decimal,

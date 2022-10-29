@@ -45,9 +45,9 @@ export default {
         //... other options
         subscriptions: {
           wallet: (wallet) => {
-            Vue.prototype.$web3 = !wallet.provider
-              ? null
-              : new Web3(wallet.provider);
+            // Vue.prototype.$web3 = !wallet.provider
+            //   ? null
+            //   : new Web3(wallet.provider);
             const walletName = !wallet.name ? "NoWallet" : wallet.name;
             window.sessionStorage.setItem("EarningSelectedWallet", walletName);
           },
