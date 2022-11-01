@@ -45,9 +45,15 @@ export default {
         //... other options
         subscriptions: {
           wallet: (wallet) => {
-            // Vue.prototype.$web3 = !wallet.provider
-            //   ? null
-            //   : new Web3(wallet.provider);
+            console.log(
+              "Netwrok Id: ",
+              wallet.provider.chainId,
+              networkId,
+              Number(wallet.provider.chainId),
+              networkId == Number(wallet.provider.chainId)
+            );
+            if (wallet.provider && networkId == Number(wallet.provider.chainId))
+              Vue.prototype.$web3 = new Web3(wallet.provider);
             const walletName = !wallet.name ? "NoWallet" : wallet.name;
             window.sessionStorage.setItem("EarningSelectedWallet", walletName);
           },
