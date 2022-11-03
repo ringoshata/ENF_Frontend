@@ -43,6 +43,7 @@ export default {
       let dom = this.$refs.chart;
       let myChart = echarts.init(dom);
       let option = {
+        animation: false,
         backgroundColor: "rgba(255, 255, 255, 1)",
         //鼠标移入刻度线
         tooltip: {
