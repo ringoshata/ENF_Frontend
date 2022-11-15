@@ -17,6 +17,7 @@ let Network = 3;
 let Contract = {};
 let HContract = {};
 let NContract = {};
+let HNContract = {};
 let LPoolContract = {};
 let HPoolContract = {};
 let API_URL = "";
@@ -25,6 +26,7 @@ let OPEN_URL = "";
 let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
+let HNMarkets = [];
 switch ("test") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
@@ -104,13 +106,14 @@ switch ("test") {
     break;
 
   case "test":
-    API_URL = "https://api-hr.earning.farm";
+    API_URL = "https://api.earning.farm";
     API_V3_URL = "https://api-v3test.earning.farm/v1";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
     LMarkets = ["usdc", "wbtc", "eth"];
-    HMarkets = ["usdc"];
+    HMarkets = ["usdc", "eth"];
     NMarkets = ["usdc"];
+    HNMarkets = ["eth"];
     Contract = {
       USDC: {
         CFToken: "0xE15c9afC4DfF21707e70A976e42baa203094e362",
@@ -178,11 +181,21 @@ switch ("test") {
         CRVDecimal: 1e18,
       },
     };
+
+    HNContract = {
+      ETH: {
+        vault: "0x5655c442227371267c165101048E4838a762675d",
+        controller: "0xE8688D014194fd5d7acC3c17477fD6db62aDdeE9",
+        asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        Decimal: 1e18,
+        assetDecimal: 18,
+      },
+    };
     break;
 
   // 生产环境
   case "production":
-    API_URL = "https://api-hr.earning.farm";
+    API_URL = "https://api.earning.farm";
     API_V3_URL = "https://api-v3test.earning.farm";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
@@ -316,6 +329,8 @@ export {
   Contract,
   HContract,
   NContract,
+  HNContract,
+  HNMarkets,
   API_URL,
   API_V3_URL,
   OPEN_URL,

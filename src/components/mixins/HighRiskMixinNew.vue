@@ -2,15 +2,19 @@
 import {
   getHIERCBalanceOf,
   setHDeposit,
-  setDepositETH,
-  getHWithdraw,
+  setHNDepositETH,
+  getHNWithdraw,
   getHAllowance,
   setHApprove,
   getETHBalance,
   getVirtualPriceFromHContract,
   getExchangeRateFromHContract,
+  getHNTotalAsset,
+  getHNPause,
+  getHNAsset,
+  getHNWithdrawFee,
 } from "@/common/web3";
-import { getAsset, getProfit } from "@/common/api";
+import { getAsset, getProfit, fetchTxs, fetchTotalHis } from "@/common/api";
 import {
   dividedBy,
   setConfirmValue,
@@ -22,20 +26,22 @@ import {
   minusLet,
   minus,
   multipliedByFixed,
+  calcAPY,
 } from "@/utils";
-import { HContract, TTIMER, HMarkets } from "../../config";
+import { HContract, HNContract, TTIMER, HNMarkets } from "../../config";
 import { mapState } from "vuex";
 const HighExchangeRate = {
   USDC: 0.98,
   ETH: 0.97,
 };
+const period = 105 * 24 * 3600;
 export default {
   computed: {
     ...mapState(["MetaMaskAddress", "Pendings"]),
   },
   data() {
     return {
-      markets: ["usdc"],
+      markets: ["eth"],
       list: [],
       marks: {
         0: "0",
@@ -69,6 +75,7 @@ export default {
       codeurl: "",
       isYield: false,
       slippage: "0",
+      max: false,
     };
   },
   watch: {
@@ -84,11 +91,23 @@ export default {
     withdrawInput(newValue, oldValue) {
       this.fetchExchangeRate(this.itemData.code, newValue);
     },
+    async max(newOne, oldOne) {
+      const totalHis = await fetchTotalHis(
+        HNContract[this.itemData.code.toUpperCase()].vault,
+        newOne ? Number(new Date()) : period * 1000
+      );
+
+      const { apys } = calcAPY(totalHis.totalRec, [], newOne);
+      this.echartsData = apys;
+    },
   },
   mounted() {
     this.getAssetList();
   },
   methods: {
+    maximize(event) {
+      this.max = event;
+    },
     closeisYield() {
       this.isYield = false;
     },
@@ -104,57 +123,128 @@ export default {
     },
 
     getTimer() {
-      this.markets.forEach((item) => {
+      HNMarkets.forEach((item) => {
         const timer = random(TTIMER[0], TTIMER[1]);
         this["h" + item + "timer"] = setInterval(() => {
-          this.getAssets("h" + item);
+          this.getAssets(item);
         }, timer);
       });
     },
     async getAssets(codename) {
-      const usdcData = await getAsset(this.MetaMaskAddress, codename);
+      const data = await this.getAssetInfo(this.MetaMaskAddress, codename);
       this.list.forEach((item, idx) => {
-        if (item.code === usdcData.data.code) {
+        if (item.code === data.code) {
           if (
-            item.totalassets !== usdcData.data.totalassets ||
-            item.user_assets !== usdcData.data.user_assets
+            item.totalassets !== data.totalassets ||
+            item.user_assets !== data.user_assets
           ) {
             let showContent = false;
-            if (this.itemData && this.itemData.code === usdcData.data.code) {
+            if (this.itemData && this.itemData.code === data.code) {
               showContent = this.itemData.showContent
                 ? this.itemData.showContent
                 : false;
-              this.itemData = { ...usdcData.data, showContent: showContent };
+              this.itemData = { ...data, showContent: showContent };
             }
             this.$set(this.list, idx, {
-              ...usdcData.data,
+              ...data,
               showContent: showContent,
             });
           }
         }
       });
     },
+
+    async getAssetInfo(account, item) {
+      console.log("Asset: ", item);
+      const decimal = HNContract[item.toUpperCase()].Decimal;
+      console.log("Decimal: ", decimal, item);
+      // Get Total
+      const total = await getHNTotalAsset(item.toUpperCase());
+      console.log("ETH total: ", total);
+
+      // Get pause
+      const paused = await getHNPause(item.toUpperCase());
+      console.log("paused: ", paused);
+
+      // Get User individual
+      const userAssets = await getHNAsset(item.toUpperCase(), account);
+      console.log("userAssets: ", userAssets);
+
+      let userHistory = [];
+      let userProfit = 0;
+
+      if (account) {
+        try {
+          userHistory = await fetchTxs(
+            HNContract[item.toUpperCase()].asset,
+            account
+          );
+          console.log("ETH His: ", userHistory);
+          let totalDeposit = 0;
+          userHistory.userAssets.reverse().forEach((item) => {
+            if (item.tradeType == 0) totalDeposit += Number(item.amount);
+            else {
+              totalDeposit -= Number(item.amount);
+              if (totalDeposit < 0) totalDeposit = 0;
+            }
+          });
+
+          userProfit =
+            totalDeposit < userAssets / decimal
+              ? userAssets / decimal - totalDeposit
+              : 0;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      let { totalRec } = await fetchTotalHis(
+        HNContract[item.toUpperCase()].vault,
+        period * 1000
+      );
+
+      console.log("ETH TOtal rec: ", totalRec);
+
+      const { avg } = calcAPY(totalRec, []);
+      console.log("ETH APY: ", totalRec, avg);
+      const ratio = await getHNWithdrawFee(item.toUpperCase());
+      console.log("ETH ratio: ", ratio);
+      return {
+        paused,
+        total: total / decimal,
+        user_assets: userAssets / decimal,
+        user_profit: userProfit,
+        sevendayProfit: 0,
+        // sevendayProfit: avg,
+        code: item.toUpperCase(),
+        ratio: ratio / 10000,
+        decimal: HNContract[item.toUpperCase()].Decimal,
+      };
+    },
+
     getAssetList() {
       this.isLoading();
       Promise.all(
-        this.markets.map((item) => {
-          return getAsset(this.MetaMaskAddress, "h" + item);
+        HNMarkets.map((item) => {
+          return this.getAssetInfo(this.MetaMaskAddress, item);
         })
       )
-        .then(([...HMarkets]) => {
-          this.list = HMarkets.map((item) => {
+        .then(([...HNMarkets]) => {
+          this.list = HNMarkets.map((item) => {
+            console.log("ETH Item: ", item);
             return {
-              ...item.data,
+              ...item,
               showContent: false,
             };
           });
+          console.log("ETH List: ", this.list);
           if (this.$route.params.type && this.$route.params.type === "high") {
             const data = this.list.find(
               (item) => item.code === this.$route.params.code
             );
             this.changeContent(data);
           }
-          this.markets.forEach((item) => {
+          HNMarkets.forEach((item) => {
             clearInterval(this["h" + item + "timer"]);
             this["h" + item + "timer"] = null;
           });
@@ -167,7 +257,7 @@ export default {
     },
     getVirtualPrice() {
       Promise.all(
-        this.markets.map((item) => {
+        HNMarkets.map((item) => {
           return getVirtualPriceFromHContract(item);
         })
       ).then((lists) => {
@@ -213,12 +303,12 @@ export default {
             "Invalid value"
           );
       }
-      const decimal = HContract[item.code];
+      const decimal = HNContract[item.code];
       let bigInput = 0;
       let params = null;
       if (item.code === "ETH") {
         bigInput = setConfirmValue(this.confirmInput, decimal.Decimal);
-        params = await setDepositETH(
+        params = await setHNDepositETH(
           bigInput,
           this.MetaMaskAddress,
           item.code,
@@ -236,6 +326,7 @@ export default {
           this.selectConfirm
         );
       }
+      console.log("Params: ", params);
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
@@ -298,15 +389,27 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
-      const bigInput = maxWithdraw
-        ? item.lp_token
-        : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
-      const params = await getHWithdraw(
-        bigInput,
+      console.log("Max: ", maxNum, maxWithdraw);
+      // const maxWithdraw = this.withdrawInput === item.user_assets;
+      const amount =
+        maxWithdraw === true
+          ? new BigNumber(item.user_assets)
+              .multipliedBy(new BigNumber(item.decimal))
+              .toFixed(0)
+          : new BigNumber(this.withdrawInput)
+              .multipliedBy(new BigNumber(item.decimal))
+              .toFixed(0);
+      console.log("Amount: ", amount);
+      // const bigInput = maxWithdraw
+      //   ? item.lp_token
+      //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
+      const params = await getHNWithdraw(
+        amount,
         this.MetaMaskAddress,
         item.code,
         this.selectWithdraw
       );
+      console.log("Params: ", params);
       this.sendTransaction(params);
     },
     inputConfirm() {
@@ -319,10 +422,13 @@ export default {
     },
     setWithdrawVal(item) {
       if (this.itemData.code === "ETH") {
+        const decimal = HNContract[this.itemData.code].assetDecimal;
         this.withdrawInput =
           item === 100
             ? this.itemData.user_assets
-            : setAssetsValue(item, this.itemData.user_assets);
+            : Number(setAssetsValue(item, this.itemData.user_assets)).toFixed(
+                decimal
+              );
       } else {
         const user =
           this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
@@ -380,7 +486,7 @@ export default {
     },
     async changeContent(val) {
       this.isLoading();
-      this.withdrawInput = 0;
+      this.withdrawInput = "Please slide to adjust the amount";
       this.withdrawVal = 0;
       this.confirmInput = 0;
       this.confirmVal = 0;
@@ -445,25 +551,33 @@ export default {
     },
 
     async selectLine() {
-      this.codeurl = "h" + this.itemData.code.toLowerCase();
-      const list = await getProfit(this.codeurl);
-      this.echartsData = list.dataList;
+      this.codeurl = this.itemData.code.toLowerCase();
+      // const list = await getProfit(this.codeurl);
+      const totalHis = await fetchTotalHis(
+        HNContract[this.itemData.code.toUpperCase()].vault,
+        period * 1000
+      );
+
+      const { apys } = calcAPY(totalHis.totalRec, []);
+
+      this.echartsData = apys;
+      console.log("APYS: ", apys);
       this.title =
-        this.itemData.code === "USDC" ? "CRV 7 Days APY" : "7 Days APY";
+        this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;
     },
     async selectTable() {
-      this.codeurl = "h" + this.itemData.code.toLowerCase();
+      this.codeurl = "hn" + this.itemData.code.toLowerCase();
       this.title = "History";
-      this.dialogName = "CffTable";
+      this.dialogName = "CffTableNew";
       this.diaWidth = "80%";
       this.dialogVisible = true;
     },
   },
   destroyed() {
-    this.markets.forEach((item) => {
+    HNMarkets.forEach((item) => {
       clearInterval(this["h" + item + "timer"]);
       this[item + "timer"] = null;
     });

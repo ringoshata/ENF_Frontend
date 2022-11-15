@@ -102,7 +102,7 @@
 <script>
 import dayjs from "dayjs";
 import { mapState } from "vuex";
-import { OPEN_URL, NContract } from "../../config.js";
+import { OPEN_URL, NContract, HNContract } from "../../config.js";
 import { getTransaction } from "@/common/api";
 import { fetchTxs } from "../../common/api";
 export default {
@@ -151,6 +151,7 @@ export default {
   methods: {
     async getData() {
       const query = { address: this.MetaMaskAddress, pageNo: this.currentPage };
+      console.log("Get: ", this.codeurl);
       if (this.codeurl[0] === "n") {
         const nUrls = ["nusdc", "nwbtc", "neth"];
         const list = await fetchTxs(
@@ -158,14 +159,21 @@ export default {
           this.MetaMaskAddress
         );
         this.tableData = list.userAssets;
+      } else if (this.codeurl.indexOf("hn") == 0) {
+        const nUrls = ["hnusdc", "hneth"];
+        const list = await fetchTxs(
+          HNContract[this.code].asset,
+          this.MetaMaskAddress
+        );
+        this.tableData = list.userAssets;
       } else {
-        const list = await getTransaction(query, this.codeurl);
-        if (list) {
-          this.tableData = list.dataList;
-          if (this.currentPage === 1) {
-            this.total = list.page.count;
-          }
-        }
+        // const list = await getTransaction(query, this.codeurl);
+        // if (list) {
+        //   this.tableData = list.dataList;
+        //   if (this.currentPage === 1) {
+        //     this.total = list.page.count;
+        //   }
+        // }
       }
     },
     open(id) {

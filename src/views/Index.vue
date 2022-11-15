@@ -147,7 +147,13 @@ import {
   getProfit,
   fetchV2TotalHis,
 } from "@/common/api";
-import { HMarkets, LMarkets, NContract, Contract } from "../config.js";
+import {
+  HMarkets,
+  LMarkets,
+  NContract,
+  HNContract,
+  Contract,
+} from "../config.js";
 import { calcAPY } from "@/utils";
 import AuditReport from "../components/AuditReport.vue";
 export default {
@@ -208,8 +214,17 @@ export default {
         105 * 24 * 3600
       );
 
-      const { avg } = calcAPY(totalRec, list.totalRec);
-      this.lowList[0].sevendayProfit = avg;
+      const { avg: lowRiskUSDC } = calcAPY(totalRec, list.totalRec);
+
+      this.lowList[0].sevendayProfit = lowRiskUSDC;
+
+      let { totalRec: highETHRec } = await fetchTotalHis(
+        HNContract["ETH"].vault,
+        105 * 24 * 3600 * 1000
+      );
+      const { avg: highRiskETH } = calcAPY(highETHRec, []);
+      this.highList[1].sevendayProfit = highRiskETH;
+      console.log("List: ", this.highList, this.lowList);
     },
 
     closeShow(val) {

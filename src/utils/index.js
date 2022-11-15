@@ -119,9 +119,13 @@ const calcAPY = (his, list, all) => {
   // avg /= len;
 
   avgApys = avgApys.sort((a, b) => a.date - b.date);
+  console.log("AVG APYS: ", avgApys);
   let avg = avgApys[avgApys.length - 1].profit;
   console.log("AVG: ", avg);
-  return { apys: all ? avgApys : avgApys.slice(15), avg };
+  return {
+    apys: all ? avgApys : avgApys.length > 15 ? avgApys.slice(15) : avgApys,
+    avg,
+  };
 };
 
 const avgByDate = (his, all) => {
