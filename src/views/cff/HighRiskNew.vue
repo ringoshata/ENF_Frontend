@@ -6,7 +6,7 @@
       :class="{ 'ul-border': item.showContent }"
     >
       <div :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'">
-        {{ item.code === "ETH" ? "Medium Low Risk" : "Medium Risk" }}
+        {{ item.code === "ETH" ? "" : "Medium Risk" }}
       </div>
       <div
         class="title"

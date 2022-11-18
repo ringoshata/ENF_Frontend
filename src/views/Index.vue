@@ -32,6 +32,7 @@
                 @click="goCff(item, 'low')"
               >
                 {{ item.code }}
+                <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
                 <span>
                   {{ $numFixed(item.sevendayProfit, 1) + "%" }}
                 </span>
@@ -182,8 +183,8 @@ export default {
       });
     },
     async getSevendayProfits() {
-      const h = HMarkets.map((item) => "h" + item);
-      const all = [...LMarkets, ...h];
+      const h = ["usdc"].map((item) => "h" + item);
+      const all = ["usdc", "wbtc", "eth", "husdc"];
       Promise.all(
         // LMarkets.map((item) => {
         // 	return getSevendayProfit(item)
@@ -223,7 +224,7 @@ export default {
         105 * 24 * 3600 * 1000
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, []);
-      this.highList[1].sevendayProfit = highRiskETH;
+      this.lowList[2].sevendayProfit = highRiskETH;
       console.log("List: ", this.highList, this.lowList);
     },
 

@@ -98,8 +98,8 @@ export default {
     },
   },
   mounted() {
-    if (this.newUSDC) this.markets = ["wbtc", "eth"];
-    else this.markets = ["usdc"];
+    if (this.newUSDC) this.markets = ["wbtc"];
+    else this.markets = ["usdc", "eth"];
     this.getAssetList();
   },
   methods: {

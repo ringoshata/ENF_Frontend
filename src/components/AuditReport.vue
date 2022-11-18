@@ -49,15 +49,15 @@ export default {
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report/Smart%20Contract%20Security%20Audit%20Report%20-%20earning.farm.pdf",
         },
         {
-          name: "Low risk ETH strategy",
-          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report/SlowMist%20Audit%20Report%20-%20CFFv2.pdf",
-        },
-        {
-          name: "Medium risk USDC and ETH strategy",
+          name: "Medium risk USDC",
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf",
         },
         {
-          name: "Low rist USDC - V3",
+          name: "Medium risk ETH",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf",
+        },
+        {
+          name: "Low risk USDC - V3",
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20EarningFarm%20v3%20Iterative_en-us.pdf",
         },
       ],
