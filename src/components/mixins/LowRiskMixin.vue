@@ -94,6 +94,13 @@ export default {
       this.getAssetList();
     },
     withdrawInput(newValue, oldValue) {
+      try {
+        if (this.itemData.code == "WBTC")
+          newValue = Number(newValue).toFixed(8);
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+      console.log("BTC ", newValue, oldValue);
       this.fetchExchangeRate(this.itemData.code, newValue);
     },
   },
@@ -222,6 +229,7 @@ export default {
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
+      console.log("BTC Fetch: ", code, value);
       if (value < 1e-6) {
         this.slippage = "0";
         return;
@@ -231,6 +239,7 @@ export default {
       this.slippage = Number(
         ((standardExchangeRate - exchangeRate) * 100).toFixed(2)
       );
+      if (this.slippage < 0) this.slippage = 0;
     },
     async withdrawItem(item) {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
@@ -323,6 +332,8 @@ export default {
         item === 100
           ? this.itemData.user_assets
           : setAssetsValue(item, this.itemData.user_assets);
+      if (this.itemData.code == "WBTC")
+        this.withdrawInput = Number(this.withdrawInput).toFixed(8);
       this.inputWithdraw("set");
     },
     inputWithdraw(type = null) {
@@ -348,7 +359,10 @@ export default {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
         this.confirmVal = 100;
       } else {
-        this.withdrawInput = val.user_assets;
+        console.log("Val: ", val);
+        if (val.code == "WBTC") {
+          this.withdrawInput = Number(val.user_assets).toFixed(8);
+        } else this.withdrawInput = val.user_assets;
         this.withdrawVal = 100;
         this.inputWithdraw();
       }
