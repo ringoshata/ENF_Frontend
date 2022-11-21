@@ -54,7 +54,7 @@ export default {
         },
         {
           name: "Medium risk ETH",
-          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20Earning%20Farm%20-%20ETH%20Leverage_en-us.pdf",
         },
         {
           name: "Low risk USDC - V3",
