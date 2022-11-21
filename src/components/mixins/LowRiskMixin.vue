@@ -96,7 +96,7 @@ export default {
     withdrawInput(newValue, oldValue) {
       try {
         if (this.itemData.code == "WBTC")
-          newValue = Number(newValue).toFixed(8);
+          newValue = Math.floor(newValue * 1e8) / 1e8;
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -333,7 +333,7 @@ export default {
           ? this.itemData.user_assets
           : setAssetsValue(item, this.itemData.user_assets);
       if (this.itemData.code == "WBTC")
-        this.withdrawInput = Number(this.withdrawInput).toFixed(8);
+        this.withdrawInput = Math.floor(this.withdrawInput * 1e8) / 1e8;
       this.inputWithdraw("set");
     },
     inputWithdraw(type = null) {
@@ -361,7 +361,7 @@ export default {
       } else {
         console.log("Val: ", val);
         if (val.code == "WBTC") {
-          this.withdrawInput = Number(val.user_assets).toFixed(8);
+          this.withdrawInput = Math.floor(val.user_assets * 1e8) / 1e8;
         } else this.withdrawInput = val.user_assets;
         this.withdrawVal = 100;
         this.inputWithdraw();
