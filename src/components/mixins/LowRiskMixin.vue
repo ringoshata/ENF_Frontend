@@ -247,10 +247,12 @@ export default {
         return this.Warning("Invalid Value");
       const less = isLessThanOrEqualTo(this.withdrawInput, item.user_assets);
       if (!less) return this.Warning("Invalid Value");
+      console.log("BTC withdraw: ", this.withdrawInput, item.user_assets);
       const exchangeRate = await getExchangeRateFromLContract(
         item.code,
         this.withdrawInput
       );
+      console.log("BTC Rate: ", exchangeRate);
       if (exchangeRate > LowExchangeRate[item.code]) {
         this.withdraw(item);
       } else {
@@ -279,44 +281,50 @@ export default {
       }
     },
     async withdraw(item, type = 0) {
-      const maxWithdraw = this.withdrawInput === item.user_assets;
-      const bigInput =
-        maxWithdraw === true
-          ? item.lp_token
-          : setWithdrawValue(
-              this.withdrawInput,
-              item.lp_token,
-              item.user_assets
+      try {
+        const maxWithdraw = this.withdrawInput === item.user_assets;
+        const bigInput =
+          maxWithdraw === true
+            ? item.lp_token
+            : setWithdrawValue(
+                this.withdrawInput,
+                item.lp_token,
+                item.user_assets
+              );
+        if (item.code === "USDC" && type === 0) {
+          const amount = new BigNumber(bigInput)
+            .multipliedBy(this.itemData.lpTokenBalance)
+            .dividedBy(this.itemData.totalSupply)
+            .toFixed(0);
+          const a = await calc_withdraw_one_coin(amount);
+          const b = new BigNumber(this.withdrawInput).multipliedBy(1e6);
+          this.calcNum = new BigNumber(b).minus(a).dividedBy(b).toString();
+          if (new BigNumber(this.calcNum).gt(0.02)) {
+            this.isCalc = true;
+          } else {
+            const params = await getWithdraw(
+              bigInput,
+              this.MetaMaskAddress,
+              item.code
             );
-      if (item.code === "USDC" && type === 0) {
-        const amount = new BigNumber(bigInput)
-          .multipliedBy(this.itemData.lpTokenBalance)
-          .dividedBy(this.itemData.totalSupply)
-          .toFixed(0);
-        const a = await calc_withdraw_one_coin(amount);
-        const b = new BigNumber(this.withdrawInput).multipliedBy(1e6);
-        this.calcNum = new BigNumber(b).minus(a).dividedBy(b).toString();
-        if (new BigNumber(this.calcNum).gt(0.02)) {
-          this.isCalc = true;
+            this.sendTransaction(params);
+            this.calcNum = null;
+            this.isCalc = false;
+          }
         } else {
+          console.log("BTC Biginput: ", bigInput);
           const params = await getWithdraw(
             bigInput,
             this.MetaMaskAddress,
             item.code
           );
+          console.log("BTC Params: ", params);
           this.sendTransaction(params);
           this.calcNum = null;
           this.isCalc = false;
         }
-      } else {
-        const params = await getWithdraw(
-          bigInput,
-          this.MetaMaskAddress,
-          item.code
-        );
-        this.sendTransaction(params);
-        this.calcNum = null;
-        this.isCalc = false;
+      } catch (err) {
+        console.error(err);
       }
     },
     inputConfirm() {

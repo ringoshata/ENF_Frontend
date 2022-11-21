@@ -233,15 +233,20 @@ const setHDeposit = async (number, accounts, code, type) => {
 
 //取低风险
 const getWithdraw = async (number, accounts, code) => {
-  const params = await getCFVault(Contract[code].CFVault)
-    .methods.withdraw(number)
-    .encodeABI();
-  return {
-    from: accounts,
-    to: Contract[code].CFVault,
-    value: 0,
-    data: params,
-  };
+  console.log("BTC Withdraw end: ", number, accounts, code);
+  try {
+    const params = await getCFVault(Contract[code].CFVault)
+      .methods.withdraw(number)
+      .encodeABI();
+    return {
+      from: accounts,
+      to: Contract[code].CFVault,
+      value: 0,
+      data: params,
+    };
+  } catch (err) {
+    console.error(err);
+  }
 };
 //取高风险
 const getHWithdraw = async (number, accounts, code, type) => {
@@ -308,45 +313,49 @@ const getVirtualPriceFromHContract = async (code) => {
 };
 
 const getExchangeRateFromLContract = async (code, amount) => {
-  let exRate = 0;
-  if (code === "USDC") {
-    const amountInString = new BigNumber(amount).times(1e18).toString(10);
-    exRate = await getWeb3(
-      Exchange_Rate_abi,
-      "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c"
-    )
-      .methods.get_dy_underlying("0", "2", amountInString)
-      .call();
-    return new BigNumber(exRate)
-      .dividedBy(new BigNumber(amount))
-      .dividedBy(new BigNumber(1e6))
-      .toNumber();
-  } else if (code === "WBTC") {
-    const amountInString = new BigNumber(amount).times(1e8).toString(10);
-    exRate = await getWeb3(
-      Exchange_Rate_abi,
-      "0x93054188d876f558f4a66B2EF1d97d16eDf0895B"
-    )
-      .methods.get_dy_underlying("0", "1", amountInString)
-      .call();
-    return new BigNumber(exRate)
-      .dividedBy(new BigNumber(amount))
-      .dividedBy(new BigNumber(1e8))
-      .toNumber();
-  } else if (code === "ETH") {
-    const amountInString = new BigNumber(amount).times(1e18).toString(10);
-    exRate = await getWeb3(
-      Exchange_Rate_abi,
-      "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022"
-    )
-      .methods.get_dy("1", "0", amountInString)
-      .call();
-    return new BigNumber(exRate)
-      .dividedBy(new BigNumber(amount))
-      .dividedBy(new BigNumber(1e18))
-      .toNumber();
+  try {
+    let exRate = 0;
+    if (code === "USDC") {
+      const amountInString = new BigNumber(amount).times(1e18).toString(10);
+      exRate = await getWeb3(
+        Exchange_Rate_abi,
+        "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c"
+      )
+        .methods.get_dy_underlying("0", "2", amountInString)
+        .call();
+      return new BigNumber(exRate)
+        .dividedBy(new BigNumber(amount))
+        .dividedBy(new BigNumber(1e6))
+        .toNumber();
+    } else if (code === "WBTC") {
+      const amountInString = new BigNumber(amount).times(1e8).toString(10);
+      exRate = await getWeb3(
+        Exchange_Rate_abi,
+        "0x93054188d876f558f4a66B2EF1d97d16eDf0895B"
+      )
+        .methods.get_dy_underlying("0", "1", amountInString)
+        .call();
+      return new BigNumber(exRate)
+        .dividedBy(new BigNumber(amount))
+        .dividedBy(new BigNumber(1e8))
+        .toNumber();
+    } else if (code === "ETH") {
+      const amountInString = new BigNumber(amount).times(1e18).toString(10);
+      exRate = await getWeb3(
+        Exchange_Rate_abi,
+        "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022"
+      )
+        .methods.get_dy("1", "0", amountInString)
+        .call();
+      return new BigNumber(exRate)
+        .dividedBy(new BigNumber(amount))
+        .dividedBy(new BigNumber(1e18))
+        .toNumber();
+    }
+    return 0;
+  } catch (err) {
+    console.error(err);
   }
-  return 0;
 };
 const getExchangeRateFromHContract = async (code, amount) => {
   let exRate = 0;

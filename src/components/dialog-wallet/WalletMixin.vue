@@ -38,6 +38,7 @@ export default {
       const wallets = Wallets;
       const dappId = DappId; // [String] The API key created by step one above
       const networkId = Network; // [Integer] The Ethereum network ID your Dapp uses.
+      console.log("Wallet connect ");
       Vue.prototype.$onboard = Onboard({
         dappId,
         hideBranding: false,
@@ -45,13 +46,13 @@ export default {
         //... other options
         subscriptions: {
           wallet: (wallet) => {
-            console.log(
-              "Netwrok Id: ",
-              wallet.provider.chainId,
-              networkId,
-              Number(wallet.provider.chainId),
-              networkId == Number(wallet.provider.chainId)
-            );
+            // console.log(
+            //   "Netwrok Id: ",
+            //   wallet.provider.chainId,
+            //   networkId,
+            //   Number(wallet.provider.chainId),
+            //   networkId == Number(wallet.provider.chainId)
+            // );
             if (wallet.provider && networkId == Number(wallet.provider.chainId))
               Vue.prototype.$web3 = new Web3(wallet.provider);
             const walletName = !wallet.name ? "NoWallet" : wallet.name;
