@@ -36,7 +36,11 @@
                 <span>
                   {{ $numFixed(item.sevendayProfit, 1) + "%" }}
                 </span>
-                <svg-icon iconClass="low" class="websvg"></svg-icon>
+                <svg-icon
+                  v-show="item.code !== 'ETH'"
+                  iconClass="low"
+                  class="websvg"
+                ></svg-icon>
               </p>
             </div>
             <div v-if="highList.length > 0">
@@ -184,7 +188,7 @@ export default {
     },
     async getSevendayProfits() {
       const h = ["usdc"].map((item) => "h" + item);
-      const all = ["usdc", "wbtc", "eth", "husdc"];
+      const all = ["usdc", "eth", "husdc"];
       Promise.all(
         // LMarkets.map((item) => {
         // 	return getSevendayProfit(item)
@@ -224,7 +228,7 @@ export default {
         105 * 24 * 3600 * 1000
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, []);
-      this.lowList[2].sevendayProfit = highRiskETH;
+      this.lowList[1].sevendayProfit = highRiskETH;
       console.log("List: ", this.highList, this.lowList);
     },
 

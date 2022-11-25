@@ -24,7 +24,7 @@ import {
   minusLet,
   minus,
 } from "@/utils";
-import { Contract, TTIMER } from "../../config.js";
+import { Contract, TTIMER, LMarkets } from "../../config.js";
 import { mapState } from "vuex";
 import BigNumber from "bignumber.js";
 const LowExchangeRate = {
@@ -105,8 +105,7 @@ export default {
     },
   },
   mounted() {
-    if (this.newUSDC) this.markets = ["wbtc"];
-    else this.markets = ["usdc", "eth"];
+    this.markets = LMarkets;
     this.getAssetList();
   },
   methods: {

@@ -110,7 +110,7 @@ switch ("test") {
     API_V3_URL = "https://api-v3test.earning.farm/v1";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 1;
-    LMarkets = ["usdc", "wbtc", "eth"];
+    LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["usdc"];
     HNMarkets = ["eth"];
