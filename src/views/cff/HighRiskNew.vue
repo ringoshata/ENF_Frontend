@@ -5,8 +5,11 @@
       :key="idx"
       :class="{ 'ul-border': item.showContent }"
     >
-      <div :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'">
-        {{ item.code === "ETH" ? "" : "Medium Risk" }}
+      <div
+        v-show="item.code !== 'ETH'"
+        :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'"
+      >
+        {{ "Medium Risk" }}
       </div>
       <div
         class="title"
