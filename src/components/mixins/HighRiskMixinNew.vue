@@ -155,20 +155,15 @@ export default {
     },
 
     async getAssetInfo(account, item) {
-      console.log("Asset: ", item);
       const decimal = HNContract[item.toUpperCase()].Decimal;
-      console.log("Decimal: ", decimal, item);
       // Get Total
       const total = await getHNTotalAsset(item.toUpperCase());
-      console.log("ETH total: ", total);
 
       // Get pause
       const paused = await getHNPause(item.toUpperCase());
-      console.log("paused: ", paused);
 
       // Get User individual
       const userAssets = await getHNAsset(item.toUpperCase(), account);
-      console.log("userAssets: ", userAssets);
 
       let userHistory = [];
       let userProfit = 0;
@@ -179,7 +174,6 @@ export default {
             HNContract[item.toUpperCase()].asset,
             account
           );
-          console.log("ETH His: ", userHistory);
           let totalDeposit = 0;
           userHistory.userAssets.reverse().forEach((item) => {
             if (item.tradeType == 0) totalDeposit += Number(item.amount);
@@ -203,12 +197,9 @@ export default {
         period * 1000
       );
 
-      console.log("ETH TOtal rec: ", totalRec);
 
       const { avg } = calcAPY(totalRec, []);
-      console.log("ETH APY: ", totalRec, avg);
       const ratio = await getHNWithdrawFee(item.toUpperCase());
-      console.log("ETH ratio: ", ratio);
       return {
         paused,
         total: total / decimal,
@@ -231,13 +222,11 @@ export default {
       )
         .then(([...HNMarkets]) => {
           this.list = HNMarkets.map((item) => {
-            console.log("ETH Item: ", item);
             return {
               ...item,
               showContent: false,
             };
           });
-          console.log("ETH List: ", this.list);
           if (this.$route.params.type && this.$route.params.type === "high") {
             const data = this.list.find(
               (item) => item.code === this.$route.params.code
@@ -326,7 +315,6 @@ export default {
           this.selectConfirm
         );
       }
-      console.log("Params: ", params);
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
@@ -389,7 +377,6 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
-      console.log("Max: ", maxNum, maxWithdraw);
       // const maxWithdraw = this.withdrawInput === item.user_assets;
       const amount =
         maxWithdraw === true
@@ -399,7 +386,6 @@ export default {
           : new BigNumber(this.withdrawInput)
               .multipliedBy(new BigNumber(item.decimal))
               .toFixed(0);
-      console.log("Amount: ", amount);
       // const bigInput = maxWithdraw
       //   ? item.lp_token
       //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
@@ -409,7 +395,6 @@ export default {
         item.code,
         this.selectWithdraw
       );
-      console.log("Params: ", params);
       this.sendTransaction(params);
     },
     inputConfirm() {
@@ -561,8 +546,6 @@ export default {
       const { apys } = calcAPY(totalHis.totalRec, []);
 
       this.echartsData = apys;
-      console.log("APYS: ", apys);
-      this.title =
         this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";

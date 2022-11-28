@@ -100,7 +100,6 @@ export default {
       } catch (err) {
         console.log("Error: ", err);
       }
-      console.log("BTC ", newValue, oldValue);
       this.fetchExchangeRate(this.itemData.code, newValue);
     },
   },
@@ -228,7 +227,6 @@ export default {
       this.sendTransaction(params);
     },
     async fetchExchangeRate(code, value) {
-      console.log("BTC Fetch: ", code, value);
       if (value < 1e-6) {
         this.slippage = "0";
         return;
@@ -246,12 +244,10 @@ export default {
         return this.Warning("Invalid Value");
       const less = isLessThanOrEqualTo(this.withdrawInput, item.user_assets);
       if (!less) return this.Warning("Invalid Value");
-      console.log("BTC withdraw: ", this.withdrawInput, item.user_assets);
       const exchangeRate = await getExchangeRateFromLContract(
         item.code,
         this.withdrawInput
       );
-      console.log("BTC Rate: ", exchangeRate);
       if (exchangeRate > LowExchangeRate[item.code]) {
         this.withdraw(item);
       } else {
@@ -311,13 +307,11 @@ export default {
             this.isCalc = false;
           }
         } else {
-          console.log("BTC Biginput: ", bigInput);
           const params = await getWithdraw(
             bigInput,
             this.MetaMaskAddress,
             item.code
           );
-          console.log("BTC Params: ", params);
           this.sendTransaction(params);
           this.calcNum = null;
           this.isCalc = false;
@@ -366,7 +360,6 @@ export default {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
         this.confirmVal = 100;
       } else {
-        console.log("Val: ", val);
         if (val.code == "WBTC") {
           this.withdrawInput = Math.floor(val.user_assets * 1e8) / 1e8;
         } else this.withdrawInput = val.user_assets;

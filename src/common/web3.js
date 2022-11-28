@@ -29,7 +29,6 @@ const rpcMainnet =
 
 // 动态获取web3实例对象
 const getWeb3 = (abi, accounts) => {
-  console.log("Web3 call: ", accounts);
   return new Vue.prototype.$web3.eth.Contract(abi, accounts);
 };
 const getGasPrice = () => {
@@ -233,7 +232,6 @@ const setHDeposit = async (number, accounts, code, type) => {
 
 //取低风险
 const getWithdraw = async (number, accounts, code) => {
-  console.log("BTC Withdraw end: ", number, accounts, code);
   try {
     const params = await getCFVault(Contract[code].CFVault)
       .methods.withdraw(number)
@@ -392,16 +390,12 @@ const formatUnit = (num, decimal) => {
 };
 
 const getNTotalAsset = async (code) => {
-  console.log("Get Total: ", code, NContract[code].vault);
   const web3 = getWeb3(VaultV3_abi, NContract[code].vault);
-  console.log("Web3: ", web3);
   return web3.methods.totalAssets().call();
 };
 
 const getHNTotalAsset = async (code) => {
-  console.log("Get Total: ", code, HNContract[code].vault);
   const web3 = getWeb3(VaultV3_abi, HNContract[code].vault);
-  console.log("Web3: ", web3);
   return web3.methods.totalAssets().call();
 };
 const getNPause = async (code) => {
@@ -428,7 +422,6 @@ const getHNAsset = async (code, account) => {
   const lpBal = await getWeb3(VaultV3_abi, HNContract[code].vault)
     .methods.balanceOf(account)
     .call();
-  console.log("ETH Lpbal: ", lpBal);
   return getWeb3(VaultV3_abi, HNContract[code].vault)
     .methods.convertToAssets(lpBal)
     .call();

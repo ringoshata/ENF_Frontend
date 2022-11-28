@@ -151,7 +151,6 @@ export default {
   methods: {
     async getData() {
       const query = { address: this.MetaMaskAddress, pageNo: this.currentPage };
-      console.log("Get: ", this.codeurl);
       if (this.codeurl[0] === "n") {
         const nUrls = ["nusdc", "nwbtc", "neth"];
         const list = await fetchTxs(

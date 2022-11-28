@@ -229,7 +229,6 @@ export default {
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, []);
       this.lowList[1].sevendayProfit = highRiskETH;
-      console.log("List: ", this.highList, this.lowList);
     },
 
     closeShow(val) {

@@ -38,7 +38,6 @@ export default {
       const wallets = Wallets;
       const dappId = DappId; // [String] The API key created by step one above
       const networkId = Network; // [Integer] The Ethereum network ID your Dapp uses.
-      console.log("Wallet connect ");
       Vue.prototype.$onboard = Onboard({
         dappId,
         hideBranding: false,

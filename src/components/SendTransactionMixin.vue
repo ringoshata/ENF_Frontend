@@ -6,8 +6,6 @@ export default {
   },
   methods: {
     sendTransaction(params, callback = () => {}) {
-      console.log("BTC Send: ", params);
-      console.log("BTC web3: ", this.$web3.eth);
       try {
         this.$web3.eth
           .sendTransaction(params)
