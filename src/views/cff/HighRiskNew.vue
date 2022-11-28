@@ -140,7 +140,7 @@
               <span class="spanText"
                 >{{
                   item.code === "ETH"
-                    ? `An annual ${$feeRatio(item.feeRatio)}`
+                    ? `An annual 2.5`
                     : $feeRatio(item.feeRatio)
                 }}%
                 {{
