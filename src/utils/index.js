@@ -83,14 +83,15 @@ const random = (lower, upper) => {
 const calcAPY = (his, list, all) => {
   console.log("His: ", his, list);
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
+  const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
-  let apys = avgByDate(his);
+  let apys = avgByDate(his, false, totalAssets);
 
   if (!all && apys.length < 105) {
     apys = [...list.slice(0, 105 - apys.length), ...apys];
   } else if (all) {
     apys = [...list, ...apys];
-    apys = avgByDate(apys, true);
+    apys = avgByDate(apys, true, totalAssets);
   }
 
   let avgApys = [];
@@ -99,11 +100,18 @@ const calcAPY = (his, list, all) => {
     const end = i;
     const subArr = apys.slice(start, end);
     let avg = 0;
+    let sumTotal = 0;
     for (let j = 0; j < subArr.length; j++) {
-      avg += subArr[j].profit;
+      const total = subArr[j].total >= 0 ? subArr[j].total : totalAssets;
+      avg += subArr[j].profit * total;
+      sumTotal += total;
     }
-    avg /= subArr.length;
+    console.log("AAA: ", avg, sumTotal);
+    avg /= sumTotal;
+
     console.log("Sub: ", avg, subArr);
+    avg = avg < 0 ? 0 : avg;
+
     avgApys.push({ profit: avg, date: apys[i].date });
   }
 
@@ -124,18 +132,23 @@ const calcAPY = (his, list, all) => {
   let avg = avgApys[avgApys.length - 1].profit;
   console.log("AVG: ", avg);
   return {
-    apys: all ? avgApys : avgApys.length > 15 ? avgApys.slice(15) : avgApys,
+    apys: all
+      ? avgApys
+      : avgApys.length >= 90
+      ? avgApys.slice(avgApys.length - 90)
+      : avgApys,
     avg,
   };
 };
 
-const avgByDate = (his, all) => {
+const avgByDate = (his, all, total) => {
   const apys = [];
   let sameDate = 1;
   for (let i = 0; i < his.length; i++) {
     const prevItem = apys[apys.length - 1];
     if (!prevItem)
       apys.push({
+        total: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
         profit: all ? his[i].profit : his[i].apy,
         date: all ? his[i].date : his[i].lastRecorded / 1000,
       });
@@ -169,6 +182,7 @@ const avgByDate = (his, all) => {
         apys[apys.length - 1].profit = apy;
       } else {
         apys.push({
+          total: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
           profit: all ? his[i].profit : his[i].apy,
           date: all ? his[i].date : Math.ceil(his[i].lastRecorded / 1000),
         });
