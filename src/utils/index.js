@@ -97,7 +97,7 @@ const calcAPY = (his, list, all) => {
   let avgApys = [];
   for (let i = 1; i < apys.length; i++) {
     const start = i >= 30 ? i - 30 : 0;
-    const end = i;
+    const end = i + 1;
     const subArr = apys.slice(start, end);
     let avg = 0;
     let sumTotal = 0;
