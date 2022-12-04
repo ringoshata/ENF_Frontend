@@ -449,7 +449,7 @@ export default {
       const list = await getProfit(this.codeurl);
       this.echartsData = list.dataList;
       this.title =
-        this.itemData.code === "USDC" ? "CRV 7 Days APY" : "7 Days APY";
+        this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;

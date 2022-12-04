@@ -90,7 +90,7 @@
               <li class="top_l3">
                 <el-tooltip class="item" effect="dark" placement="top">
                   <div slot="content">
-                    7 Days APY: Calculated by the past 7 days daily APR in
+                    30 Days APY: Calculated by the past 30 days daily APR in
                     average.
                   </div>
                   <span>Protocol</span>
@@ -108,7 +108,7 @@
             <div>
               <li class="top_l2"></li>
               <li class="top_li">
-                {{ item.code === "USDC" ? "CRV 7 Days APY" : "7 Days APY" }}
+                {{ item.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY" }}
               </li>
               <li class="bom_li">
                 {{ $numFixed(item.sevendayProfit, 1) + "%" }}

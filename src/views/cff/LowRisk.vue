@@ -58,7 +58,7 @@
 							<li class="top_l3">
 								<el-tooltip class="item" effect="dark" placement="top">
 									<div slot="content">
-										7 Days APY: Calculated by the past 7 days daily APR in
+										30 Days APY: Calculated by the past 30 days daily APR in
 										average.
 									</div>
 									<span>Protocol</span>
@@ -74,7 +74,7 @@
 					<el-col :span="4">
 						<div>
 							<li class="top_l2"></li>
-							<li class="top_li">7 Days APY</li>
+							<li class="top_li">30 Days APY</li>
 							<li class="bom_li">
 								{{ $numFixed(item.sevendayProfit, 1) + '%' }}
 							</li>

@@ -433,7 +433,7 @@ export default {
       this.codeurl = this.itemData.code.toLowerCase();
       const list = await getProfit(this.codeurl);
       this.echartsData = list.dataList;
-      this.title = "7 Days APY";
+      this.title = "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;
