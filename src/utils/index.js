@@ -81,7 +81,6 @@ const random = (lower, upper) => {
 };
 
 const calcAPY = (his, list, all) => {
-  console.log("His: ", his, list);
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
   const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
@@ -106,10 +105,8 @@ const calcAPY = (his, list, all) => {
       avg += subArr[j].profit * total;
       sumTotal += total;
     }
-    console.log("AAA: ", avg, sumTotal);
     avg /= sumTotal;
 
-    console.log("Sub: ", avg, subArr);
     avg = avg < 0 ? 0 : avg;
 
     avgApys.push({ profit: avg, date: apys[i].date });
@@ -128,9 +125,7 @@ const calcAPY = (his, list, all) => {
   // avg /= len;
 
   avgApys = avgApys.sort((a, b) => a.date - b.date);
-  console.log("AVG APYS: ", avgApys);
   let avg = avgApys[avgApys.length - 1].profit;
-  console.log("AVG: ", avg);
   return {
     apys: all
       ? avgApys

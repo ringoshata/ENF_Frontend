@@ -340,7 +340,7 @@ export default {
       this.sendTransaction(params, () => {});
     },
     async fetchExchangeRate(code, value) {
-      if (value < 1e-6) {
+      if (value < 1e-6 || isNaN(Number(value))) {
         this.slippage = "0";
         return;
       }
