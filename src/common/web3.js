@@ -80,6 +80,14 @@ const getNAllowance = async (accounts, code) => {
     .methods.allowance(accounts, NContract[code].depositApprover)
     .call();
 };
+
+const getHNAllowance = async (accounts, code) => {
+  if (!accounts) return 0;
+  const asset = HNContract[code].asset;
+  return getWeb3(IERC20_abi, asset)
+    .methods.allowance(accounts, HNContract[code].depositApprover)
+    .call();
+};
 //授权
 const setApprove = async (number, accounts, code) => {
   const ierc = await getIERC(Contract[code].CFVault);
@@ -130,6 +138,13 @@ const setHApprove = async (number, accounts, code, type) => {
 //获取IERC20BalanceOf
 const getHIERCBalanceOf = async (accounts, code, type) => {
   return getWeb3(IERC20_abi, HContract[code][type])
+    .methods.balanceOf(accounts)
+    .call();
+};
+
+const getHNIERCBalanceOf = async (accounts, code) => {
+  console.log("Address: ", HNContract[code].asset);
+  return getWeb3(IERC20_abi, HNContract[code].asset)
     .methods.balanceOf(accounts)
     .call();
 };
@@ -270,7 +285,7 @@ const getHWithdraw = async (number, accounts, code, type) => {
 //取高风险
 const getHNWithdraw = async (number, accounts, code, type) => {
   let params = null;
-  if (code === "ETH") {
+  if (code !== "USDC") {
     params = await getWeb3(VaultV3_abi, HNContract[code].vault)
       .methods.withdraw(number, accounts)
       .encodeABI();
@@ -477,6 +492,7 @@ export {
   getHAllowance,
   setHApprove,
   getHIERCBalanceOf,
+  getHNIERCBalanceOf,
   setHDeposit,
   getHWithdraw,
   calc_withdraw_one_coin,
@@ -497,4 +513,5 @@ export {
   getHNWithdrawFee,
   setHNDepositETH,
   getHNWithdraw,
+  getHNAllowance,
 };

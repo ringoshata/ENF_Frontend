@@ -6,7 +6,7 @@
       :class="{ 'ul-border': item.showContent }"
     >
       <div
-        v-show="item.code !== 'ETH'"
+        v-show="item.code === 'USDC'"
         :class="item.code === 'ETH' ? 'eth-svg' : 'svg-icon'"
       >
         {{ "Medium Risk" }}
@@ -46,11 +46,11 @@
               <li class="bom_li">
                 {{ $nameFixed(item.user_assets, item.code) }}
                 <br />
-                <span class="myorigin" v-if="item.code !== 'ETH'">
+                <span class="myorigin" v-if="item.code === 'USDC'">
                   ≈
                   {{ $nameFixed(item.user_assets_origin, item.code) }} CRV</span
                 >
-                <div v-else class="top_l2" v-show="item.code !== 'ETH'"></div>
+                <div v-else class="top_l2" v-show="item.code === 'USDC'"></div>
               </li>
             </div>
           </el-col>
@@ -63,7 +63,7 @@
                   class="item"
                   effect="dark"
                   placement="top"
-                  v-if="item.code !== 'ETH'"
+                  v-if="item.code === 'USDC'"
                 >
                   <div slot="content">
                     1.Deposited USDC will be converted into CRV.
@@ -75,7 +75,7 @@
               </li>
               <li class="bom_li">
                 {{ $nameFixed(item.user_profit, item.code) }}
-                <div class="top_l2" v-show="item.code !== 'ETH'"></div>
+                <div class="top_l2" v-show="item.code === 'USDC'"></div>
               </li>
             </div>
           </el-col>
@@ -101,7 +101,7 @@
               <li class="bom_li">
                 {{ $nameFixed(item.total, item.code) }}
               </li>
-              <div class="top_l2" v-show="item.code !== 'ETH'"></div>
+              <div class="top_l2" v-show="item.code === 'USDC'"></div>
             </div>
           </el-col>
           <el-col :span="4">
@@ -113,7 +113,7 @@
               <li class="bom_li">
                 {{ $numFixed(item.sevendayProfit, 1) + "%" }}
               </li>
-              <div class="top_l2" v-show="item.code !== 'ETH'"></div>
+              <div class="top_l2" v-show="item.code === 'USDC'"></div>
             </div>
           </el-col>
           <el-col :span="1">
@@ -141,7 +141,7 @@
                 >{{
                   item.code === "ETH"
                     ? `An annual 2.5`
-                    : $feeRatio(item.feeRatio)
+                    : item.code === "WBTC" ? "10" : $feeRatio(item.feeRatio)
                 }}%
                 {{
                   item.code === "ETH"
@@ -187,7 +187,7 @@
                     Wallet Balance:
                     {{ $nameFixed(totalOf, item.code) }}
                     <span>{{
-                      item.code === "ETH" ? item.code : selectConfirm
+                      item.code === "USDC" ? selectConfirm : item.code
                     }}</span>
                   </span>
                 </li>
@@ -210,7 +210,7 @@
                         >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
                       >
                     </template>
-                    <template slot="append" v-if="item.code !== 'ETH'">
+                    <template slot="append" v-if="item.code === 'USDC'">
                       <el-select
                         v-model="selectConfirm"
                         :popper-append-to-body="false"
@@ -254,7 +254,7 @@
                         class="item"
                         effect="dark"
                         placement="top-end"
-                        v-if="item.code !== 'ETH'"
+                        v-if="item.code === 'USDC'"
                       >
                         <div slot="content">
                           Calculated based on Curve virtual price. May have
@@ -285,7 +285,7 @@
                           >MAX</span
                         >
                       </template>
-                      <template slot="append" v-if="item.code !== 'ETH'">
+                      <template slot="append" v-if="item.code === 'USDC'">
                         <el-select
                           v-model="selectWithdraw"
                           @change="selectWithdrawChange"
@@ -316,7 +316,7 @@
                   type="warning"
                   plain
                   style="float: right; width: 45%"
-                  v-if="item.code !== 'ETH' && isApprove"
+                  v-if="item.code === 'USDC' && isApprove"
                   @click="approve"
                   >Approve
                 </el-button>

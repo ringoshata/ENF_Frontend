@@ -27,17 +27,18 @@ let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
 let HNMarkets = [];
-switch ("test") {
+switch ("develop") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
   case "develop":
-    API_URL = "https://api-hr.earning.farm";
+    API_URL = "https://api.earning.farm";
     API_V3_URL = "http://localhost:3030/v1";
     OPEN_URL = "https://etherscan.io/tx/";
     Network = 31337;
+    LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
-    LMarkets = ["usdc", "wbtc", "eth"];
     NMarkets = ["usdc"];
+    HNMarkets = ["wbtc"];
     Contract = {
       USDC: {
         CFToken: "0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF",
@@ -94,13 +95,24 @@ switch ("test") {
 
     NContract = {
       USDC: {
-        depositApprover: "0xd753c12650c280383Ce873Cc3a898F6f53973d16",
-        vault: "0x06b3244b086cecC40F1e5A826f736Ded68068a0F",
-        controller: "0x00CAC06Dd0BB4103f8b62D280fE9BCEE8f26fD59",
+        depositApprover: "0x707531c9999AaeF9232C8FEfBA31FBa4cB78d84a",
+        vault: "0xdB05A386810c809aD5a77422eb189D36c7f24402",
+        controller: "0xF66CfDf074D2FFD6A4037be3A669Ed04380Aef2B",
         asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
         Decimal: 1e6,
         CRVDecimal: 1e18,
+      },
+    };
+
+    HNContract = {
+      WBTC: {
+        depositApprover: "0xc0c5618f0F3Fa66b496F2940f373DC366d765BAe",
+        vault: "0xa195ACcEB1945163160CD5703Ed43E4f78176a54",
+        controller: "0x6212cb549De37c25071cF506aB7E115D140D9e42",
+        asset: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        Decimal: 1e8,
+        assetDecimal: 8,
       },
     };
     break;

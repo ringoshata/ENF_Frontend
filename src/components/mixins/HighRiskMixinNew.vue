@@ -1,10 +1,10 @@
 <script>
 import {
-  getHIERCBalanceOf,
+  getHNIERCBalanceOf,
   setHDeposit,
   setHNDepositETH,
   getHNWithdraw,
-  getHAllowance,
+  getHNAllowance,
   setHApprove,
   getETHBalance,
   getVirtualPriceFromHContract,
@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      markets: ["eth"],
+      markets: ["eth", "wbtc"],
       list: [],
       marks: {
         0: "0",
@@ -52,7 +52,7 @@ export default {
       },
       textList: {
         USDC: "Deposited USDC will be converted into CRV and be staked. This strategy has risk exposure on CRV token, though staking APY is high, investors could bear loss or gain higher returns when CRV price fluctuates.",
-        WBTC: "Invest in BTC pools based on Convex / Curve, rewards received will be converted into corresponding asset for further investment automatically.",
+        WBTC: "BTC are deposited into AAVE to earn interests, and ETH are borrowed from AAVE and invested into ETH Leveraged Strategy to earn leveraged yield.",
         ETH: "Leveraged investment in ETH 2.0 staking.",
       },
       loading: null,
@@ -155,9 +155,12 @@ export default {
     },
 
     async getAssetInfo(account, item) {
+      console.log("Item: ", item)
       const decimal = HNContract[item.toUpperCase()].Decimal;
+      console.log("decimal: ", decimal)
       // Get Total
       const total = await getHNTotalAsset(item.toUpperCase());
+      console.log("total: ", total)
 
       // Get pause
       const paused = await getHNPause(item.toUpperCase());
@@ -192,20 +195,26 @@ export default {
         }
       }
 
-      let { totalRec } = await fetchTotalHis(
-        HNContract[item.toUpperCase()].vault,
-        period * 1000
-      );
+      let totalRec, avg = 0
 
+      try {
+        const {totalRec: rec } = await fetchTotalHis(
+          HNContract[item.toUpperCase()].vault,
+          period * 1000
+        );
+        totalRec = rec
 
-      const { avg } = calcAPY(totalRec, []);
+        const { avg: average } = calcAPY(totalRec, []);
+        avg = average
+      }catch(err) {
+        console.error(err)
+      }
       const ratio = await getHNWithdrawFee(item.toUpperCase());
       return {
         paused,
         total: total / decimal,
         user_assets: userAssets / decimal,
         user_profit: userProfit,
-        // sevendayProfit: 0,
         sevendayProfit: avg,
         code: item.toUpperCase(),
         ratio: ratio / 10000,
@@ -377,6 +386,7 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
+      console.log("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
       const amount =
         maxWithdraw === true
@@ -389,12 +399,14 @@ export default {
       // const bigInput = maxWithdraw
       //   ? item.lp_token
       //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
+      console.log("Amount: ", amount)
       const params = await getHNWithdraw(
         amount,
         this.MetaMaskAddress,
         item.code,
         this.selectWithdraw
       );
+      console.log("Params: ", params)
       this.sendTransaction(params);
     },
     inputConfirm() {
@@ -498,11 +510,11 @@ export default {
       });
     },
     async getHAllowances(val) {
-      const allowance = await getHAllowance(
+      const allowance = await getHNAllowance(
         this.MetaMaskAddress,
-        val.code,
-        this.selectConfirm
+        val.code === "USDC" ? this.selectConfirm : val.code,
       );
+
       const myAllowance = dividedBy(
         allowance,
         HContract[val.code][`${this.selectConfirm}Decimal`]
@@ -515,18 +527,21 @@ export default {
         this.totalOf = 0;
         return this.downLoading();
       }
+      const item = code === "USDC" ? this.selectConfirm : ""
+      console.log("Total : ", item, code)
       const bcf =
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
-          : await getHIERCBalanceOf(
+          : await getHNIERCBalanceOf(
               this.MetaMaskAddress,
-              code,
-              this.selectConfirm
+              code
             );
+            console.log("Amt: ", bcf)
       const number =
         code === "ETH"
           ? HContract[code].Decimal
-          : HContract[code][`${this.selectConfirm}Decimal`];
+          : HNContract[code][`${item}Decimal`];
+            console.log("number: ", number)
       this.totalOf = dividedBy(bcf, number);
       this.downLoading();
     },
