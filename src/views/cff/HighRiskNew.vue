@@ -202,7 +202,7 @@
                     <template slot="append">
                       <span
                         :style="{
-                          'margin-right': item.code === 'ETH' ? '0px' : '20px',
+                          'margin-right': item.code !== 'USDC' ? '0px' : '20px',
                         }"
                         class="Max"
                         v-show="Max === 1"
@@ -277,7 +277,7 @@
                         <span
                           :style="{
                             'margin-right':
-                              item.code === 'ETH' ? '0px' : '20px',
+                              item.code !== 'USDC' ? '0px' : '20px',
                           }"
                           class="Max"
                           v-show="Max === 2"
