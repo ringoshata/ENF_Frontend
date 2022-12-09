@@ -7,6 +7,7 @@ import {
   LPoolContract,
   HPoolContract,
   NMarkets,
+  HNMarkets,
 } from "../config.js";
 import BigNumber from "bignumber.js";
 
@@ -107,6 +108,15 @@ const setNApprove = async (number, accounts, code) => {
     });
 };
 
+const setHNApprove = async (number, accounts, code) => {
+  const asset = HNContract[code].asset;
+  return getWeb3(IERC20_abi, asset)
+    .methods.approve(HNContract[code].depositApprover, number)
+    .send({
+      from: accounts,
+    });
+};
+
 // const updatePeriodStatu = async (accounts, name) => {
 // 	const data = await getWeb3(HGateKeeper_abi, HGateKeeper[name])
 // 		.methods.updatePeriodStatus()
@@ -137,6 +147,7 @@ const setHApprove = async (number, accounts, code, type) => {
 
 //获取IERC20BalanceOf
 const getHIERCBalanceOf = async (accounts, code, type) => {
+  console.log("CRV Bal: ", code, type, HContract[code][type], accounts);
   return getWeb3(IERC20_abi, HContract[code][type])
     .methods.balanceOf(accounts)
     .call();
@@ -211,6 +222,25 @@ const setNDeposit = async (number, accounts, code) => {
     amount: number,
     tradeType: 0,
     token: NMarkets.indexOf(code.toLowerCase()),
+  };
+};
+
+//存低风险
+const setHNDeposit = async (number, accounts, code) => {
+  const params = await getWeb3(
+    DepositApprover_abi,
+    HNContract[code].depositApprover
+  )
+    .methods.deposit(number)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HNContract[code].depositApprover,
+    value: 0,
+    data: params,
+    amount: number,
+    tradeType: 0,
+    token: HNMarkets.indexOf(code.toLowerCase()),
   };
 };
 
@@ -512,6 +542,8 @@ export {
   getHNAsset,
   getHNWithdrawFee,
   setHNDepositETH,
+  setHNDeposit,
   getHNWithdraw,
   getHNAllowance,
+  setHNApprove,
 };

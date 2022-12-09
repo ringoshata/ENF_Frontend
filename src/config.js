@@ -27,7 +27,7 @@ let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
 let HNMarkets = [];
-switch ("develop") {
+switch ("production") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
   case "develop":
@@ -117,7 +117,7 @@ switch ("develop") {
     };
     break;
 
-  case "test":
+  case "production":
     API_URL = "https://api.earning.farm";
     API_V3_URL = "https://api-v3test.earning.farm/v1";
     OPEN_URL = "https://etherscan.io/tx/";
@@ -125,7 +125,7 @@ switch ("develop") {
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["usdc"];
-    HNMarkets = ["eth"];
+    HNMarkets = ["eth", "wbtc"];
     Contract = {
       USDC: {
         CFToken: "0xE15c9afC4DfF21707e70A976e42baa203094e362",
@@ -163,7 +163,7 @@ switch ("develop") {
         CFToken: "0x5de1C7CAfdBDD4faec3ef51f8C8c1A91EA20F8C0",
         CFVault: "0x47dC47921e285af62Db608f3DA7b59bdD6a74d19",
         USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        CRV: "0xB0724732367C6330801B38B0a0268c890d6bA4dB",
+        CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
         USDCDecimal: 1e6,
         CRVDecimal: 1e18,
         Length: 2,
@@ -202,72 +202,80 @@ switch ("develop") {
         Decimal: 1e18,
         assetDecimal: 18,
       },
-    };
-    break;
-
-  // 生产环境
-  case "production":
-    API_URL = "https://api.earning.farm";
-    API_V3_URL = "https://api-v3test.earning.farm";
-    OPEN_URL = "https://etherscan.io/tx/";
-    Network = 1;
-    HMarkets = ["usdc"];
-    LMarkets = ["usdc", "wbtc", "eth"];
-    NMarkets = ["usdc"];
-    Contract = {
-      USDC: {
-        CFToken: "0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF",
-        ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
-        CFVault: "0x889B9194Fb1D66509d3d043e7c839582fED6E607",
-        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        Decimal: 1e6,
-        Name: "稳定币去中心化收益基金",
-        Introduce:
-          "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
-      },
       WBTC: {
-        CFToken: "0x2Eb8e7fEeC11D6dCE4799AfA3b7Bb83BbA02b081",
-        ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
-        CFVault: "0xAFcf9Ec311c42b4221697cf7F5392f9110DC8e8c",
-        WBTC: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        depositApprover: "0x1f5a23C77f589DBe5d597F9B2F1C834945b45C90",
+        vault: "0xeb7621B1119fB5A77dF8A9758cA946Fc213C611A",
+        controller: "0x00B22718F0376Eae0F5476799b6026f18C012514",
+        asset: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         Decimal: 1e8,
-        Name: "BTC去中心化收益基金",
-        Introduce:
-          "基于Curve的多个BTC ERC20池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
-      },
-      ETH: {
-        CFToken: "0xA709eCF2253B18A757214D64F42026Be8F008bD8",
-        CFVault: "0xE303a8Cc37C96669C7Ba5aeE1134bb530e766BdF",
-        Decimal: 1e18,
-        Name: "ETH去中心化收益基金",
-        Introduce:
-          "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
-      },
-    };
-
-    HContract = {
-      USDC: {
-        CFToken: "0xfF55c4e42D7C2c4f9fd251f62b3469Fb2783954F",
-        CFVault: "0x16b0C918B4aEE4Fa87AE20576A369723A3A7F648",
-        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
-        USDCDecimal: 1e6,
-        CRVDecimal: 1e18,
-        Length: 2,
-        Name: "稳定币去中心化收益基金",
-        Introduce:
-          "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
-      },
-      ETH: {
-        CFToken: "0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19",
-        CFVault: "0xe39fd820B58f83205Db1D9225f28105971c3D309",
-        Decimal: 1e18,
-        Name: "ETH去中心化收益基金",
-        Introduce:
-          "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+        assetDecimal: 8,
       },
     };
     break;
+
+  // // 生产环境
+  // case "production":
+  //   API_URL = "https://api.earning.farm";
+  //   API_V3_URL = "https://api-v3test.earning.farm";
+  //   OPEN_URL = "https://etherscan.io/tx/";
+  //   Network = 1;
+  //   HMarkets = ["usdc"];
+  //   LMarkets = ["usdc", "wbtc", "eth"];
+  //   NMarkets = ["usdc"];
+  //   Contract = {
+  //     USDC: {
+  //       CFToken: "0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF",
+  //       ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
+  //       CFVault: "0x889B9194Fb1D66509d3d043e7c839582fED6E607",
+  //       USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  //       Decimal: 1e6,
+  //       Name: "稳定币去中心化收益基金",
+  //       Introduce:
+  //         "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+  //     },
+  //     WBTC: {
+  //       CFToken: "0x2Eb8e7fEeC11D6dCE4799AfA3b7Bb83BbA02b081",
+  //       ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
+  //       CFVault: "0xAFcf9Ec311c42b4221697cf7F5392f9110DC8e8c",
+  //       WBTC: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+  //       Decimal: 1e8,
+  //       Name: "BTC去中心化收益基金",
+  //       Introduce:
+  //         "基于Curve的多个BTC ERC20池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+  //     },
+  //     ETH: {
+  //       CFToken: "0xA709eCF2253B18A757214D64F42026Be8F008bD8",
+  //       CFVault: "0xE303a8Cc37C96669C7Ba5aeE1134bb530e766BdF",
+  //       Decimal: 1e18,
+  //       Name: "ETH去中心化收益基金",
+  //       Introduce:
+  //         "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+  //     },
+  //   };
+
+  //   HContract = {
+  //     USDC: {
+  //       CFToken: "0xfF55c4e42D7C2c4f9fd251f62b3469Fb2783954F",
+  //       CFVault: "0x16b0C918B4aEE4Fa87AE20576A369723A3A7F648",
+  //       USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  //       CRV: "0xD533a949740bb3306d119CC777fa900bA034cd52",
+  //       USDCDecimal: 1e6,
+  //       CRVDecimal: 1e18,
+  //       Length: 2,
+  //       Name: "稳定币去中心化收益基金",
+  //       Introduce:
+  //         "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+  //     },
+  //     ETH: {
+  //       CFToken: "0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19",
+  //       CFVault: "0xe39fd820B58f83205Db1D9225f28105971c3D309",
+  //       Decimal: 1e18,
+  //       Name: "ETH去中心化收益基金",
+  //       Introduce:
+  //         "基于Curve的多个ETH池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
+  //     },
+  //   };
+  //   break;
 }
 // API_URL = 'https://api-hr.earning.farm'
 // OPEN_URL = 'https://etherscan.io/tx/'

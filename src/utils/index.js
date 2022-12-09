@@ -81,35 +81,47 @@ const random = (lower, upper) => {
 };
 
 const calcAPY = (his, list, all) => {
+  console.log("His: ", his, list, all)
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
   const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
   let apys = avgByDate(his, false, totalAssets);
-
+  console.log("APYS: ", apys)
   if (!all && apys.length < 105) {
     apys = [...list.slice(0, 105 - apys.length), ...apys];
   } else if (all) {
     apys = [...list, ...apys];
     apys = avgByDate(apys, true, totalAssets);
   }
+  console.log("APYS sec: ", apys)
 
   let avgApys = [];
-  for (let i = 1; i < apys.length; i++) {
-    const start = i >= 30 ? i - 30 : 0;
-    const end = i + 1;
-    const subArr = apys.slice(start, end);
-    let avg = 0;
-    let sumTotal = 0;
-    for (let j = 0; j < subArr.length; j++) {
-      const total = subArr[j].total >= 0 ? subArr[j].total : totalAssets;
-      avg += subArr[j].profit * total;
-      sumTotal += total;
+  if (apys.length > 1) {
+    for (let i = 1; i < apys.length; i++) {
+      const start = i >= 30 ? i - 30 : 0;
+      const end = i + 1;
+      const subArr = apys.slice(start, end);
+      let avg = 0;
+      let sumTotal = 0;
+      for (let j = 0; j < subArr.length; j++) {
+        const total = subArr[j].totalAssets >= 0 ? subArr[j].totalAssets : totalAssets;
+        avg += subArr[j].profit * total;
+        sumTotal += total;
+      }
+      avg /= sumTotal;
+  
+      avg = avg < 0 ? 0 : avg;
+  
+      avgApys.push({ profit: avg, date: apys[i].date });
     }
-    avg /= sumTotal;
-
-    avg = avg < 0 ? 0 : avg;
-
-    avgApys.push({ profit: avg, date: apys[i].date });
+  
+  } else {
+    avgApys = [
+      {
+        profit: apys[0].profit,
+        date: apys[0].date
+      }
+    ]
   }
 
   // const apys = his.map((rec) => ({
@@ -123,7 +135,7 @@ const calcAPY = (his, list, all) => {
   // }
 
   // avg /= len;
-
+  console.log("AVG: ", avgApys)
   avgApys = avgApys.sort((a, b) => a.date - b.date);
   let avg = avgApys[avgApys.length - 1].profit;
   return {
@@ -143,7 +155,7 @@ const avgByDate = (his, all, total) => {
     const prevItem = apys[apys.length - 1];
     if (!prevItem)
       apys.push({
-        total: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
+        totalAssets: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
         profit: all ? his[i].profit : his[i].apy,
         date: all ? his[i].date : his[i].lastRecorded / 1000,
       });
@@ -177,7 +189,7 @@ const avgByDate = (his, all, total) => {
         apys[apys.length - 1].profit = apy;
       } else {
         apys.push({
-          total: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
+          totalAssets: his[i].totalAssets >= 0 ? his[i].totalAssets : total,
           profit: all ? his[i].profit : his[i].apy,
           date: all ? his[i].date : Math.ceil(his[i].lastRecorded / 1000),
         });

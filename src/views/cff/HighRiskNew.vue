@@ -316,7 +316,7 @@
                   type="warning"
                   plain
                   style="float: right; width: 45%"
-                  v-if="item.code === 'USDC' && isApprove"
+                  v-if="item.code !== 'ETH' && isApprove"
                   @click="approve"
                   >Approve
                 </el-button>
