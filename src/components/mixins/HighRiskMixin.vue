@@ -97,6 +97,7 @@ export default {
       this.withdrawVal = 0;
     },
     selectConfirmChange(val) {
+      console.log("Val: ", val)
       this.getHAllowances(this.itemData);
       this.getTotalOf(this.itemData.code);
       this.confirmInput = 0;
@@ -428,10 +429,10 @@ export default {
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
           : await getHIERCBalanceOf(
-              this.MetaMaskAddress,
-              code,
-              this.selectConfirm
-            );
+            this.MetaMaskAddress,
+            code,
+            this.selectConfirm
+          );
       const number =
         code === "ETH"
           ? HContract[code].Decimal

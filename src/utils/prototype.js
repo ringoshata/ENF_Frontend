@@ -3,7 +3,9 @@ import { numberWithCommas } from "@/utils";
 // import Vue from 'vue'
 
 const infuraURI =
-  "https://mainnet.infura.io/v3/3c4c8bb2512e47d9af5c8ca6ec32c81f";
+  "https://mainnet.infura.io/v3/cc3e879fa2e34c7d9dc0fc9612fc9bd4";
+
+// const infuraURI = "http://localhost:8545/";
 Vue.prototype.$web3 = new Web3(new Web3.providers.HttpProvider(infuraURI));
 
 Vue.prototype.$nameFixed = (num, name) => {

@@ -1,10 +1,10 @@
 <script>
 import {
-  getHIERCBalanceOf,
+  getHNIERCBalanceOf,
   setHDeposit,
   setHNDepositETH,
   getHNWithdraw,
-  getHAllowance,
+  getHNAllowance,
   setHApprove,
   getETHBalance,
   getVirtualPriceFromHContract,
@@ -13,6 +13,8 @@ import {
   getHNPause,
   getHNAsset,
   getHNWithdrawFee,
+  setHNApprove,
+  setHNDeposit
 } from "@/common/web3";
 import { getAsset, getProfit, fetchTxs, fetchTotalHis } from "@/common/api";
 import {
@@ -33,6 +35,7 @@ import { mapState } from "vuex";
 const HighExchangeRate = {
   USDC: 0.98,
   ETH: 0.97,
+  WBTC: 0.98,
 };
 const period = 105 * 24 * 3600;
 export default {
@@ -41,7 +44,7 @@ export default {
   },
   data() {
     return {
-      markets: ["eth"],
+      markets: ["eth", "wbtc"],
       list: [],
       marks: {
         0: "0",
@@ -52,7 +55,7 @@ export default {
       },
       textList: {
         USDC: "Deposited USDC will be converted into CRV and be staked. This strategy has risk exposure on CRV token, though staking APY is high, investors could bear loss or gain higher returns when CRV price fluctuates.",
-        WBTC: "Invest in BTC pools based on Convex / Curve, rewards received will be converted into corresponding asset for further investment automatically.",
+        WBTC: "BTC are deposited into AAVE to earn interests, and ETH are borrowed from AAVE and invested into ETH Leveraged Strategy to earn leveraged yield.",
         ETH: "Leveraged investment in ETH 2.0 staking.",
       },
       loading: null,
@@ -155,9 +158,12 @@ export default {
     },
 
     async getAssetInfo(account, item) {
+      console.log("Item: ", item)
       const decimal = HNContract[item.toUpperCase()].Decimal;
+      console.log("decimal: ", decimal)
       // Get Total
       const total = await getHNTotalAsset(item.toUpperCase());
+      console.log("total: ", total)
 
       // Get pause
       const paused = await getHNPause(item.toUpperCase());
@@ -192,20 +198,26 @@ export default {
         }
       }
 
-      let { totalRec } = await fetchTotalHis(
-        HNContract[item.toUpperCase()].vault,
-        period * 1000
-      );
+      let totalRec, avg = 0
 
+      try {
+        const { totalRec: rec } = await fetchTotalHis(
+          HNContract[item.toUpperCase()].vault,
+          period * 1000
+        );
+        totalRec = rec
 
-      const { avg } = calcAPY(totalRec, []);
+        const { avg: average } = calcAPY(totalRec, []);
+        avg = average
+      } catch (err) {
+        console.error(err)
+      }
       const ratio = await getHNWithdrawFee(item.toUpperCase());
       return {
         paused,
         total: total / decimal,
         user_assets: userAssets / decimal,
         user_profit: userProfit,
-        // sevendayProfit: 0,
         sevendayProfit: avg,
         code: item.toUpperCase(),
         ratio: ratio / 10000,
@@ -262,12 +274,11 @@ export default {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       this.isLoading();
       try {
-        const resApprove = await setHApprove(
-          new BigNumber(1e32).toString(10),
-          this.MetaMaskAddress,
-          this.itemData.code,
-          this.selectConfirm
-        );
+        const resApprove = await setHNApprove(
+            new BigNumber(1e32).toString(10),
+            this.MetaMaskAddress,
+            this.itemData.code,
+          );
         if (resApprove.status) {
           this.isApprove = false;
           this.Success("Successfully authorized.");
@@ -304,16 +315,17 @@ export default {
           "high"
         );
       } else {
+        console.log("Big: ", this.confirmInput, item.code)
         bigInput = setConfirmValue(
           this.confirmInput,
-          decimal[`${this.selectConfirm}Decimal`]
+          decimal.Decimal
         );
-        params = await setHDeposit(
+        params = await setHNDeposit(
           bigInput,
           this.MetaMaskAddress,
           item.code,
-          this.selectConfirm
         );
+        console.log("Params: ", params)
       }
       this.sendTransaction(params);
     },
@@ -340,36 +352,37 @@ export default {
       if (item.code !== "ETH" && isLt(item.user_profit, 0)) {
         return (this.isYield = true);
       }
-      const exchangeRate = await getExchangeRateFromHContract(
-        item.code,
-        this.withdrawInput
-      );
-      if (exchangeRate > HighExchangeRate[item.code]) {
-        this.withdraw(item);
-      } else {
-        this.$confirm(
-          "The market is fluctuating now. Withdraw may experience big slippage results in a big loss of principle. Are you sure to continue?",
-          "Warning",
-          {
-            confirmButtonText: "Continue",
-            cancelButtonText: "Cancel",
-            type: "warning",
-          }
-        )
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "Action completed",
-            });
-            this.withdraw(item);
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "Action canceled",
-            });
-          });
-      }
+      // const exchangeRate = await getExchangeRateFromHContract(
+      //   item.code,
+      //   this.withdrawInput
+      // );
+      this.withdraw(item);
+      // if (exchangeRate > HighExchangeRate[item.code]) {
+      //   this.withdraw(item);
+      // } else {
+      //   this.$confirm(
+      //     "The market is fluctuating now. Withdraw may experience big slippage results in a big loss of principle. Are you sure to continue?",
+      //     "Warning",
+      //     {
+      //       confirmButtonText: "Continue",
+      //       cancelButtonText: "Cancel",
+      //       type: "warning",
+      //     }
+      //   )
+      //     .then(() => {
+      //       this.$message({
+      //         type: "success",
+      //         message: "Action completed",
+      //       });
+      //       this.withdraw(item);
+      //     })
+      //     .catch(() => {
+      //       this.$message({
+      //         type: "info",
+      //         message: "Action canceled",
+      //       });
+      //     });
+      // }
     },
     async withdraw(item) {
       this.isYield = false;
@@ -377,24 +390,27 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
+      console.log("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
       const amount =
         maxWithdraw === true
           ? new BigNumber(item.user_assets)
-              .multipliedBy(new BigNumber(item.decimal))
-              .toFixed(0)
+            .multipliedBy(new BigNumber(item.decimal))
+            .toFixed(0)
           : new BigNumber(this.withdrawInput)
-              .multipliedBy(new BigNumber(item.decimal))
-              .toFixed(0);
+            .multipliedBy(new BigNumber(item.decimal))
+            .toFixed(0);
       // const bigInput = maxWithdraw
       //   ? item.lp_token
       //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
+      console.log("Amount: ", amount)
       const params = await getHNWithdraw(
         amount,
         this.MetaMaskAddress,
         item.code,
         this.selectWithdraw
       );
+      console.log("Params: ", params)
       this.sendTransaction(params);
     },
     inputConfirm() {
@@ -412,8 +428,8 @@ export default {
           item === 100
             ? this.itemData.user_assets
             : Number(setAssetsValue(item, this.itemData.user_assets)).toFixed(
-                decimal
-              );
+              decimal
+            );
       } else {
         const user =
           this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
@@ -498,16 +514,25 @@ export default {
       });
     },
     async getHAllowances(val) {
-      const allowance = await getHAllowance(
+      console.log("Code: ", val.code)
+      const allowance = await getHNAllowance(
         this.MetaMaskAddress,
-        val.code,
-        this.selectConfirm
+        val.code === "USDC" ? this.selectConfirm : val.code,
       );
+      console.log("Allowance: ", allowance)
+      const item = val.code === "USDC" ? this.selectConfirm : ""
+      const number =
+        val.code === "ETH"
+          ? HContract[val.code].Decimal
+          : HNContract[val.code][`${item}Decimal`];
+      console.log("number: ", number)
+
       const myAllowance = dividedBy(
         allowance,
-        HContract[val.code][`${this.selectConfirm}Decimal`]
+        number
       );
       const less = isLessThanOrEqualTo(myAllowance, 0);
+      console.log("Less: ", less, myAllowance)
       this.isApprove = less;
     },
     async getTotalOf(code) {
@@ -515,18 +540,21 @@ export default {
         this.totalOf = 0;
         return this.downLoading();
       }
+      const item = code === "USDC" ? this.selectConfirm : ""
+      console.log("Total : ", item, code)
       const bcf =
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
-          : await getHIERCBalanceOf(
-              this.MetaMaskAddress,
-              code,
-              this.selectConfirm
-            );
+          : await getHNIERCBalanceOf(
+            this.MetaMaskAddress,
+            code
+          );
+      console.log("Amt: ", bcf)
       const number =
         code === "ETH"
           ? HContract[code].Decimal
-          : HContract[code][`${this.selectConfirm}Decimal`];
+          : HNContract[code][`${item}Decimal`];
+      console.log("number: ", number)
       this.totalOf = dividedBy(bcf, number);
       this.downLoading();
     },
@@ -546,7 +574,7 @@ export default {
       const { apys } = calcAPY(totalHis.totalRec, []);
 
       this.echartsData = apys;
-        this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
+      this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;
