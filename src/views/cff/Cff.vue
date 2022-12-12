@@ -22,6 +22,7 @@
     <high-risk v-if="!IsPhone && !isHigh" />
     <high-risk-h5 v-if="IsPhone && !isHigh" />
     <high-risk-new v-if="!IsPhone && !isHigh" />
+    <high-risk-new-h5 v-if="IsPhone && !isHigh" />
     <h1 class="low-title">
       <el-divider direction="vertical"></el-divider> Outdated
     </h1>
@@ -42,6 +43,7 @@ export default {
     HighRisk: () => import("./HighRisk.vue"),
     HighRiskH5: () => import("./HighRiskH5.vue"),
     HighRiskNew: () => import("./HighRiskNew.vue"),
+    HighRiskNewH5: () => import("./HighRiskNewH5.vue"),
   },
   computed: {
     ...mapState(["IsPhone"]),
