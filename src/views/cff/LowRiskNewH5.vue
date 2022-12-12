@@ -83,7 +83,7 @@
             <el-col :span="9">
               <span class="bom_li">Asset</span><br />
               <span class="spanText">{{
-                $nameFixed(item.totalassets, item.code)
+                $nameFixed(item.total, item.code)
               }}</span>
             </el-col>
             <el-col :span="9">

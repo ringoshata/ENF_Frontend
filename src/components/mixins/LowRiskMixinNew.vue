@@ -360,6 +360,7 @@ export default {
         item.code,
         this.withdrawInput
       );
+      console.log("Rate: ", exchangeRate, LowExchangeRate[item.code])
       if (exchangeRate > LowExchangeRate[item.code]) {
         this.withdraw(item);
       } else {

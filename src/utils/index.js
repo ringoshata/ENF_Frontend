@@ -81,19 +81,16 @@ const random = (lower, upper) => {
 };
 
 const calcAPY = (his, list, all) => {
-  console.log("His: ", his, list, all)
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
   const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
   let apys = avgByDate(his, false, totalAssets);
-  console.log("APYS: ", apys)
   if (!all && apys.length < 105) {
     apys = [...list.slice(0, 105 - apys.length), ...apys];
   } else if (all) {
     apys = [...list, ...apys];
     apys = avgByDate(apys, true, totalAssets);
   }
-  console.log("APYS sec: ", apys)
 
   let avgApys = [];
   if (apys.length > 1) {
@@ -135,7 +132,6 @@ const calcAPY = (his, list, all) => {
   // }
 
   // avg /= len;
-  console.log("AVG: ", avgApys)
   avgApys = avgApys.sort((a, b) => a.date - b.date);
   let avg = avgApys[avgApys.length - 1].profit;
   return {
