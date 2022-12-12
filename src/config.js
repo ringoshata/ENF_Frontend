@@ -125,7 +125,8 @@ switch ("production") {
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["usdc"];
-    HNMarkets = ["eth", "wbtc"];
+    HNMarkets = ["eth"];
+    // HNMarkets = ["eth", "wbtc"];
     Contract = {
       USDC: {
         CFToken: "0xE15c9afC4DfF21707e70A976e42baa203094e362",
