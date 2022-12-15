@@ -177,6 +177,7 @@ export default {
       if (account) {
         try {
           userHistory = await fetchTxs(
+            HNContract[item.toUpperCase()].vault,
             HNContract[item.toUpperCase()].asset,
             account
           );

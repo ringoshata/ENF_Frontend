@@ -4,7 +4,7 @@ import {
   getETHBalance,
   getNAllowance,
   setNDeposit,
-  setDepositETH,
+  setNDepositETH,
   getNWithdraw,
   setNApprove,
   calc_withdraw_one_coin,
@@ -195,7 +195,9 @@ export default {
     },
 
     async getAssetInfo(account, item) {
+      console.log("Item: ", item)
       const decimal = NContract[item.toUpperCase()].Decimal;
+      console.log("Decimal: ", decimal)
       // Get Total
       const total = await getNTotalAsset(item.toUpperCase());
 
@@ -210,6 +212,7 @@ export default {
 
       if (account) {
         userHistory = await fetchTxs(
+          NContract[item.toUpperCase()].vault,
           NContract[item.toUpperCase()].asset,
           account
         );
@@ -229,17 +232,20 @@ export default {
             : 0;
       }
 
-      let { totalRec } = await fetchTotalHis(
-        NContract[item.toUpperCase()].vault,
-        period * 1000
-      );
+      let totalRec, avg = 0
 
-      // const list = await getProfit(item);
-      const list = await fetchV2TotalHis(
-        Contract[item.toUpperCase()].CFVault,
-        period
-      );
-      const { avg } = calcAPY(totalRec, list.totalRec);
+      try {
+        const { totalRec: rec } = await fetchTotalHis(
+          NContract[item.toUpperCase()].vault,
+          period * 1000
+        );
+        totalRec = rec
+
+        const { avg: average } = calcAPY(totalRec, []);
+        avg = average
+      } catch (err) {
+        console.error(err)
+      }
 
       const ratio = await getNWithdrawFee(item.toUpperCase());
       return {
@@ -326,11 +332,10 @@ export default {
       const bigInput = setConfirmValue(this.confirmInput, decimal);
       const params =
         this.itemData.code === "ETH"
-          ? await setDepositETH(
+          ? await setNDepositETH(
               bigInput,
               this.MetaMaskAddress,
               this.itemData.code,
-              "low"
             )
           : await setNDeposit(
               bigInput,
@@ -434,7 +439,7 @@ export default {
         }
       } else {
         const params = await getNWithdraw(
-          bigInput,
+          amount,
           this.MetaMaskAddress,
           item.code
         );
@@ -520,6 +525,7 @@ export default {
         const less = isLessThanOrEqualTo(myAllowance, 0);
         this.isApprove = less;
       }
+      console.log("Val.code", val.code)
       this.list.map((item) => {
         if (val.code === item.code) {
           item.showContent = !item.showContent;
@@ -547,7 +553,7 @@ export default {
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
           : await getIERCBalanceOf(this.MetaMaskAddress, code);
-      const number = Contract[code].Decimal;
+      const number = NContract[code].Decimal;
       this.totalOf = dividedBy(bcf, number);
     },
     closeMain(val) {

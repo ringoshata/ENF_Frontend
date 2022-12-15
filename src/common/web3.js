@@ -226,6 +226,19 @@ const setNDeposit = async (number, accounts, code) => {
 };
 
 //存低风险
+const setNDepositETH = async (number, accounts, code) => {
+  const params = await getWeb3(VaultV3_abi, NContract[code].vault)
+    .methods.deposit(number, accounts)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: NContract[code].vault,
+    value: number,
+    data: params,
+  };
+};
+
+//存低风险
 const setHNDeposit = async (number, accounts, code) => {
   const params = await getWeb3(
     DepositApprover_abi,
@@ -517,6 +530,7 @@ export {
   setDeposit,
   setNDeposit,
   setDepositETH,
+  setNDepositETH,
   getWithdraw,
   getNAllowance,
   getHAllowance,

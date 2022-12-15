@@ -154,6 +154,7 @@ export default {
       if (this.codeurl[0] === "n") {
         const nUrls = ["nusdc", "nwbtc", "neth"];
         const list = await fetchTxs(
+          NContract[this.code].vault,
           NContract[this.code].asset,
           this.MetaMaskAddress
         );
@@ -161,6 +162,7 @@ export default {
       } else if (this.codeurl.indexOf("hn") == 0) {
         const nUrls = ["hnusdc", "hneth"];
         const list = await fetchTxs(
+          HNContract[this.code].vault,
           HNContract[this.code].asset,
           this.MetaMaskAddress
         );

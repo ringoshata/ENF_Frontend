@@ -42,10 +42,11 @@ const registerTx = async (data) => {
   });
 };
 
-const fetchTxs = async (code, address) => {
+const fetchTxs = async (vault, code, address) => {
   const checkSummed = Vue.prototype.$web3.utils.toChecksumAddress(address);
+  const checkSummedVault = Vue.prototype.$web3.utils.toChecksumAddress(vault);
   return fetch({
-    url: `${API_V3_URL}/user_tx/${code}/${checkSummed}`,
+    url: `${API_V3_URL}/user_tx/${code}/${checkSummedVault}/${checkSummed}`,
     method: "GET",
   });
 };
