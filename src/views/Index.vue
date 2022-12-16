@@ -227,33 +227,28 @@ export default {
 
       const { avg: lowRiskUSDC } = calcAPY(totalRec, list.totalRec);
       this.lowList.push({sevendayProfit: lowRiskUSDC, code: "USDC"});
-      console.log("Low USDC: ", this.lowList)
 
-      let {totalRec: ethLowRec} = await fetchTotalHis(
-        NContract["ETH"].vault,
-        105 * 24 * 3600 * 1000
-      )
-      const {avg: lowRiskETH} = calcAPY(ethLowRec, [])
-      this.lowList.push({sevendayProfit: lowRiskETH, code: "ETH"});
-        console.log("Low ETH: ", lowRiskETH)
-        console.log("Low ETH: ", this.lowList)
+      // let {totalRec: ethLowRec} = await fetchTotalHis(
+      //   NContract["ETH"].vault,
+      //   105 * 24 * 3600 * 1000
+      // )
+      // const {avg: lowRiskETH} = calcAPY(ethLowRec, [])
+      // this.lowList.push({sevendayProfit: lowRiskETH, code: "ETH"});
 
       let { totalRec: highETHRec } = await fetchTotalHis(
         HNContract["ETH"].vault,
         105 * 24 * 3600 * 1000
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, []);
-      console.log("High ETH: ", highRiskETH)
       this.mediumList.push({sevendayProfit : highRiskETH, code: "ETH"});
-      console.log("THis Low: ", this.mediumList)
 
       
-      let { totalRec: highWBTCRec } = await fetchTotalHis(
-        HNContract["WBTC"].vault,
-        105 * 24 * 3600 * 1000
-      );
-      const { avg: highRiskWBTC } = calcAPY(highWBTCRec, []);
-      this.highList.push({sevendayProfit : highRiskWBTC, code: "WBTC"});
+      // let { totalRec: highWBTCRec } = await fetchTotalHis(
+      //   HNContract["WBTC"].vault,
+      //   105 * 24 * 3600 * 1000
+      // );
+      // const { avg: highRiskWBTC } = calcAPY(highWBTCRec, []);
+      // this.highList.push({sevendayProfit : highRiskWBTC, code: "WBTC"});
     },
 
     closeShow(val) {
