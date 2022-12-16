@@ -32,15 +32,24 @@
                 @click="goCff(item, 'low')"
               >
                 {{ item.code }}
-                <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
                 <span>
                   {{ $numFixed(item.sevendayProfit, 1) + "%" }}
                 </span>
                 <svg-icon
-                  v-show="item.code !== 'ETH'"
                   iconClass="low"
                   class="websvg"
                 ></svg-icon>
+              </p>
+              <p
+                class="lowp"
+                :key="leverage"
+                @click="goCff(mediumList[0], 'high')"
+              >
+                {{ "ETH" }}
+                <span class="leve">Leveraged</span>
+                <span>
+                  {{ $numFixed(mediumList[0].sevendayProfit, 1) + "%" }}
+                </span>
               </p>
             </div>
             <div v-if="highList.length > 0">
@@ -169,6 +178,7 @@ export default {
   data() {
     return {
       lowList: [],
+      mediumList: [],
       highList: [],
       dialogVisible: false,
     };
@@ -187,8 +197,7 @@ export default {
       });
     },
     async getSevendayProfits() {
-      const h = ["usdc"].map((item) => "h" + item);
-      const all = ["usdc", "eth", "husdc"];
+      const all = ["husdc"];
       Promise.all(
         // LMarkets.map((item) => {
         // 	return getSevendayProfit(item)
@@ -198,9 +207,6 @@ export default {
         })
       )
         .then(([...all]) => {
-          this.lowList = all
-            .filter((item) => item.data.risk_tpye === 0)
-            .map((item) => item.data);
           this.highList = all
             .filter((item) => item.data.risk_tpye === 1)
             .map((item) => item.data);
@@ -208,7 +214,7 @@ export default {
         .catch((err) => {
           console.log(err, "=-");
         });
-
+        console.log("List: ", this.lowList, this.highList)
       let { totalRec } = await fetchTotalHis(
         NContract["USDC"].vault,
         105 * 24 * 3600 * 1000
@@ -220,15 +226,34 @@ export default {
       );
 
       const { avg: lowRiskUSDC } = calcAPY(totalRec, list.totalRec);
+      this.lowList.push({sevendayProfit: lowRiskUSDC, code: "USDC"});
+      console.log("Low USDC: ", this.lowList)
 
-      this.lowList[0].sevendayProfit = lowRiskUSDC;
+      let {totalRec: ethLowRec} = await fetchTotalHis(
+        NContract["ETH"].vault,
+        105 * 24 * 3600 * 1000
+      )
+      const {avg: lowRiskETH} = calcAPY(ethLowRec, [])
+      this.lowList.push({sevendayProfit: lowRiskETH, code: "ETH"});
+        console.log("Low ETH: ", lowRiskETH)
+        console.log("Low ETH: ", this.lowList)
 
       let { totalRec: highETHRec } = await fetchTotalHis(
         HNContract["ETH"].vault,
         105 * 24 * 3600 * 1000
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, []);
-      this.lowList[1].sevendayProfit = highRiskETH;
+      console.log("High ETH: ", highRiskETH)
+      this.mediumList.push({sevendayProfit : highRiskETH, code: "ETH"});
+      console.log("THis Low: ", this.mediumList)
+
+      
+      let { totalRec: highWBTCRec } = await fetchTotalHis(
+        HNContract["WBTC"].vault,
+        105 * 24 * 3600 * 1000
+      );
+      const { avg: highRiskWBTC } = calcAPY(highWBTCRec, []);
+      this.highList.push({sevendayProfit : highRiskWBTC, code: "WBTC"});
     },
 
     closeShow(val) {

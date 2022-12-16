@@ -75,7 +75,7 @@ export default {
       textList: {
         USDC: "Invest in stable-coin pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
         WBTC: "Invest in BTC pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
-        ETH: "Invest in ETH pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
+        ETH: "Invest in ETH pools on multiple Defi protocols, rewards received will be converted into ETH for further investment automatically.",
       },
       loading: null,
       itemData: null,
