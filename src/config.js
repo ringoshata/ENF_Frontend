@@ -193,7 +193,7 @@ switch ("production") {
         CRVDecimal: 1e18,
       },
       ETH: {
-        vault: "0x086Eb7d87272d4d72eBe4ffddF9b579A503a1419",
+        vault: "0x5AdA9cEa5d3A7805ee63037306BC0C02a512e4E3",
         controller: "0x6D2AEd3EBA5F32E55782b70eCc90456977ec2020",
         asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
         Decimal : 1e18,
