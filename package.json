@@ -10,6 +10,9 @@
 		"build:dev": "NODE_ENV=develop&&vue-cli-service build",
 		"build:test": "vue-cli-service build"
 	},
+	"engines": {
+		"node": "14.x"
+	},
 	"dependencies": {
 		"@shapeshiftoss/proto-tx-builder": "^0.2.0",
 		"axios": "^0.21.1",
