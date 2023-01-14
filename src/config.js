@@ -128,12 +128,11 @@ switch ("production") {
     HNMarkets = ["eth", "wbtc"];
     Contract = {
       USDC: {
-        CFToken: "0xE15c9afC4DfF21707e70A976e42baa203094e362",
-        ERC20DepositApprover: "0x3BF97E2284D2C1a5297536bCA9712aF69490E389",
+        CFToken: "0x412EbDc655f897e0eC0f89022bc7DEC62BAaE0aF",
+        ERC20DepositApprover: "0xe5afC078684683dc232E053c2c9D86015Aa00Ec6",
         CFVault: "0x889B9194Fb1D66509d3d043e7c839582fED6E607",
         USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         Decimal: 1e6,
-        Length: 2,
         Name: "稳定币去中心化收益基金",
         Introduce:
           "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
@@ -172,8 +171,8 @@ switch ("production") {
           "基于Curve的多个稳定币池进行投资，每日收到的CRV奖励将转换成相应资产后继续投入。",
       },
       ETH: {
-        		CFToken: '0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19',
-        		CFVault: '0xe39fd820B58f83205Db1D9225f28105971c3D309',
+        CFToken: "0xBAe7EC1BAaAe7d5801ad41691A2175Aa11bcba19",
+        CFVault: "0xe39fd820B58f83205Db1D9225f28105971c3D309",
         Decimal: 1e18,
         Name: "ETH去中心化收益基金",
         Introduce:
@@ -196,9 +195,9 @@ switch ("production") {
         vault: "0x5AdA9cEa5d3A7805ee63037306BC0C02a512e4E3",
         controller: "0x6D2AEd3EBA5F32E55782b70eCc90456977ec2020",
         asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-        Decimal : 1e18,
-        assetDecimal: 18
-      }
+        Decimal: 1e18,
+        assetDecimal: 18,
+      },
     };
 
     HNContract = {
