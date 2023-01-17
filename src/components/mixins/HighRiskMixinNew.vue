@@ -37,7 +37,8 @@ const HighExchangeRate = {
   ETH: 0.97,
   WBTC: 0.98,
 };
-const period = 105 * 24 * 3600;
+const period = 195 * 24 * 3600;
+// const period = 105 * 24 * 3600;
 export default {
   computed: {
     ...mapState(["MetaMaskAddress", "Pendings"]),
@@ -100,7 +101,7 @@ export default {
         newOne ? Number(new Date()) : period * 1000
       );
 
-      const { apys } = calcAPY(totalHis.totalRec, [], newOne);
+      const { apys } = calcAPY(totalHis.totalRec, [], newOne, 195, 60);
       this.echartsData = apys;
     },
   },
@@ -208,7 +209,7 @@ export default {
         );
         totalRec = rec
 
-        const { avg: average } = calcAPY(totalRec, []);
+        const { avg: average } = calcAPY(totalRec, [], false, 195, 60);
         avg = average
       } catch (err) {
         console.error(err)
@@ -572,10 +573,10 @@ export default {
         period * 1000
       );
 
-      const { apys } = calcAPY(totalHis.totalRec, []);
+      const { apys } = calcAPY(totalHis.totalRec, [], false, 195, 60);
 
       this.echartsData = apys;
-      this.itemData.code === "USDC" ? "CRV 30 Days APY" : "30 Days APY";
+      this.title = this.itemData.code === "USDC" ? "CRV 30 Days APY" : this.itemData.code === "ETH"?  "60 Days APY":  "30 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;

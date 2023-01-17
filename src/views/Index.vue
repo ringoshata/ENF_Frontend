@@ -240,9 +240,9 @@ export default {
 
       let { totalRec: highETHRec } = await fetchTotalHis(
         HNContract["ETH"].vault,
-        105 * 24 * 3600 * 1000
+        195 * 24 * 3600 * 1000
       );
-      const { avg: highRiskETH } = calcAPY(highETHRec, []);
+      const { avg: highRiskETH } = calcAPY(highETHRec, [], false, 195, 60);
       console.log("High ETH: ", highRiskETH)
       this.mediumList.push({sevendayProfit : highRiskETH, code: "ETH"});
       console.log("THis Low: ", this.mediumList)

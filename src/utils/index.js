@@ -80,13 +80,13 @@ const random = (lower, upper) => {
   return Math.floor(Math.random() * (upper - lower)) + lower;
 };
 
-const calcAPY = (his, list, all) => {
+const calcAPY = (his, list, all, days=105, avgdays=30) => {
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
   const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
   let apys = avgByDate(his, false, totalAssets);
-  if (!all && apys.length < 105) {
-    apys = [...list.slice(0, 105 - apys.length), ...apys];
+  if (!all && apys.length < days) {
+    apys = [...list.slice(0, days - apys.length), ...apys];
   } else if (all) {
     apys = [...list, ...apys];
     apys = avgByDate(apys, true, totalAssets);
@@ -95,7 +95,7 @@ const calcAPY = (his, list, all) => {
   let avgApys = [];
   if (apys.length > 1) {
     for (let i = 1; i < apys.length; i++) {
-      const start = i >= 30 ? i - 30 : 0;
+      const start = i >= avgdays ? i - avgdays : 0;
       const end = i + 1;
       const subArr = apys.slice(start, end);
       let avg = 0;
