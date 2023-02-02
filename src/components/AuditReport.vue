@@ -34,15 +34,11 @@ export default {
       diaWidth: "40%",
       audit: [
         {
-          name: "Low risk USDC and BTC strategy",
-          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report/Smart%20Contract%20Security%20Audit%20Report%20-%20earning.farm.pdf",
-        },
-        {
           name: "Medium risk USDC",
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20earning.farm_en-us.pdf",
         },
         {
-          name: "Medium risk ETH",
+          name: "ETH Leveraged Product",
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20Earning%20Farm%20-%20ETH%20Leverage_en-us.pdf",
         },
         {
