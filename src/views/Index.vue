@@ -25,26 +25,14 @@
           <p class="pp">We are providing USDC, WBTC, ETH strategy as:</p>
           <div class="ppb">
             <div v-if="lowList.length > 0">
-              <p
-                class="lowp"
-                v-for="(item, idx) in lowList"
-                :key="idx"
-                @click="goCff(item, 'low')"
-              >
+              <p class="lowp" v-for="(item, idx) in lowList" :key="idx" @click="goCff(item, 'low')">
                 {{ item.code }}
                 <span>
                   {{ $numFixed(item.sevendayProfit, 1) + "%" }}
                 </span>
-                <svg-icon
-                  iconClass="low"
-                  class="websvg"
-                ></svg-icon>
+                <svg-icon iconClass="low" class="websvg"></svg-icon>
               </p>
-              <p
-                class="lowp"
-                :key="leverage"
-                @click="goCff(mediumList[0], 'high')"
-              >
+              <p class="lowp" :key="leverage" @click="goCff(mediumList[0], 'high')">
                 {{ "ETH" }}
                 <span class="leve">Leveraged</span>
                 <span>
@@ -53,26 +41,17 @@
               </p>
             </div>
             <div v-if="highList.length > 0">
-              <p
-                v-for="(item, idx) in highList"
-                :key="idx"
-                @click="goCff(item, 'high')"
-                style="cursor: pointer"
-              >
+              <p v-for="(item, idx) in highList" :key="idx" @click="goCff(item, 'high')" style="cursor: pointer">
                 {{ item.code }}
                 <span v-show="item.code === 'ETH'" class="leve">Leveraged</span>
                 <span> {{ $numFixed(item.sevendayProfit, 1) + "%" }}</span>
-                <svg-icon
-                  :iconClass="item.code === 'ETH' ? 'mlr' : 'mr'"
-                  :class="item.code === 'ETH' ? 'mlr' : 'mr'"
-                ></svg-icon>
+                <svg-icon :iconClass="item.code === 'ETH' ? 'mlr' : 'mr'"
+                  :class="item.code === 'ETH' ? 'mlr' : 'mr'"></svg-icon>
               </p>
             </div>
           </div>
           <div class="dapps">
-            <el-button class="dapp" type="primary" @click="gohome" round
-              >DAPP</el-button
-            >
+            <el-button class="dapp" type="primary" @click="gohome" round>DAPP</el-button>
           </div>
           <div class="text">
             <h2>Why ENF？</h2>
@@ -94,10 +73,8 @@
               <div class="cardsi">
                 <img src="../assets/imgs/card2.png" alt="" />
                 <p>Low Risk</p>
-                <span
-                  >Audited by Slowmist and PeckShield. Always select proven DEFI
-                  protocols and mature pools.</span
-                >
+                <span>Audited by Slowmist and PeckShield. Always select proven DEFI
+                  protocols and mature pools.</span>
               </div>
             </div>
             <div class="card3">
@@ -142,10 +119,8 @@
             > -->
           </div>
           <div class="fots">
-            <span class="ear"
-              >Earning.Farm strongly recommends you DO NOT risk assets more than
-              you can afford to lose.</span
-            >
+            <span class="ear">Earning.Farm strongly recommends you DO NOT risk assets more than
+              you can afford to lose.</span>
           </div>
         </div>
       </el-main>
@@ -214,7 +189,7 @@ export default {
         .catch((err) => {
           console.log(err, "=-");
         });
-        console.log("List: ", this.lowList, this.highList)
+      console.log("List: ", this.lowList, this.highList)
       let { totalRec } = await fetchTotalHis(
         NContract["USDC"].vault,
         105 * 24 * 3600 * 1000
@@ -226,17 +201,14 @@ export default {
       );
 
       const { avg: lowRiskUSDC } = calcAPY(totalRec, list.totalRec);
-      this.lowList.push({sevendayProfit: lowRiskUSDC, code: "USDC"});
-      console.log("Low USDC: ", this.lowList)
+      this.lowList.push({ sevendayProfit: lowRiskUSDC, code: "USDC" });
 
-      let {totalRec: ethLowRec} = await fetchTotalHis(
+      let { totalRec: ethLowRec } = await fetchTotalHis(
         NContract["ETH"].vault,
         105 * 24 * 3600 * 1000
       )
-      const {avg: lowRiskETH} = calcAPY(ethLowRec, [])
-      this.lowList.push({sevendayProfit: lowRiskETH, code: "ETH"});
-        console.log("Low ETH: ", lowRiskETH)
-        console.log("Low ETH: ", this.lowList)
+      const { avg: lowRiskETH } = calcAPY(ethLowRec, [])
+      this.lowList.push({ sevendayProfit: lowRiskETH, code: "ETH" });
 
       let { totalRec: highETHRec } = await fetchTotalHis(
         HNContract["ETH"].vault,
@@ -244,16 +216,15 @@ export default {
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, [], false, 195, 60);
       console.log("High ETH: ", highRiskETH)
-      this.mediumList.push({sevendayProfit : highRiskETH, code: "ETH"});
-      console.log("THis Low: ", this.mediumList)
+      this.mediumList.push({ sevendayProfit: highRiskETH, code: "ETH" });
 
-      
+
       let { totalRec: highWBTCRec } = await fetchTotalHis(
         HNContract["WBTC"].vault,
         105 * 24 * 3600 * 1000
       );
       const { avg: highRiskWBTC } = calcAPY(highWBTCRec, []);
-      this.highList.push({sevendayProfit : highRiskWBTC, code: "WBTC"});
+      this.highList.push({ sevendayProfit: highRiskWBTC, code: "WBTC" });
     },
 
     closeShow(val) {
@@ -276,9 +247,11 @@ export default {
 .mr {
   font-size: 79px !important;
 }
+
 .mlr {
   font-size: 106px !important;
 }
+
 .home {
   height: 100%;
   width: 100%;
@@ -341,12 +314,15 @@ export default {
       display: flex;
       margin-top: 20px;
       justify-content: center;
+
       div {
         margin: 0 20px;
         min-width: 400px;
+
         .lowp {
           margin-left: 80px;
         }
+
         p {
           // cursor: pointer;
           font-weight: 500;
@@ -354,6 +330,7 @@ export default {
           display: flex;
           align-items: center;
           padding: 10px;
+
           .leve {
             border: 1px solid #2196f3;
             color: #2196f3;
@@ -362,12 +339,14 @@ export default {
             margin: 0 10px;
             border-radius: 4px;
           }
+
           span {
             padding: 0 20px;
             font-size: 26px;
             color: #566570;
             font-weight: 500;
           }
+
           .svg-icon {
             font-size: 66px;
             margin-top: -40px;
@@ -379,6 +358,7 @@ export default {
     .fots {
       margin-bottom: 20px;
       padding: 0 20px;
+
       .ear {
         cursor: initial;
       }
@@ -415,6 +395,7 @@ export default {
 
         .cardsi {
           text-align: center;
+
           img {
             margin-top: 42px;
             height: 76px;
@@ -515,20 +496,26 @@ export default {
   .body {
     width: 100% !important;
   }
+
   .el-header .header {
     width: 96% !important;
   }
+
   .ppb {
     flex-direction: column;
     align-items: center;
+
     div {
       min-width: 200px !important;
+
       .lowp {
         margin: 10px 0px !important;
       }
+
       p {
         justify-content: center;
         font-size: 18px !important;
+
         span {
           font-size: 20px !important;
           padding: 0 10px !important;
@@ -537,18 +524,22 @@ export default {
         .svg-icon {
           font-size: 46px !important;
         }
+
         .leve {
           font-size: 12px !important;
         }
+
         .mr {
           font-size: 57px !important;
         }
+
         .mlr {
           font-size: 75px !important;
         }
       }
     }
   }
+
   // .dappa {
   // 	display: none;
   // }
@@ -556,6 +547,7 @@ export default {
     width: 280px !important;
     height: 46px !important;
   }
+
   .en {
     margin-left: auto;
   }
@@ -582,10 +574,12 @@ export default {
       margin-bottom: 36px !important;
     }
   }
+
   .fots {
     text-align: center;
     // display: flex;
     margin-bottom: 10px !important;
+
     span {
       display: block;
       margin-right: 0px !important;
@@ -599,6 +593,7 @@ export default {
       text-align: left;
     }
   }
+
   // .fots {
   // 	text-align: center;
   // 	display: flex;
