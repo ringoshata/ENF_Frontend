@@ -25,11 +25,11 @@
 							<el-divider direction="vertical"></el-divider>
 						</div>
 					</el-col>
-					<el-col :span="12">
+					<!-- <el-col :span="12">
 						<span style="font-size: 14px; color: #566570">
 							APY：{{ $numFixed(item.sevendayProfit, 1) + '%' }}</span
 						>
-					</el-col>
+					</el-col> -->
 					<el-col :span="1">
 						<i
 							:class="
@@ -107,9 +107,9 @@
 							</span>
 
 							<div class="linetable">
-								<span class="bom_tu" @click="selectLine(item)"
+								<!-- <span class="bom_tu" @click="selectLine(item)"
 									><i class="el-icon-data-line"></i>View Trend</span
-								>
+								> -->
 								<span class="bom_tu" @click="selectTable(item)"
 									><i class="el-icon-notebook-2"></i>View History</span
 								>

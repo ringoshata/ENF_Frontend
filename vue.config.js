@@ -36,7 +36,13 @@ module.exports = {
 			.set('views', resolve('src/views'))
 			.set('bn.js', path.resolve('node_modules', 'bn.js'))
 
-		// vue-svg-loader
+		const jsRule = config.module.rule('js').test(/\.(js)(\?.*)?$/)
+		jsRule.uses.clear()
+		jsRule
+			.use('babel-loader')
+			.loader('babel-loader')
+
+			// vue-svg-loader
 		const svgRule = config.module.rule('svg') // 找到svg-loader
 		svgRule.uses.clear() // 清除已有的loader, 如果不这样做会添加在此loader之后
 		svgRule.exclude.add(/node_modules/) // 正则匹配排除node_modules目录
@@ -89,7 +95,7 @@ module.exports = {
 			config.plugins.push(
 				new TerserPlugin({
 					terserOptions: {
-						ecma: undefined,
+						ecma: 2020,
 						warnings: false,
 						parse: {},
 						compress: {
@@ -177,5 +183,6 @@ module.exports = {
 		//     next()
 		//   })
 		// }
-	}
+	},
+	transpileDependencies: ['eip-712'] 
 }

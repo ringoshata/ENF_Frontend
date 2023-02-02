@@ -1,21 +1,10 @@
 <template>
   <div>
-    <dialog-form
-      :dialogVisible="dialogVisible"
-      :diaWidth="itemWidth"
-      :title="title"
-      @closeShow="closeShow"
-      v-if="dialogVisible"
-    >
-      <el-button
-        type="primary"
-        plain
-        round
-        v-for="item in audit"
-        :key="item.name"
-        @click="openGit(item.url)"
-        >{{ item.name }}</el-button
-      >
+    <dialog-form :dialogVisible="dialogVisible" :diaWidth="itemWidth" :title="title" @closeShow="closeShow"
+      v-if="dialogVisible">
+      <el-button type="primary" plain round v-for="item in audit" :key="item.name" @click="openGit(item.url)">{{
+        item.name
+      }}</el-button>
     </dialog-form>
   </div>
 </template>
@@ -60,6 +49,14 @@ export default {
           name: "Low risk USDC - V3",
           url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20EarningFarm%20v3%20Iterative_en-us.pdf",
         },
+        {
+          name: "Low risk ETH - V3",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20ENF_ETH_Lowrisk_en-us.pdf"
+        },
+        {
+          name: "Medium risk WBTC - V3",
+          url: "https://github.com/slowmist/Knowledge-Base/blob/master/open-report-V2/smart-contract/SlowMist%20Audit%20Report%20-%20ENF_WBTC_Borrow_ETH_en-us.pdf"
+        }
       ],
     };
   },

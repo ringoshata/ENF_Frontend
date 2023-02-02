@@ -127,10 +127,10 @@
             <el-col :span="18">
               <span class="spanText">{{ textList[item.code] }}</span>
               <br />
-              <span class="spanText"
+              <span v-if="item.code !== 'WBTC'" class="spanText"
                 >{{
                   item.code === "ETH"
-                    ? `An annual 2.5`
+                    ? `An annual 2`
                     : item.code === "WBTC" ? "10" : $feeRatio(item.feeRatio)
                 }}%
                 {{

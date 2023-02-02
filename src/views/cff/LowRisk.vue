@@ -72,13 +72,13 @@
 						</div>
 					</el-col>
 					<el-col :span="4">
-						<div>
+						<!-- <div>
 							<li class="top_l2"></li>
 							<li class="top_li">30 Days APY</li>
 							<li class="bom_li">
 								{{ $numFixed(item.sevendayProfit, 1) + '%' }}
 							</li>
-						</div>
+						</div> -->
 					</el-col>
 					<el-col :span="1">
 						<i
@@ -106,7 +106,7 @@
 								charged as processing fee.
 							</span>
 						</el-col>
-						<el-col :span="5">
+						<!-- <el-col :span="5">
 							<div>
 								<el-button
 									style="float: right"
@@ -117,7 +117,7 @@
 									View Trend
 								</el-button>
 							</div>
-						</el-col>
+						</el-col> -->
 						<el-col :span="5">
 							<div>
 								<el-button

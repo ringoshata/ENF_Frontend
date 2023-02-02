@@ -10,6 +10,9 @@
 		"build:dev": "NODE_ENV=develop&&vue-cli-service build",
 		"build:test": "vue-cli-service build"
 	},
+	"engines": {
+		"node": "14.x"
+	},
 	"dependencies": {
 		"@shapeshiftoss/proto-tx-builder": "^0.2.0",
 		"axios": "^0.21.1",
@@ -27,6 +30,8 @@
 		"web3": "^1.7.3"
 	},
 	"devDependencies": {
+		"@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
+		"@babel/plugin-proposal-optional-chaining": "^7.20.7",
 		"@vue/cli-plugin-babel": "~4.5.0",
 		"@vue/cli-plugin-router": "~4.5.0",
 		"@vue/cli-plugin-vuex": "~4.5.0",
