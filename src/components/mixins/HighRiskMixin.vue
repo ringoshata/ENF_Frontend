@@ -97,7 +97,6 @@ export default {
       this.withdrawVal = 0;
     },
     selectConfirmChange(val) {
-      console.log("Val: ", val)
       this.getHAllowances(this.itemData);
       this.getTotalOf(this.itemData.code);
       this.confirmInput = 0;

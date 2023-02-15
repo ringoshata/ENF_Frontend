@@ -2,19 +2,23 @@
 import {
   getIERCBalanceOf,
   getETHBalance,
-  getNAllowance,
-  setNDeposit,
-  setNDepositETH,
-  getNWithdraw,
+  getHFAllowance,
+  setHFDeposit,
+  setHFDepositETH,
+  getHFWithdraw,
+  getHFRedeem,
   setNApprove,
   calc_withdraw_one_coin,
-  getNTotalAsset,
-  getNPause,
-  getNAsset,
+  getHFTotalAsset,
+  getHFPause,
+  getHFAsset,
+  getHFLP,
   getExchangeRateFromLContract,
   formatUnit,
-  getWithdrawable,
-  getNWithdrawFee,
+  getHFWithdrawable,
+  getHFWithdrawFee,
+  getHFPendingReward,
+  getHFClaim
 } from "@/common/web3";
 
 import {
@@ -23,6 +27,7 @@ import {
   fetchTxs,
   fetchTotalHis,
   fetchV2TotalHis,
+  fetchTokenPrice
 } from "@/common/api";
 import {
   dividedBy,
@@ -38,14 +43,18 @@ import {
   calcAPY,
 } from "@/utils";
 import {
+  getTokenNameFromAddress,
+  getTokenDecimalFromAddress
+} from "@/utils/address"
+import {
   Contract,
-  NContract,
+  HFContract,
   TTIMER,
-  LMarkets,
-  NMarkets,
+  HFMarkets,
 } from "../../config.js";
 import { mapState } from "vuex";
 import BigNumber from "bignumber.js";
+import { async } from 'q';
 const LowExchangeRate = {
   USDC: 0.99,
   WBTC: 0.98,
@@ -59,7 +68,7 @@ export default {
   props: {
     goData: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data() {
@@ -73,9 +82,9 @@ export default {
         100: "100%",
       },
       textList: {
-        USDC: "Invest in stable-coin pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
+        USDC: "Invest in stable-coin pools on multiple Defi protocols, reward tokens received will be kept in the vault to appreciate the price raise. Users need to decide when to claim or sell the yields.",
         WBTC: "Invest in BTC pools on multiple Defi protocols, rewards received will be converted into USDC for further investment automatically.",
-        ETH: "Invest in ETH pools on multiple Defi protocols, rewards received will be converted into ETH for further investment automatically.",
+        ETH: "Invest in ETH pools on multiple Defi protocols, rewards tokens received will be kept in the vault to appreciate the price raise. Users need to decide when to claim or sell the yields.",
       },
       loading: null,
       itemData: null,
@@ -99,6 +108,9 @@ export default {
       slippage: "0",
       totalassets: 0,
       max: false,
+      pendingRewards: {},
+      totalRewardUSD: {},
+      totalRewardETH: {}
     };
   },
   watch: {
@@ -121,7 +133,7 @@ export default {
         newOne ? Number(new Date()) / 1000 : period
       );
       const totalHis = await fetchTotalHis(
-        NContract[this.itemData.code.toUpperCase()].vault,
+        HFContract[this.itemData.code.toUpperCase()].vault,
         newOne ? Number(new Date()) : period * 1000
       );
 
@@ -141,7 +153,7 @@ export default {
       this.isCalc = false;
     },
     getTimer() {
-      NMarkets.forEach((item) => {
+      HFMarkets.forEach((item) => {
         const timer = random(TTIMER[0], TTIMER[1]);
         this[item + "timer"] = setInterval(() => {
           this.getAssets(item.toUpperCase());
@@ -149,7 +161,7 @@ export default {
       });
     },
     async getAssets(codename) {
-      // const total = await getNTotalAsset(codename);
+      // const total = await getHFTotalAsset(codename);
       // const usdcData = await getAsset(this.MetaMaskAddress, codename);
       const data = await this.getAssetInfo(this.MetaMaskAddress, codename);
       this.list.forEach((item, idx) => {
@@ -194,24 +206,60 @@ export default {
       // });
     },
 
+    async getRewardPending(code, account, rewards) {
+      console.log("hf Account: ", account, rewards)
+      const res = await Promise.all(rewards.map(async (reward, index) => {
+        return getHFPendingReward(code, account, index)
+      }))
+      const prices = await Promise.all(rewards.map (async (reward) => {
+        return fetchTokenPrice(reward)
+      }))
+
+      console.log("hf reward rews: ", res)
+      console.log("hf reward prices: ", prices)
+      this.totalRewardETH[code] = 0
+      this.totalRewardUSD[code] = 0
+      this.pendingRewards[code] = []
+      res.forEach((pending, index) => {
+        const token = rewards[index]
+        const tokenName = getTokenNameFromAddress(token)
+        const tokenDecimal = getTokenDecimalFromAddress(token)
+        this.pendingRewards[code][index] = {
+          token, tokenName, pending: pending / (10**tokenDecimal)
+        }
+        this.totalRewardETH[code] += pending * prices[index].priceRec.ethPrice / (10**tokenDecimal)
+        this.totalRewardUSD[code] += pending * prices[index].priceRec.usdPrice / (10**tokenDecimal)
+      })
+    },
+
     async getAssetInfo(account, item) {
-      const decimal = NContract[item.toUpperCase()].Decimal;
+      console.log("hf Item: ", item, HFContract[item.toUpperCase()])
+      const decimal = HFContract[item.toUpperCase()].Decimal;
+      console.log("Decimal: ", decimal)
       // Get Total
-      const total = await getNTotalAsset(item.toUpperCase());
+      const total = await getHFTotalAsset(item.toUpperCase());
+      console.log("hf total: ", total)
 
       // Get pause
-      const paused = await getNPause(item.toUpperCase());
+      const paused = await getHFPause(item.toUpperCase());
 
       // Get User individual
-      const userAssets = await getNAsset(item.toUpperCase(), account);
+      const userAssets = await getHFAsset(item.toUpperCase(), account);
+      const userLP = await getHFLP(item.toUpperCase(), account);
 
       let userHistory = [];
       let userProfit = 0;
 
       if (account) {
+        // Get reward pending
+        const rewards = HFContract[item.toUpperCase()].rewards
+
+        await this.getRewardPending(item.toUpperCase(), account, rewards)
+        console.log("hf pending: ",item, this.pendingRewards)
+        console.log("hf total: ", this.totalRewardETH, this.totalRewardUSD)
         userHistory = await fetchTxs(
-          NContract[item.toUpperCase()].vault,
-          NContract[item.toUpperCase()].asset,
+          HFContract[item.toUpperCase()].vault,
+          HFContract[item.toUpperCase()].asset,
           account
         );
 
@@ -234,7 +282,7 @@ export default {
 
       try {
         const { totalRec: rec } = await fetchTotalHis(
-          NContract[item.toUpperCase()].vault,
+          HFContract[item.toUpperCase()].vault,
           period * 1000
         );
         totalRec = rec
@@ -245,31 +293,32 @@ export default {
         console.error(err)
       }
 
-      const ratio = await getNWithdrawFee(item.toUpperCase());
+      const ratio = await getHFWithdrawFee(item.toUpperCase());
       return {
         paused,
         total: total / decimal,
         user_assets: userAssets / decimal,
+        user_lp: userLP,
         user_profit: userProfit,
         sevendayProfit: avg,
         code: item.toUpperCase(),
         ratio: ratio / 10000,
-        decimal: NContract[item.toUpperCase()].Decimal,
+        decimal: HFContract[item.toUpperCase()].Decimal,
       };
     },
 
     async getAssetList() {
-      // const total = await getNTotalAsset("USDC");
+      // const total = await getHFTotalAsset("USDC");
 
-      // const asset = await getNAsset("USDC", this.MetaMaskAddress)
+      // const asset = await getHFAsset("USDC", this.MetaMaskAddress)
       this.isLoading();
       Promise.all(
-        NMarkets.map(async (item, idx) => {
+        HFMarkets.map(async (item, idx) => {
           return this.getAssetInfo(this.MetaMaskAddress, item);
         })
       )
-        .then(([...NMarkets]) => {
-          this.list = NMarkets.map((item) => {
+        .then(([...HFMarkets]) => {
+          this.list = HFMarkets.map((item) => {
             return {
               ...item,
               showContent: false,
@@ -281,7 +330,7 @@ export default {
             );
             this.changeContent(data);
           }
-          NMarkets.forEach((item) => {
+          HFMarkets.forEach((item) => {
             clearInterval(this[item + "timer"]);
             this[item + "timer"] = null;
           });
@@ -326,21 +375,21 @@ export default {
           );
       }
 
-      const decimal = NContract[item.code].Decimal;
+      const decimal = HFContract[item.code].Decimal;
       const bigInput = setConfirmValue(this.confirmInput, decimal);
       const params =
         this.itemData.code === "ETH"
-          ? await setNDepositETH(
-              bigInput,
-              this.MetaMaskAddress,
-              this.itemData.code,
-            )
-          : await setNDeposit(
-              bigInput,
-              this.MetaMaskAddress,
-              this.itemData.code
-            );
-      this.sendTransaction(params, () => {});
+          ? await setHFDepositETH(
+            bigInput,
+            this.MetaMaskAddress,
+            this.itemData.code,
+          )
+          : await setHFDeposit(
+            bigInput,
+            this.MetaMaskAddress,
+            this.itemData.code
+          );
+      this.sendTransaction(params, () => { });
     },
     async fetchExchangeRate(code, value) {
       if (value < 1e-6 || isNaN(Number(value))) {
@@ -353,7 +402,8 @@ export default {
         ((standardExchangeRate - exchangeRate) * 100).toFixed(2)
       );
     },
-    async withdrawItem(item) {
+    async withdrawItem(item, mode) {
+      console.log('hf withdrawitem: ', item, mode)
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       if (Number(this.withdrawInput) === 0)
         return this.Warning("Invalid Value");
@@ -363,8 +413,9 @@ export default {
         item.code,
         this.withdrawInput
       );
+      console.log("hf withdraw Rate: ", exchangeRate, LowExchangeRate[item.code])
       if (exchangeRate > LowExchangeRate[item.code]) {
-        this.withdraw(item);
+        this.withdraw(item, mode);
       } else {
         this.$confirm(
           "The market is fluctuating now. Withdraw may experience big slippage results in a big loss of principle. Are you sure to continue?",
@@ -380,7 +431,7 @@ export default {
               type: "success",
               message: "Action completed",
             });
-            this.withdraw(item);
+            this.withdraw(item, mode);
           })
           .catch(() => {
             this.$message({
@@ -390,34 +441,33 @@ export default {
           });
       }
     },
-    async withdraw(item, type = 0) {
+
+    async claim (item, mode) {
+      console.log("hf claim: ", item, mode)
+      if (this.totalRewardETH[item.code] == 0) return this.Warning("Nothing to claim");
+      const params = await getHFClaim(this.MetaMaskAddress, item.code, mode)
+      console.log("hf claim param: ", params)
+      this.sendTransaction(params);
+    },
+
+    async withdraw(item, mode, type = 0) {
+      console.log("hf withdraw: ", item, mode)
       const maxWithdraw = this.withdrawInput === item.user_assets;
+      console.log("hf maxWithdraw: ", maxWithdraw)
       const amount =
         maxWithdraw === true
-          ? new BigNumber(item.user_assets)
-              .multipliedBy(new BigNumber(item.decimal))
-              .toFixed(0)
+          ? item.user_lp 
           : new BigNumber(this.withdrawInput)
-              .multipliedBy(new BigNumber(item.decimal))
-              .toFixed(0);
-      // const bigInput =
-      //   maxWithdraw === true
-      //     ? item.lp_token
-      //     : setWithdrawValue(
-      //         this.withdrawInput,
-      //         item.lp_token,
-      //         item.user_assets
-      //       );
+            .multipliedBy(new BigNumber(item.decimal))
+            .toFixed(0);
+      
       if (item.code === "USDC" && type === 0) {
-        // .multipliedBy(this.itemData.lpTokenBalance)
-        // .dividedBy(this.itemData.totalSupply)
-        // .toFixed(0);
-
-        const a = await getWithdrawable(
+        const a = await getHFWithdrawable(
           item.code,
           this.MetaMaskAddress,
           amount
         );
+        console.log("hf withdrawable: ", a, amount)
         this.calcNum = new BigNumber(amount)
           .minus(a)
           .dividedBy(amount)
@@ -425,20 +475,33 @@ export default {
         if (new BigNumber(this.calcNum).gt(0.02)) {
           this.isCalc = true;
         } else {
-          const params = await getNWithdraw(
+          const params = maxWithdraw ? await getHFRedeem(
             amount,
             this.MetaMaskAddress,
-            item.code
+            item.code,
+            mode
+          ) :  await getHFWithdraw(
+            amount,
+            this.MetaMaskAddress,
+            item.code,
+            mode
           );
+          console.log("hf withdraw param: ", params)
           this.sendTransaction(params);
           this.calcNum = null;
           this.isCalc = false;
         }
       } else {
-        const params = await getNWithdraw(
+        const params = maxWithdraw ? await getHFRedeem(
           amount,
           this.MetaMaskAddress,
-          item.code
+          item.code,
+          mode
+        ) : await getHFWithdraw(
+          amount,
+          this.MetaMaskAddress,
+          item.code,
+          mode
         );
         this.sendTransaction(params);
         this.calcNum = null;
@@ -451,17 +514,17 @@ export default {
     setConfirmVal(item) {
       const num =
         this.itemData.code === "ETH" ? minus(this.totalOf) : this.totalOf;
-      const decimal = NContract[this.itemData.code].assetDecimal;
+      const decimal = HFContract[this.itemData.code].assetDecimal;
       this.confirmInput = Number(setAssetsValue(item, num)).toFixed(decimal);
     },
     setWithdrawVal(item) {
-      const decimal = NContract[this.itemData.code].assetDecimal;
+      const decimal = HFContract[this.itemData.code].assetDecimal;
       this.withdrawInput =
         item === 100
           ? this.itemData.user_assets
           : Number(setAssetsValue(item, this.itemData.user_assets)).toFixed(
-              decimal
-            );
+            decimal
+          );
       this.inputWithdraw("set");
     },
     inputWithdraw(type = null) {
@@ -517,11 +580,12 @@ export default {
       this.confirmVal = 0;
       this.isApprove = true;
       if (val.code !== "ETH" && !val.showContent && this.MetaMaskAddress) {
-        const allowance = await getNAllowance(this.MetaMaskAddress, val.code);
+        const allowance = await getHFAllowance(this.MetaMaskAddress, val.code);
         const myAllowance = dividedBy(allowance, Contract[val.code].Decimal);
         const less = isLessThanOrEqualTo(myAllowance, 0);
         this.isApprove = less;
       }
+      console.log("Val.code", val.code)
       this.list.map((item) => {
         if (val.code === item.code) {
           item.showContent = !item.showContent;
@@ -549,7 +613,7 @@ export default {
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
           : await getIERCBalanceOf(this.MetaMaskAddress, code);
-      const number = NContract[code].Decimal;
+      const number = HFContract[code].Decimal;
       this.totalOf = dividedBy(bcf, number);
     },
     closeMain(val) {
@@ -565,7 +629,7 @@ export default {
         period
       );
       const totalHis = await fetchTotalHis(
-        NContract[this.itemData.code.toUpperCase()].vault,
+        HFContract[this.itemData.code.toUpperCase()].vault,
         period * 1000
       );
 
@@ -579,7 +643,7 @@ export default {
       this.dialogVisible = true;
     },
     async selectTable() {
-      this.codeurl = `n${this.itemData.code.toLowerCase()}`;
+      this.codeurl = `hf${this.itemData.code.toLowerCase()}`;
       this.title = "History";
       this.dialogName = "CffTableNew";
       this.diaWidth = "80%";
@@ -588,7 +652,7 @@ export default {
   },
 
   destroyed() {
-    NMarkets.forEach((item) => {
+    HFMarkets.forEach((item) => {
       clearInterval(this[item + "timer"]);
       this[item + "timer"] = null;
     });

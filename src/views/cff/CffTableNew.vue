@@ -102,7 +102,7 @@
 <script>
 import dayjs from "dayjs";
 import { mapState } from "vuex";
-import { OPEN_URL, NContract, HNContract } from "../../config.js";
+import { OPEN_URL, NContract, HNContract, HFContract } from "../../config.js";
 import { getTransaction } from "@/common/api";
 import { fetchTxs } from "../../common/api";
 export default {
@@ -164,6 +164,14 @@ export default {
         const list = await fetchTxs(
           HNContract[this.code].vault,
           HNContract[this.code].asset,
+          this.MetaMaskAddress
+        );
+        this.tableData = list.userAssets;
+      } else if (this.codeurl.indexOf("hf") == 0) {
+        const nUrls = ["hfusdc", "hfeth"];
+        const list = await fetchTxs(
+          HFContract[this.code].vault,
+          HFContract[this.code].asset,
           this.MetaMaskAddress
         );
         this.tableData = list.userAssets;

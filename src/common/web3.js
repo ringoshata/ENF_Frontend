@@ -4,20 +4,24 @@ import {
   NContract,
   HNContract,
   HContract,
+  HFContract,
   LPoolContract,
   HPoolContract,
   NMarkets,
   HNMarkets,
+  HFMarkets
 } from "../config.js";
 import BigNumber from "bignumber.js";
 
 const CFVault_abi = require("./CFVault_abi.json");
 const VaultV3_abi = require("./VaultV3_abi.json");
+const VaultV3HF_abi = require("./VaultV3HF_abi.json");
 const ControllerV3_abi = require("./ControllerV3_abi.json");
 const DiCFVault_abi = require("./DiCFVault_abi.json");
 const IERC20_abi = require("./IERC20_abi.json");
 const ERC20DepositApprover_abi = require("./ERC20DepositApprover_abi.json");
 const DepositApprover_abi = require("./DepositApprover_abi.json");
+const DepositApproverHF_abi = require("./DepositApproverHF_abi.json");
 //高风险
 const EFCRVVault_abi = require("./EFCRVVault_abi.json");
 const ETHEFCRVVaule_abi = require("./ETHEFCRVVaule_abi.json");
@@ -79,6 +83,14 @@ const getNAllowance = async (accounts, code) => {
   const asset = NContract[code].asset;
   return getWeb3(IERC20_abi, asset)
     .methods.allowance(accounts, NContract[code].depositApprover)
+    .call();
+};
+
+const getHFAllowance = async (accounts, code) => {
+  if (!accounts) return 0;
+  const asset = HFContract[code].asset;
+  return getWeb3(IERC20_abi, asset)
+    .methods.allowance(accounts, HFContract[code].depositApprover)
     .call();
 };
 
@@ -147,14 +159,12 @@ const setHApprove = async (number, accounts, code, type) => {
 
 //获取IERC20BalanceOf
 const getHIERCBalanceOf = async (accounts, code, type) => {
-  console.log("CRV Bal: ", code, type, HContract[code][type], accounts);
   return getWeb3(IERC20_abi, HContract[code][type])
     .methods.balanceOf(accounts)
     .call();
 };
 
 const getHNIERCBalanceOf = async (accounts, code) => {
-  console.log("Address: ", HNContract[code].asset);
   return getWeb3(IERC20_abi, HNContract[code].asset)
     .methods.balanceOf(accounts)
     .call();
@@ -226,6 +236,25 @@ const setNDeposit = async (number, accounts, code) => {
 };
 
 //存低风险
+const setHFDeposit = async (number, accounts, code) => {
+  const params = await getWeb3(
+    DepositApproverHF_abi,
+    HFContract[code].depositApprover
+  )
+    .methods.deposit(number, accounts)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HFContract[code].depositApprover,
+    value: 0,
+    data: params,
+    amount: number,
+    tradeType: 0,
+    token: HFMarkets.indexOf(code.toLowerCase()),
+  };
+};
+
+//存低风险
 const setNDepositETH = async (number, accounts, code) => {
   const params = await getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.deposit(number, accounts)
@@ -233,6 +262,19 @@ const setNDepositETH = async (number, accounts, code) => {
   return {
     from: accounts,
     to: NContract[code].vault,
+    value: number,
+    data: params,
+  };
+};
+
+//存低风险
+const setHFDepositETH = async (number, accounts, code) => {
+  const params = await getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.deposit(number, accounts)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HFContract[code].vault,
     value: number,
     data: params,
   };
@@ -452,12 +494,22 @@ const getNTotalAsset = async (code) => {
   return web3.methods.totalAssets().call();
 };
 
+const getHFTotalAsset = async (code) => {
+  const web3 = getWeb3(VaultV3HF_abi, HFContract[code].vault);
+  return web3.methods.totalAssets().call();
+};
+
 const getHNTotalAsset = async (code) => {
   const web3 = getWeb3(VaultV3_abi, HNContract[code].vault);
   return web3.methods.totalAssets().call();
 };
+
 const getNPause = async (code) => {
   return getWeb3(VaultV3_abi, NContract[code].vault).methods.paused().call();
+};
+
+const getHFPause = async (code) => {
+  return getWeb3(VaultV3HF_abi, HFContract[code].vault).methods.paused().call();
 };
 
 const getHNPause = async (code) => {
@@ -473,6 +525,25 @@ const getNAsset = async (code, account) => {
   return getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.convertToAssets(lpBal)
     .call();
+};
+
+const getHFAsset = async (code, account) => {
+  if (!account) return 0;
+  const lpBal = await getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.balanceOf(account)
+    .call();
+
+  return getWeb3(VaultV3_abi, HFContract[code].vault)
+    .methods.convertToAssets(lpBal)
+    .call();
+};
+
+const getHFLP = async (code, account) => {
+  if (!account) return 0;
+  return getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.balanceOf(account)
+    .call();
+
 };
 
 const getHNAsset = async (code, account) => {
@@ -494,6 +565,15 @@ const getWithdrawable = async (code, account, amount) => {
     .call();
 };
 
+const getHFWithdrawable = async (code, account, amount) => {
+  if (!account) return 0;
+  if (amount == 0) return 0;
+
+  return getWeb3(ControllerV3_abi, HFContract[code].controller)
+    .methods.withdrawable(amount)
+    .call();
+};
+
 const getNWithdraw = async (number, accounts, code) => {
   const params = await getWeb3(VaultV3_abi, NContract[code].vault)
     .methods.withdraw(number, accounts)
@@ -506,16 +586,66 @@ const getNWithdraw = async (number, accounts, code) => {
   };
 };
 
+const getHFWithdraw = async (number, accounts, code, mode) => {
+  const params = await getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.withdraw(number, accounts, mode)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HFContract[code].vault,
+    value: 0,
+    data: params,
+  };
+};
+
+const getHFRedeem = async (number, accounts, code, mode) => {
+  const params = await getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.redeem(number, accounts, mode)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HFContract[code].vault,
+    value: 0,
+    data: params,
+  };
+};
+
+const getHFClaim = async (accounts, code, mode) => {
+  const params = await getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    .methods.claim(mode, accounts)
+    .encodeABI();
+  return {
+    from: accounts,
+    to: HFContract[code].vault,
+    value: 0,
+    data: params,
+  };
+};
+
 const getNWithdrawFee = async (code) => {
   return getWeb3(ControllerV3_abi, NContract[code].controller)
     .methods.withdrawFee()
     .call();
 };
+
+const getHFWithdrawFee = async (code) => {
+  return getWeb3(ControllerV3_abi, HFContract[code].controller)
+    .methods.withdrawFee()
+    .call();
+};
+
 const getHNWithdrawFee = async (code) => {
   return getWeb3(ControllerV3_abi, HNContract[code].controller)
     .methods.withdrawFee()
     .call();
 };
+
+const getHFPendingReward = async (code, account, index) => {
+  return getWeb3(VaultV3HF_abi, HFContract[code].vault)
+    // .methods.pendingReward( index)
+    .methods.pendingReward(account, index)
+    .call()
+}
 
 export {
   getWeb3,
@@ -529,8 +659,10 @@ export {
   setNApprove,
   setDeposit,
   setNDeposit,
+  setHFDeposit,
   setDepositETH,
   setNDepositETH,
+  setHFDepositETH,
   getWithdraw,
   getNAllowance,
   getHAllowance,
@@ -545,12 +677,18 @@ export {
   getExchangeRateFromLContract,
   getExchangeRateFromHContract,
   getNTotalAsset,
+  getHFTotalAsset,
+  getHFAsset,
+  getHFPause,
   getNPause,
   getNAsset,
   formatUnit,
   getWithdrawable,
   getNWithdraw,
+  getHFWithdraw,
+  getHFRedeem,
   getNWithdrawFee,
+  getHFWithdrawFee,
   getHNTotalAsset,
   getHNPause,
   getHNAsset,
@@ -559,5 +697,10 @@ export {
   setHNDeposit,
   getHNWithdraw,
   getHNAllowance,
+  getHFAllowance,
   setHNApprove,
+  getHFWithdrawable,
+  getHFPendingReward,
+  getHFLP,
+  getHFClaim
 };

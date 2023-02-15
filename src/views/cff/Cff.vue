@@ -5,6 +5,11 @@
     </h1>
     <low-risk-new v-if="!IsPhone && !isLow" />
     <low-risk-new-h5 v-if="IsPhone && !isLow" />
+    
+    <h1 class="low-title">
+      <el-divider direction="vertical"></el-divider> Hold & Farm
+    </h1>
+    <low-risk-farm v-if="!IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
     <h1 class="high-title" v-if="!isHigh">
       <el-divider direction="vertical"></el-divider> Medium Risk
@@ -40,6 +45,7 @@ export default {
     LowRiskH5: () => import("./LowRiskH5.vue"),
     LowRiskNew: () => import("./LowRiskNew.vue"),
     LowRiskNewH5: () => import("./LowRiskNewH5.vue"),
+    LowRiskFarm: () => import("./LowRiskFarm.vue"),
     HighRisk: () => import("./HighRisk.vue"),
     HighRiskH5: () => import("./HighRiskH5.vue"),
     HighRiskNew: () => import("./HighRiskNew.vue"),

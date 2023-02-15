@@ -189,7 +189,6 @@ export default {
         .catch((err) => {
           console.log(err, "=-");
         });
-      console.log("List: ", this.lowList, this.highList)
       let { totalRec } = await fetchTotalHis(
         NContract["USDC"].vault,
         105 * 24 * 3600 * 1000
@@ -215,7 +214,6 @@ export default {
         195 * 24 * 3600 * 1000
       );
       const { avg: highRiskETH } = calcAPY(highETHRec, [], false, 195, 60);
-      console.log("High ETH: ", highRiskETH)
       this.mediumList.push({ sevendayProfit: highRiskETH, code: "ETH" });
 
 

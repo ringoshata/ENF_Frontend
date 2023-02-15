@@ -159,12 +159,9 @@ export default {
     },
 
     async getAssetInfo(account, item) {
-      console.log("Item: ", item)
       const decimal = HNContract[item.toUpperCase()].Decimal;
-      console.log("decimal: ", decimal)
       // Get Total
       const total = await getHNTotalAsset(item.toUpperCase());
-      console.log("total: ", total)
 
       // Get pause
       const paused = await getHNPause(item.toUpperCase());
@@ -317,7 +314,6 @@ export default {
           "high"
         );
       } else {
-        console.log("Big: ", this.confirmInput, item.code)
         bigInput = setConfirmValue(
           this.confirmInput,
           decimal.Decimal
@@ -327,7 +323,6 @@ export default {
           this.MetaMaskAddress,
           item.code,
         );
-        console.log("Params: ", params)
       }
       this.sendTransaction(params);
     },
@@ -392,7 +387,6 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
-      console.log("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
       const amount =
         maxWithdraw === true
@@ -405,14 +399,12 @@ export default {
       // const bigInput = maxWithdraw
       //   ? item.lp_token
       //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
-      console.log("Amount: ", amount)
       const params = await getHNWithdraw(
         amount,
         this.MetaMaskAddress,
         item.code,
         this.selectWithdraw
       );
-      console.log("Params: ", params)
       this.sendTransaction(params);
     },
     inputConfirm() {
@@ -516,25 +508,21 @@ export default {
       });
     },
     async getHAllowances(val) {
-      console.log("Code: ", val.code)
       const allowance = await getHNAllowance(
         this.MetaMaskAddress,
         val.code === "USDC" ? this.selectConfirm : val.code,
       );
-      console.log("Allowance: ", allowance)
       const item = val.code === "USDC" ? this.selectConfirm : ""
       const number =
         val.code === "ETH"
           ? HContract[val.code].Decimal
           : HNContract[val.code][`${item}Decimal`];
-      console.log("number: ", number)
 
       const myAllowance = dividedBy(
         allowance,
         number
       );
       const less = isLessThanOrEqualTo(myAllowance, 0);
-      console.log("Less: ", less, myAllowance)
       this.isApprove = less;
     },
     async getTotalOf(code) {
@@ -543,7 +531,6 @@ export default {
         return this.downLoading();
       }
       const item = code === "USDC" ? this.selectConfirm : ""
-      console.log("Total : ", item, code)
       const bcf =
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
@@ -551,12 +538,10 @@ export default {
             this.MetaMaskAddress,
             code
           );
-      console.log("Amt: ", bcf)
       const number =
         code === "ETH"
           ? HContract[code].Decimal
           : HNContract[code][`${item}Decimal`];
-      console.log("number: ", number)
       this.totalOf = dividedBy(bcf, number);
       this.downLoading();
     },

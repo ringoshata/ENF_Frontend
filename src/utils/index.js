@@ -81,7 +81,6 @@ const random = (lower, upper) => {
 };
 
 const calcAPY = (his, list, all, days = 105, avgdays = 30) => {
-  console.log("His: ", his, list);
   his = his.sort((a, b) => a.lastRecorded - b.lastRecorded);
   const totalAssets = his[his.length - 1].totalAssets;
   const oneYear = 365 * 24 * 3600 * 1000;
@@ -116,7 +115,7 @@ const calcAPY = (his, list, all, days = 105, avgdays = 30) => {
   } else {
     avgApys = [
       {
-        profit: apys[0].profit,
+        profit: apys[0].profit > 0 ? apys[0].profit : 0,
         date: apys[0].date,
       },
     ];

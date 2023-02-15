@@ -65,6 +65,12 @@ const fetchV2TotalHis = async (address, period) => {
   });
 };
 
+const fetchTokenPrice = async (address) => {
+  return fetch({
+    url: `${API_V3_URL}/price/${address}`
+  })
+}
+
 export {
   getAsset,
   getProfit,
@@ -74,4 +80,5 @@ export {
   fetchTxs,
   fetchTotalHis,
   fetchV2TotalHis,
+  fetchTokenPrice
 };
