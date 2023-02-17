@@ -120,6 +120,15 @@ const setNApprove = async (number, accounts, code) => {
     });
 };
 
+const setHFApprove = async (number, accounts, code) => {
+  const asset = HFContract[code].asset;
+  return getWeb3(IERC20_abi, asset)
+    .methods.approve(HFContract[code].depositApprover, number)
+    .send({
+      from: accounts,
+    });
+};
+
 const setHNApprove = async (number, accounts, code) => {
   const asset = HNContract[code].asset;
   return getWeb3(IERC20_abi, asset)
@@ -657,6 +666,7 @@ export {
   getAllowance,
   setApprove,
   setNApprove,
+  setHFApprove,
   setDeposit,
   setNDeposit,
   setHFDeposit,

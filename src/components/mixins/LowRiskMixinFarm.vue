@@ -7,7 +7,7 @@ import {
   setHFDepositETH,
   getHFWithdraw,
   getHFRedeem,
-  setNApprove,
+  setHFApprove,
   calc_withdraw_one_coin,
   getHFTotalAsset,
   getHFPause,
@@ -345,7 +345,7 @@ export default {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       this.isLoading();
       try {
-        const resApprove = await setNApprove(
+        const resApprove = await setHFApprove(
           new BigNumber(1e32).toString(10),
           this.MetaMaskAddress,
           this.itemData.code
