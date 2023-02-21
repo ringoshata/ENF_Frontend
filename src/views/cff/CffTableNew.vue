@@ -76,18 +76,18 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" placement="top">
+          <!-- <el-tooltip class="item" effect="dark" placement="top">
             <div slot="content">
-              <div v-for="(pending, idx) in pendingRewards[item.code]"
+              <div v-for="(pending, idx) in getClaims(scope.row.claimIndex)"
                 :key="idx"
                 class="top_li">
                 <span>{{ pending.pending }} {{ pending.tokenName }}</span>
               </div>
             </div>
             <span>
-              {{ scope.row.tradeType == 0 ? "Deposit" : scope.row.tradeType == 1? "Withdraw": "Claim" }}
             </span>
-          </el-tooltip>
+          </el-tooltip> -->
+          {{ scope.row.tradeType == 0 ? "Deposit" : scope.row.tradeType == 1? "Withdraw": "Claim" }}
         </template>
       </el-table-column>
       <!-- <el-table-column prop="flag" label="状态" width="60">
@@ -226,7 +226,6 @@ export default {
               hash: claim.hash,
               createdAt: claim.createdAt,
               amount: total,
-              claimIndex,
               fee: total / 9 // Assume that harvest fee is 10% fixed
             })
           })
@@ -250,6 +249,23 @@ export default {
     handleCurrentChange(val) {
       this.getData();
     },
+    // getClaims(claimIndex) {
+    //   const claim = this.claims[claimIndex]
+    //   let data = []
+    //   const prices = await Promise.all(claim.rewards.map (async (reward) => {
+    //     return fetchTokenPrice(reward)
+    //   }))
+    //   console.log("Prices: ", prices)
+    //   claim.rewards.map((reward, index) => {
+    //     const price = this.codeurl === "hfusdc" ?  prices[priceIndex].priceRec.usdPrice : prices[priceIndex].priceRec.ethPrice
+    //     const tokenDecimal = getTokenDecimalFromAddress(reward)
+
+    //     data.push({
+    //       token: getTokenNameFromAddress(reward),
+    //       amount: claim.amounts[index]
+    //     })
+    //   })
+    // }
   },
 };
 </script>
