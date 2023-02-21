@@ -37,8 +37,8 @@ const HighExchangeRate = {
   ETH: 0.97,
   WBTC: 0.98,
 };
-const period = 195 * 24 * 3600;
-// const period = 105 * 24 * 3600;
+// const period = 195 * 24 * 3600;
+const period = 105 * 24 * 3600;
 export default {
   computed: {
     ...mapState(["MetaMaskAddress", "Pendings"]),
