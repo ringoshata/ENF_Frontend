@@ -76,9 +76,18 @@
         align="center"
       >
         <template slot-scope="scope">
-          <span>
-            {{ scope.row.tradeType == 0 ? "Deposit" : "Withdraw" }}
-          </span>
+          <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              <div v-for="(pending, idx) in pendingRewards[item.code]"
+                :key="idx"
+                class="top_li">
+                <span>{{ pending.pending }} {{ pending.tokenName }}</span>
+              </div>
+            </div>
+            <span>
+              {{ scope.row.tradeType == 0 ? "Deposit" : scope.row.tradeType == 1? "Withdraw": "Claim" }}
+            </span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <!-- <el-table-column prop="flag" label="状态" width="60">
@@ -104,7 +113,12 @@ import dayjs from "dayjs";
 import { mapState } from "vuex";
 import { OPEN_URL, NContract, HNContract, HFContract } from "../../config.js";
 import { getTransaction } from "@/common/api";
-import { fetchTxs } from "../../common/api";
+import { fetchTxs, fetchClaimHis, fetchTokenPrice } from "../../common/api";
+import {
+  getTokenNameFromAddress,
+  getTokenDecimalFromAddress
+} from "@/utils/address"
+
 export default {
   name: "CffTableNew",
   props: {
@@ -126,6 +140,7 @@ export default {
       currentPage: 1,
       total: 0,
       tableData: [],
+      claims: []
     };
   },
   computed: {
@@ -174,7 +189,49 @@ export default {
           HFContract[this.code].asset,
           this.MetaMaskAddress
         );
-        this.tableData = list.userAssets;
+        let tableData = list.userAssets
+        console.log("List: ", list)
+        const claimList = await fetchClaimHis(this.MetaMaskAddress, HFContract[this.code].vault)
+        console.log("CLaim: ", claimList)
+        this.claims = claimList.claims
+
+        if (claimList.claims && claimList.claims.length > 0) {
+          // Rewards list could be changed, get all rewards list
+          const rewards = []
+          claimList.claims.forEach((claim, claimIndex) => {
+            claim.rewards.forEach(reward => {
+              if (rewards.indexOf(reward) < 0) rewards.push(reward)
+            })
+          })
+          console.log("Rewards: ", rewards)
+
+          const prices = await Promise.all(rewards.map (async (reward) => {
+            return fetchTokenPrice(reward)
+          }))
+          console.log("Prices: ", prices)
+
+          claimList.claims.forEach((claim) => {
+            let total = 0;
+            claim.amounts.forEach((amount, index) => {
+              const reward = claim.rewards[index]
+              const priceIndex = rewards.indexOf(reward)
+              console.log("Price Index: ", priceIndex) 
+              const price = this.codeurl === "hfusdc" ?  prices[priceIndex].priceRec.usdPrice : prices[priceIndex].priceRec.ethPrice
+              console.log("Price: ")
+              const tokenDecimal = getTokenDecimalFromAddress(reward)
+              total += price * amount / (10** tokenDecimal)
+            })
+            console.log("total: ", total)
+            tableData.push({
+              hash: claim.hash,
+              createdAt: claim.createdAt,
+              amount: total,
+              claimIndex,
+              fee: total / 9 // Assume that harvest fee is 10% fixed
+            })
+          })
+        }
+        this.tableData = tableData;
       } else {
         // const list = await getTransaction(query, this.codeurl);
         // if (list) {

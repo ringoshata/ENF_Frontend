@@ -7,7 +7,7 @@
     <low-risk-new-h5 v-if="IsPhone && !isLow" />
     
     <h1 class="low-title">
-      <el-divider direction="vertical"></el-divider> Hold & Farm
+      <el-divider direction="vertical"></el-divider> Farm & Hold
     </h1>
     <low-risk-farm v-if="!IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>

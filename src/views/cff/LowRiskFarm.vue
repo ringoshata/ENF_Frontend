@@ -95,7 +95,7 @@
                       <span>{{ pending.pending }} {{ pending.tokenName }}</span>
                     </div>
                   </div>
-                  <span>${{$nameFixed(totalRewardUSD[item.code], "other")}} / {{$nameFixed(totalRewardETH[item.code], "other")}} ETH</span>
+										<span>${{$nameFixed(totalRewardUSD[item.code], "other")}} / {{$nameFixed(totalRewardETH[item.code], "other")}} ETH <i class="el-icon-question"></i></span>
                 </el-tooltip>
               </li>
             </div>

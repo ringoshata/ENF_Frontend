@@ -205,6 +205,7 @@ switch ('production') {
           '0xCFEAead4947f0705A14ec42aC3D44129E1Ef3eD5',
           '0xD533a949740bb3306d119CC777fa900bA034cd52',
           '0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B',
+          '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'
         ],
       },
     };

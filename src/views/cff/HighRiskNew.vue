@@ -248,7 +248,7 @@
                         )
                       }}
                       <span>{{
-                        item.code === "ETH" ? item.code : selectWithdraw
+                        item.code === "USDC" ? selectWithdraw : item.code
                       }}</span>
                       <el-tooltip
                         class="item"

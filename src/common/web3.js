@@ -656,6 +656,14 @@ const getHFPendingReward = async (code, account, index) => {
     .call()
 }
 
+//获取IERC20BalanceOf
+const getBalanceOf = async (token, account) => {
+  console.log("reward bal: ", token, account)
+  return getWeb3(IERC20_abi, token)
+    .methods.balanceOf(account)
+    .call();
+};
+
 export {
   getWeb3,
   getGasPrice,
@@ -712,5 +720,6 @@ export {
   getHFWithdrawable,
   getHFPendingReward,
   getHFLP,
-  getHFClaim
+  getHFClaim,
+  getBalanceOf
 };

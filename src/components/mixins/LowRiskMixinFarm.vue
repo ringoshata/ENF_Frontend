@@ -18,7 +18,8 @@ import {
   getHFWithdrawable,
   getHFWithdrawFee,
   getHFPendingReward,
-  getHFClaim
+  getHFClaim,
+  getBalanceOf
 } from "@/common/web3";
 
 import {
@@ -211,16 +212,20 @@ export default {
       const res = await Promise.all(rewards.map(async (reward, index) => {
         return getHFPendingReward(code, account, index)
       }))
+      return res
+    },
+
+    async calcRewards(code, rewards, pendings) {
       const prices = await Promise.all(rewards.map (async (reward) => {
         return fetchTokenPrice(reward)
       }))
 
-      console.log("hf reward rews: ", res)
+      console.log("hf reward rews: ", pendings)
       console.log("hf reward prices: ", prices)
       this.totalRewardETH[code] = 0
       this.totalRewardUSD[code] = 0
       this.pendingRewards[code] = []
-      res.forEach((pending, index) => {
+      pendings.forEach((pending, index) => {
         const token = rewards[index]
         const tokenName = getTokenNameFromAddress(token)
         const tokenDecimal = getTokenDecimalFromAddress(token)
@@ -230,6 +235,17 @@ export default {
         this.totalRewardETH[code] += pending * prices[index].priceRec.ethPrice / (10**tokenDecimal)
         this.totalRewardUSD[code] += pending * prices[index].priceRec.usdPrice / (10**tokenDecimal)
       })
+    },
+
+    async getVaultRewards(code, rewards) {
+      console.log("reward vault: ", code, rewards)
+      const res = await Promise.all(rewards.map(async (reward, index) => {
+        console.log("reward reward: ", reward)
+        return getBalanceOf(reward, HFContract[code].vault)
+      }))
+      console.log("res: ", res)
+
+      return res
     },
 
     async getAssetInfo(account, item) {
@@ -250,11 +266,12 @@ export default {
       let userHistory = [];
       let userProfit = 0;
 
+      const rewards = HFContract[item.toUpperCase()].rewards
       if (account) {
         // Get reward pending
-        const rewards = HFContract[item.toUpperCase()].rewards
+        const pendings = await this.getRewardPending(item.toUpperCase(), account, rewards)
+        await this.calcRewards(item.toUpperCase(), rewards, pendings)
 
-        await this.getRewardPending(item.toUpperCase(), account, rewards)
         console.log("hf pending: ",item, this.pendingRewards)
         console.log("hf total: ", this.totalRewardETH, this.totalRewardUSD)
         userHistory = await fetchTxs(
@@ -276,6 +293,10 @@ export default {
           totalDeposit < userAssets / decimal
             ? userAssets / decimal - totalDeposit
             : 0;
+      } else {
+        console.log("reward non")
+        const pendings = await this.getVaultRewards(item.toUpperCase(), rewards)
+        await this.calcRewards(item.toUpperCase(), rewards, pendings)
       }
 
       let totalRec, avg = 0

@@ -71,6 +71,15 @@ const fetchTokenPrice = async (address) => {
   })
 }
 
+const fetchClaimHis = async (account, vault) => {
+  const checkSummed = Vue.prototype.$web3.utils.toChecksumAddress(account);
+  const checkSummedVault = Vue.prototype.$web3.utils.toChecksumAddress(vault);
+  return fetch({
+    url: `${API_V3_URL}/claim_tx/${checkSummedVault}/${checkSummed}`
+  })
+}
+
+
 export {
   getAsset,
   getProfit,
@@ -80,5 +89,6 @@ export {
   fetchTxs,
   fetchTotalHis,
   fetchV2TotalHis,
-  fetchTokenPrice
+  fetchTokenPrice,
+  fetchClaimHis
 };
