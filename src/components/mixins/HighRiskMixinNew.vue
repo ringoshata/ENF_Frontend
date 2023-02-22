@@ -576,7 +576,7 @@ export default {
       const { apys } = calcAPY(totalHis.totalRec, [], false, 195, 60);
 
       this.echartsData = apys;
-      this.title = this.itemData.code === "USDC" ? "CRV 30 Days APY" : this.itemData.code === "ETH"?  "60 Days APY":  "30 Days APY";
+      this.title = this.itemData.code === "USDC" ? "CRV 30 Days APY" : "60 Days APY";
       this.dialogName = "EchartsLine";
       this.diaWidth = "80%";
       this.dialogVisible = true;
