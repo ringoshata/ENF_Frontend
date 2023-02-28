@@ -20,7 +20,7 @@
 			>
 				PeckShield Audit Report
 			</span> -->
-      <span @click="openGit('https://github.com/Shata-Capital/')">
+      <span @click="openGit('https://github.com/EarningFarm/')">
         <img src="../assets/imgs/GitHub-Mark-120px-plus.png" alt />
         Github</span
       >
