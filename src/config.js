@@ -124,7 +124,8 @@ switch ("production") {
     Network = 1;
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
-    NMarkets = ["usdc", "eth"];
+    NMarkets = ["eth"];
+    // NMarkets = ["usdc", "eth"];
     HNMarkets = ["eth", "wbtc"];
     Contract = {
       USDC: {
