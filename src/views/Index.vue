@@ -201,7 +201,7 @@ export default {
       );
 
       const { avg: lowRiskUSDC } = calcAPY(totalRec, list.totalRec);
-      this.lowList.push({ sevendayProfit: lowRiskUSDC, code: "USDC" });
+      // this.lowList.push({ sevendayProfit: lowRiskUSDC, code: "USDC" });
 
       let { totalRec: ethLowRec } = await fetchTotalHis(
         NContract["ETH"].vault,
