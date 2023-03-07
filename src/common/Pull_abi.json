@@ -1,0 +1,225 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_asset", "type": "address" },
+      { "internalType": "address", "name": "_enfLP", "type": "address" },
+      { "internalType": "uint256", "name": "_totalLP", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Claim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_asset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "OwnerWithdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "funds",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetFunds",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_totalLP",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetTotalLP",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "_users",
+        "type": "address[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "_funds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "SetUserFunds",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "asset",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dead",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "enfLP",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "setFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_totalLP", "type": "uint256" }
+    ],
+    "name": "setTotalLP",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "_users", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "_userFunds", "type": "uint256[]" }
+    ],
+    "name": "setUserFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalLP",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalUSDC",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "userFunds",
+    "outputs": [
+      { "internalType": "uint256", "name": "userLP", "type": "uint256" },
+      { "internalType": "bool", "name": "isClaimed", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_asset", "type": "address" }
+    ],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

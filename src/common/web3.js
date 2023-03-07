@@ -4,6 +4,7 @@ import {
   NContract,
   HNContract,
   HContract,
+  PContract,
   LPoolContract,
   HPoolContract,
   NMarkets,
@@ -12,6 +13,7 @@ import {
 import BigNumber from "bignumber.js";
 
 const CFVault_abi = require("./CFVault_abi.json");
+const Pull_abi = require("./Pull_abi.json");
 const VaultV3_abi = require("./VaultV3_abi.json");
 const ControllerV3_abi = require("./ControllerV3_abi.json");
 const DiCFVault_abi = require("./DiCFVault_abi.json");
@@ -54,6 +56,18 @@ const getIERC = (CFVault) => {
 const getIERCBalanceOf = async (accounts, code) => {
   let ierc = await getIERC(Contract[code].CFVault);
   return getWeb3(IERC20_abi, ierc).methods.balanceOf(accounts).call();
+};
+
+//获取IERC20BalanceOf
+const getERCBalanceOf = async (accounts, token) => {
+  if (!accounts) return 0
+  return getWeb3(IERC20_abi, token).methods.balanceOf(accounts).call();
+};
+
+//获取IERC20BalanceOf
+const getERCAllowance = async (token, accounts, to) => {
+  if (!accounts) return 0
+  return getWeb3(IERC20_abi, token).methods.allowance(accounts, to).call();
 };
 
 // 获取交易状态
@@ -103,6 +117,15 @@ const setNApprove = async (number, accounts, code) => {
   const asset = NContract[code].asset;
   return getWeb3(IERC20_abi, asset)
     .methods.approve(NContract[code].depositApprover, number)
+    .send({
+      from: accounts,
+    });
+};
+
+const setPApprove = async (number, accounts, code) => {
+  const asset = PContract[code].asset;
+  return getWeb3(IERC20_abi, asset)
+    .methods.approve(PContract[code].vault, number)
     .send({
       from: accounts,
     });
@@ -474,6 +497,26 @@ const getNAsset = async (code, account) => {
     .methods.convertToAssets(lpBal)
     .call();
 };
+const getPAsset = async (code, account) => {
+  console.log("usdc p: ", account, PContract[code].vault)
+  if (!account) return {
+    userLP: 0,
+    isClaimed: false
+  };
+  const userInfo = await getWeb3(Pull_abi, PContract[code].vault)
+    .methods.userFunds(account)
+    .call();
+  return userInfo
+
+};
+
+const getPTotalAsset = async (code) => {
+  console.log("usdc code: ", code)
+  return getWeb3(Pull_abi, PContract[code].vault)
+    .methods.totalLP()
+    .call();
+
+};
 
 const getHNAsset = async (code, account) => {
   if (!account) return 0;
@@ -506,6 +549,18 @@ const getNWithdraw = async (number, accounts, code) => {
   };
 };
 
+const getPClaim = async (accounts, code) => {
+  const params = await getWeb3(Pull_abi, PContract[code].vault)
+    .methods.claim()
+    .encodeABI();
+  return {
+    from: accounts,
+    to: PContract[code].vault,
+    value: 0,
+    data: params,
+  };
+};
+
 const getNWithdrawFee = async (code) => {
   return getWeb3(ControllerV3_abi, NContract[code].controller)
     .methods.withdrawFee()
@@ -521,6 +576,7 @@ export {
   getWeb3,
   getGasPrice,
   getIERCBalanceOf,
+  getERCBalanceOf,
   getETHBalance,
   getTransactionReceipt,
   getTransaction,
@@ -560,4 +616,9 @@ export {
   getHNWithdraw,
   getHNAllowance,
   setHNApprove,
+  getPAsset,
+  getPTotalAsset,
+  setPApprove,
+  getERCAllowance,
+  getPClaim
 };

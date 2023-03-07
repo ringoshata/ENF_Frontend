@@ -18,6 +18,7 @@ let Contract = {};
 let HContract = {};
 let NContract = {};
 let HNContract = {};
+let PContract = {};
 let LPoolContract = {};
 let HPoolContract = {};
 let API_URL = "";
@@ -27,6 +28,7 @@ let HMarkets = [];
 let LMarkets = [];
 let NMarkets = [];
 let HNMarkets = [];
+let PMarkets = [];
 switch ("production") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
@@ -125,6 +127,7 @@ switch ("production") {
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["eth"];
+    PMarkets = ["usdc"]
     // NMarkets = ["usdc", "eth"];
     HNMarkets = ["eth", "wbtc"];
     Contract = {
@@ -218,6 +221,17 @@ switch ("production") {
         assetDecimal: 8,
       },
     };
+
+    PContract = {
+      USDC: {
+        vault: "0x1d0993A22BF52D942c3F4CDa1922Cb9f0A4F94C2",
+        asset: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        lpToken: "0xBDB515028A6fA6CD1634B5A9651184494aBfD336",
+        Decimal: 1e18,
+        assetDecimal: 6
+      }
+    }
+
     break;
 
   // // 生产环境
@@ -357,6 +371,7 @@ export {
   HContract,
   NContract,
   HNContract,
+  PContract,
   HNMarkets,
   API_URL,
   API_V3_URL,
@@ -366,6 +381,7 @@ export {
   TTIMER,
   HMarkets,
   LMarkets,
+  PMarkets,
   NMarkets,
   LPoolContract,
   HPoolContract,
