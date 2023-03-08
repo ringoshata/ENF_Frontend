@@ -123,7 +123,7 @@ const setNApprove = async (number, accounts, code) => {
 };
 
 const setPApprove = async (number, accounts, code) => {
-  const asset = PContract[code].asset;
+  const asset = PContract[code].lpToken;
   return getWeb3(IERC20_abi, asset)
     .methods.approve(PContract[code].vault, number)
     .send({

@@ -223,7 +223,7 @@ export default {
       // let userProfit = 0;
       let isApproved = true
       if (account) {
-        const allowance = await getERCAllowance(PContract[item.toUpperCase()].asset, account, PContract[item.toUpperCase()].vault)
+        const allowance = await getERCAllowance(PContract[item.toUpperCase()].lpToken, account, PContract[item.toUpperCase()].vault)
         console.log("usdc Allownce: ", allowance,userInfo.userLP, Number(allowance) < Number(userInfo.userLP))
         if (Number(allowance) < Number(userInfo.userLP)) isApproved = false
         // userHistory = await fetchTxs(
@@ -316,9 +316,11 @@ export default {
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       this.isLoading();
       try {
+        console.log("usdc Approve: ", PContract, this.itemData.code.toUpperCase(), PContract[this.itemData.code.toUpperCase()].lpToken)
         const resApprove = await setPApprove(
           new BigNumber(1e32).toString(10),
           this.MetaMaskAddress,
+          // PContract[this.itemData.code.toUpperCase()].lpToken
           this.itemData.code
         );
         if (resApprove.status) {
@@ -354,7 +356,7 @@ export default {
           );
       }
 
-      const decimal = NContract[item.code].Decimal;
+      const decimal = PContract[item.code].Decimal;
       const bigInput = setConfirmValue(this.confirmInput, decimal);
       const params =
         this.itemData.code === "ETH"
@@ -579,7 +581,7 @@ export default {
         code === "ETH"
           ? await getETHBalance(this.MetaMaskAddress)
           : await getIERCBalanceOf(this.MetaMaskAddress, code);
-      const number = NContract[code].Decimal;
+      const number = pContract[code].Decimal;
       this.totalOf = dividedBy(bcf, number);
     },
     closeMain(val) {
