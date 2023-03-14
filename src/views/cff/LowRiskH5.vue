@@ -44,31 +44,31 @@
 
 			<div v-if="item.showContent" class="bottom">
 				<div class="body">
-<!--					<el-row>-->
-<!--						<el-col :span="6">-->
-<!--							<el-tooltip class="item" effect="dark" placement="top">-->
-<!--								<div slot="content">-->
-<!--									Asset: Calculated based on backend Defi Protocols. <br />-->
-<!--									May have difference when withdrawing due to big slippage.-->
-<!--									<br />-->
-<!--									Accu Yield: Unrealized earnings in the backend protocols.-->
-<!--								</div>-->
-<!--								<span class="bom_li">Personal：</span>-->
-<!--							</el-tooltip>-->
-<!--						</el-col>-->
-<!--						<el-col :span="9">-->
-<!--							<span class="bom_li">Asset</span><br />-->
-<!--							<span class="spanText">{{-->
-<!--								$nameFixed(item.user_assets, item.code)-->
-<!--							}}</span>-->
-<!--						</el-col>-->
-<!--						<el-col :span="9">-->
-<!--							<span class="bom_li">Accu Yield</span><br />-->
-<!--							<span class="spanText">{{-->
-<!--								$nameFixed(item.user_profit, item.code)-->
-<!--							}}</span>-->
-<!--						</el-col>-->
-<!--					</el-row>-->
+					<el-row>
+						<el-col :span="6">
+							<el-tooltip class="item" effect="dark" placement="top">
+								<div slot="content">
+									Asset: Calculated based on backend Defi Protocols. <br />
+									May have difference when withdrawing due to big slippage.
+									<br />
+									Accu Yield: Unrealized earnings in the backend protocols.
+								</div>
+								<span class="bom_li">Personal：</span>
+							</el-tooltip>
+						</el-col>
+						<el-col :span="9">
+							<span class="bom_li">Asset</span><br />
+							<span class="spanText">{{
+								$nameFixed(item.user_assets, item.code)
+							}}</span>
+						</el-col>
+						<el-col :span="9">
+							<span class="bom_li">Accu Yield</span><br />
+							<span class="spanText">{{
+								$nameFixed(item.user_profit, item.code)
+							}}</span>
+						</el-col>
+					</el-row>
 
 					<el-row>
 						<el-col :span="6">
