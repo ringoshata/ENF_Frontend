@@ -44,7 +44,7 @@
 
       <div v-if="item.showContent" class="bottom">
         <div class="body">
-          <el-row v-if="item.code !=='USDC'">
+          <el-row >
             <el-col :span="6">
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">
