@@ -20,23 +20,23 @@
             </div>
           </el-col>
           <el-col :span="4">
-<!--            <div>-->
-<!--              <li class="top_l3">-->
-<!--                <el-tooltip class="item" effect="dark" placement="top">-->
-<!--                  <div slot="content">-->
-<!--                    Asset: Calculated based on backend Defi Protocols. <br />-->
-<!--                    May have difference when withdrawing due to big slippage.-->
-<!--                    <br />-->
-<!--                    Accu Yield: Unrealized earnings in the backend protocols.-->
-<!--                  </div>-->
-<!--                  <span> Personal</span>-->
-<!--                </el-tooltip>-->
-<!--              </li>-->
-<!--              <li class="top_li">Asset</li>-->
-<!--              <li class="bom_li">-->
-<!--                {{ $nameFixed(item.user_assets, item.code) }}-->
-<!--              </li>-->
-<!--            </div>-->
+            <div>
+              <li class="top_l3">
+                <el-tooltip class="item" effect="dark" placement="top">
+                  <div slot="content">
+                    Asset: Calculated based on backend Defi Protocols. <br />
+                    May have difference when withdrawing due to big slippage.
+                    <br />
+                    Accu Yield: Unrealized earnings in the backend protocols.
+                  </div>
+                  <span> Personal</span>
+                </el-tooltip>
+              </li>
+              <li class="top_li">Asset</li>
+              <li class="bom_li">
+                {{ $nameFixed(item.user_assets, item.code) }}
+              </li>
+            </div>
           </el-col>
           <el-col :span="4">
             <div>
