@@ -20,7 +20,7 @@
             </div>
           </el-col>
           <el-col :span="4">
-            <div v-if="item.code !='USDC'">
+            <div v-if="item.code !=='USDC'">
               <li class="top_l3">
                 <el-tooltip class="item" effect="dark" placement="top">
                   <div slot="content">
