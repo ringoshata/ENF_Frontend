@@ -394,7 +394,7 @@ export default {
       const maxWithdraw = this.withdrawInput === maxNum;
       console.warn("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
-        let amount =
+        const amount =
             maxWithdraw === true
                 ? new BigNumber(item.user_assets)
                     .multipliedBy(new BigNumber(item.decimal))

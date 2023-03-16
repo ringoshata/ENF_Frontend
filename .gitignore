@@ -6,3 +6,4 @@ firebase.json
 .firebaserc
 .firebase/
 dist/
+.idea/
