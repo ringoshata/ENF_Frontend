@@ -29,6 +29,8 @@ let LMarkets = [];
 let NMarkets = [];
 let HNMarkets = [];
 let PMarkets = [];
+let InfuraURI = "";
+
 switch ("production") {
   // switch (process.env.NODE_ENV) {
   // 测试环境
@@ -36,6 +38,7 @@ switch ("production") {
     API_URL = "https://api.earning.farm";
     API_V3_URL = "http://localhost:3030/v1";
     OPEN_URL = "https://etherscan.io/tx/";
+    InfuraURI = "http://localhost:8545/";
     Network = 31337;
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
@@ -123,6 +126,7 @@ switch ("production") {
     API_URL = "https://api.earning.farm";
     API_V3_URL = "https://api-v3test.earning.farm/v1";
     OPEN_URL = "https://etherscan.io/tx/";
+    InfuraURI = "https://mainnet.infura.io/v3/cc3e879fa2e34c7d9dc0fc9612fc9bd4";
     Network = 1;
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
@@ -385,4 +389,5 @@ export {
   NMarkets,
   LPoolContract,
   HPoolContract,
+  InfuraURI
 };

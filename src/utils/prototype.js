@@ -1,12 +1,13 @@
 import Web3 from "web3";
 import { numberWithCommas } from "@/utils";
+import { InfuraURI } from "../config"
 // import Vue from 'vue'
 
-const infuraURI =
-  "https://mainnet.infura.io/v3/cc3e879fa2e34c7d9dc0fc9612fc9bd4";
+// const infuraURI =
+//   "https://mainnet.infura.io/v3/cc3e879fa2e34c7d9dc0fc9612fc9bd4";
 
 // const infuraURI = "http://localhost:8545/";
-Vue.prototype.$web3 = new Web3(new Web3.providers.HttpProvider(infuraURI));
+Vue.prototype.$web3 = new Web3(new Web3.providers.HttpProvider(InfuraURI));
 
 Vue.prototype.$nameFixed = (num, name) => {
   if (!Number(num)) return 0;
