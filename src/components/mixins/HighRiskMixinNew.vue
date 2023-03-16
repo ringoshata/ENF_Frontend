@@ -392,16 +392,18 @@ export default {
         this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
       const maxNum = item.code === "ETH" ? item.user_assets : item[user];
       const maxWithdraw = this.withdrawInput === maxNum;
-      console.log("Withdraw: ", user, maxNum, maxWithdraw)
+      console.warn("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
-      const amount =
-        maxWithdraw === true
-          ? new BigNumber(item.user_assets)
-            .multipliedBy(new BigNumber(item.decimal))
-            .toFixed(0)
-          : new BigNumber(this.withdrawInput)
-            .multipliedBy(new BigNumber(item.decimal))
-            .toFixed(0);
+        let amount =
+            maxWithdraw === true
+                ? new BigNumber(item.user_assets)
+                    .multipliedBy(new BigNumber(item.decimal))
+                    .toFixed(0)
+                : new BigNumber(this.withdrawInput)
+                    .multipliedBy(new BigNumber(item.decimal))
+                    .toFixed(0);
+
+
       // const bigInput = maxWithdraw
       //   ? item.lp_token
       //   : setWithdrawValue(this.withdrawInput, item.lp_token, maxNum);
@@ -424,11 +426,14 @@ export default {
       this.confirmInput = setAssetsValue(item, num);
     },
     setWithdrawVal(item) {
+        //TODO: for wbtc
       if (this.itemData.code === "ETH") {
         const decimal = HNContract[this.itemData.code].assetDecimal;
+        const deRatio =  this.itemData.user_assets*Math.floor(0.99999 * 1e8 ) / 1e8;
         this.withdrawInput =
           item === 100
-            ? this.itemData.user_assets
+            ? deRatio.toFixed(
+              decimal)
             : Number(setAssetsValue(item, this.itemData.user_assets)).toFixed(
               decimal
             );
@@ -463,14 +468,32 @@ export default {
     setMax(type, val) {
       if (type === 1) {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
+
         this.confirmVal = 100;
       } else {
+          const decimal = HNContract[this.itemData.code].assetDecimal;
+          const deRatio =  val.user_assets*Math.floor(0.99999* 1e8) / 1e8;
+
         const user =
           this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
-        this.withdrawInput =
-          this.itemData.code === "ETH" ? val.user_assets : val[user];
+        // this.withdrawInput =
+        //   this.itemData.code === "ETH" ? deRatio.toFixed(decimal): val[user];
+        //   console.warn("this.withdrawInput: ",this.withdrawInput,deRatio);
+
+
+             if(this.itemData.code === "ETH"){
+                 this.withdrawInput = deRatio.toFixed(decimal);
+             }else if (this.itemData.code === "WBTC"){
+                 this.withdrawInput = deRatio.toFixed(decimal);//TODO
+             }else
+                 this.withdrawInput = val[user];
+
+
+
+
         this.inputWithdraw();
         this.withdrawVal = 100;
+
       }
     },
     isLoading() {
