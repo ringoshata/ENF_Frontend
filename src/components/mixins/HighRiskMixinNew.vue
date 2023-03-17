@@ -427,7 +427,7 @@ export default {
     },
     setWithdrawVal(item) {
         //TODO: for wbtc
-      if (this.itemData.code === "ETH") {
+      if (this.itemData.code === "ETH" || this.itemData.code === "WBTC") {
         const decimal = HNContract[this.itemData.code].assetDecimal;
         const deRatio =  this.itemData.user_assets*Math.floor(0.99999 * 1e8 ) / 1e8;
         this.withdrawInput =

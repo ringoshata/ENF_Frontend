@@ -39,7 +39,7 @@ switch (process.env.NODE_ENV) {
     API_V3_URL = "https://api-v3test.earning.farm/v1";
     OPEN_URL = "https://etherscan.io/tx/";
     InfuraURI = "http://localhost:8545/";
-    Network = 31337;
+    Network = 1;
     LMarkets = ["usdc"];
     HMarkets = ["usdc", "eth"];
     NMarkets = ["eth"];
