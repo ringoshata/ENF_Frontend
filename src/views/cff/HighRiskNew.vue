@@ -268,7 +268,7 @@
                     <el-input
                       v-model="withdrawInput"
                       @change="inputWithdrawNew(arguments[0],item.user_assets)"
-                      
+                      @focus="Max = 2"
                       onkeyup="value=value.replace(/[^\d^\.]/g,'')"
                       :style="{ 'border-color': Max === 2 ? '#fd8465' : '' }"
                     >
