@@ -8,3 +8,4 @@ firebase.json
 .firebase/
 dist/
 .idea/
+package-lock.json
