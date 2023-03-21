@@ -277,10 +277,10 @@ export default {
       this.isLoading();
       try {
         const resApprove = await setHNApprove(
-            new BigNumber(1e32).toString(10),
-            this.MetaMaskAddress,
-            this.itemData.code,
-          );
+          new BigNumber(1e32).toString(10),
+          this.MetaMaskAddress,
+          this.itemData.code,
+        );
         if (resApprove.status) {
           this.isApprove = false;
           this.Success("Successfully authorized.");
@@ -394,14 +394,14 @@ export default {
       const maxWithdraw = this.withdrawInput === maxNum;
       console.warn("Withdraw: ", user, maxNum, maxWithdraw)
       // const maxWithdraw = this.withdrawInput === item.user_assets;
-        const amount =
-            maxWithdraw === true
-                ? new BigNumber(item.user_assets)
-                    .multipliedBy(new BigNumber(item.decimal))
-                    .toFixed(0)
-                : new BigNumber(this.withdrawInput)
-                    .multipliedBy(new BigNumber(item.decimal))
-                    .toFixed(0);
+      const amount =
+        maxWithdraw === true
+          ? new BigNumber(item.user_assets)
+            .multipliedBy(new BigNumber(item.decimal))
+            .toFixed(0)
+          : new BigNumber(this.withdrawInput)
+            .multipliedBy(new BigNumber(item.decimal))
+            .toFixed(0);
 
 
       // const bigInput = maxWithdraw
@@ -426,10 +426,10 @@ export default {
       this.confirmInput = setAssetsValue(item, num);
     },
     setWithdrawVal(item) {
-        //TODO: for wbtc
+      //TODO: for wbtc
       if (this.itemData.code === "ETH" || this.itemData.code === "WBTC") {
         const decimal = HNContract[this.itemData.code].assetDecimal;
-        const deRatio =  this.itemData.user_assets*Math.floor(0.99999 * 1e8 ) / 1e8;
+        const deRatio = this.itemData.user_assets * Math.floor(0.99999 * 1e8) / 1e8;
         this.withdrawInput =
           item === 100
             ? deRatio.toFixed(
@@ -465,14 +465,26 @@ export default {
       //   HContract[this.itemData.code].Length
       // );
     },
+    inputWithdrawNew(val, max) {
+      this.withdrawInput = Number(val);
+      const decimal = HNContract[this.itemData.code].assetDecimal;
+      const deRatio = max * Math.floor(0.99999 * 1e8) / 1e8;
+      const maxNum = deRatio.toFixed(decimal);
+      this.$nextTick(()=>{
+        if(Number(val) > maxNum){
+          this.withdrawInput = maxNum;
+          this.withdrawVal = 100;
+        }
+      })
+    },
     setMax(type, val) {
       if (type === 1) {
         this.confirmInput = this.itemData.code === "ETH" ? minus(val) : val;
 
         this.confirmVal = 100;
       } else {
-          const decimal = HNContract[this.itemData.code].assetDecimal;
-          const deRatio =  val.user_assets*Math.floor(0.99999* 1e8) / 1e8;
+        const decimal = HNContract[this.itemData.code].assetDecimal;
+        const deRatio = val.user_assets * Math.floor(0.99999 * 1e8) / 1e8;
 
         const user =
           this.selectWithdraw === "USDC" ? "user_assets" : "user_assets_origin";
@@ -481,12 +493,12 @@ export default {
         //   console.warn("this.withdrawInput: ",this.withdrawInput,deRatio);
 
 
-             if(this.itemData.code === "ETH"){
-                 this.withdrawInput = deRatio.toFixed(decimal);
-             }else if (this.itemData.code === "WBTC"){
-                 this.withdrawInput = deRatio.toFixed(decimal);//TODO
-             }else
-                 this.withdrawInput = val[user];
+        if (this.itemData.code === "ETH") {
+          this.withdrawInput = deRatio.toFixed(decimal);
+        } else if (this.itemData.code === "WBTC") {
+          this.withdrawInput = deRatio.toFixed(decimal);//TODO
+        } else
+          this.withdrawInput = val[user];
 
 
 
@@ -512,7 +524,7 @@ export default {
     },
     async changeContent(val) {
       this.isLoading();
-      this.withdrawInput = "Please slide to adjust the amount";
+      // this.withdrawInput = "Please slide to adjust the amount";
       this.withdrawVal = 0;
       this.confirmInput = 0;
       this.confirmVal = 0;
