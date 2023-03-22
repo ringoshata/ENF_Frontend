@@ -27,7 +27,8 @@
 		"vue-qr": "^2.3.0",
 		"vue-router": "^3.2.0",
 		"vuex": "^3.6.2",
-		"web3": "^1.7.3"
+		"web3": "^1.7.3",
+		"@toruslabs/torus-embed": "1.10.11"
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
