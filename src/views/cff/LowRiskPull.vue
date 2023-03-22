@@ -19,41 +19,41 @@
               }}</span>
             </div>
           </el-col>
-          <el-col :span="4">
-            <div >
-              <li class="top_l3">
-                <el-tooltip class="item" effect="dark" placement="top">
-                  <div slot="content">
-                    Asset: Calculated based on backend Defi Protocols. <br />
-                    May have difference when withdrawing due to big slippage.
-                    <br />
-                    Accu Yield: Unrealized earnings in the backend protocols.
-                  </div>
-                  <span> Personal</span>
-                </el-tooltip>
-              </li>
-              <li class="top_li">Asset</li>
-              <li class="bom_li">
-                {{ $nameFixed(item.user_assets, item.code) }}
-              </li>
-            </div>
+          <el-col :span="8">
+<!--            <div>-->
+<!--              <li class="top_l3">-->
+<!--                <el-tooltip class="item" effect="dark" placement="top">-->
+<!--                  <div slot="content">-->
+<!--                    Asset: Calculated based on backend Defi Protocols. <br />-->
+<!--                    May have difference when withdrawing due to big slippage.-->
+<!--                    <br />-->
+<!--                    Accu Yield: Unrealized earnings in the backend protocols.-->
+<!--                  </div>-->
+<!--                  <span> Personal</span>-->
+<!--                </el-tooltip>-->
+<!--              </li>-->
+<!--              <li class="top_li">Asset</li>-->
+<!--              <li class="bom_li">-->
+<!--                {{ $nameFixed(item.user_assets, item.code) }}-->
+<!--              </li>-->
+<!--            </div>-->
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <div>
               <li class="top_l2"></li>
               <li class="top_li">Accu Yield</li>
               <li class="bom_li">
                 {{ $nameFixed(item.user_profit, item.code) }}
               </li>
-            </div>
-          </el-col>
+            </div> -->
+          <!-- </el-col> -->
 
           <el-col :span="2">
             <div>
               <el-divider direction="vertical"></el-divider>
             </div>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <div>
               <li class="top_l3">
                 <el-tooltip class="item" effect="dark" placement="top">
@@ -71,7 +71,7 @@
               </li>
             </div>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <div>
               <li class="top_l2"></li>
               <li class="top_li">30 Days APY</li>
@@ -79,7 +79,7 @@
                 {{ $numFixed(item.sevendayProfit, 1) + "%" }}
               </li>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="1">
             <i
               :class="
@@ -94,7 +94,7 @@
 
       <div v-if="item.showContent" class="bottom">
         <div class="body">
-          <el-row>
+          <!-- <el-row>
             <el-col :span="4">
               <span class="bom_li">Strategy</span>
             </el-col>
@@ -129,142 +129,30 @@
                 </el-button>
               </div>
             </el-col>
-          </el-row>
+          </el-row> -->
         </div>
         <div class="body_text">
           <div>
             <el-row>
               <el-col :span="10">
-                <li class="bom_li" style="margin-bottom: 10px">
-                  <span class="input_span">
-                    Wallet Balance:
-                    {{ $nameFixed(totalOf, item.code) }}
-                    <span>{{ item.code }}</span>
-                  </span>
-                </li>
-                <li class="input_li">
-                  <el-input
-                    v-model="confirmInput"
-                    @input="inputConfirm"
-                    @focus="Max = 1"
-                    placeholder="0"
-                    onkeyup="value=value.replace(/[^\d^\.]/g,'')"
-                    :style="{ 'border-color': Max === 1 ? '#2196f3' : '' }"
-                  >
-                    <template slot="append">
-                      <span
-                        class="Max"
-                        v-show="Max === 1"
-                        @click="setMax(Max, totalOf)"
-                        >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
-                      >
-                    </template>
-                  </el-input>
-                </li>
-                <li>
-                  <el-slider
-                    v-model="confirmVal"
-                    :step="25"
-                    :marks="marks"
-                    @change="setConfirmVal"
-                    show-stops
-                    :show-tooltip="false"
-                  ></el-slider>
-                </li>
-              </el-col>
-              <el-col :span="10" :offset="3">
-                <div>
-                  <li class="bom_li" style="margin-bottom: 10px">
-                    <span class="input_span">
-                      Asset Deposited: ≈
-                      {{ $nameFixed(item.user_assets, item.code) }}
-                      <span>{{ item.code }}</span>
-                      <el-tooltip
-                        class="item"
-                        effect="dark"
-                        placement="top-end"
-                      >
-                        <div slot="content">
-                          Calculated by querying the underling Defi protocols.
-                          May have slight difference when withdrawing.
-                        </div>
-                        <i class="el-icon-question"></i>
-                      </el-tooltip>
-                    </span>
-                  </li>
-                  <li class="input_li">
-                    <el-input
-                      v-model="withdrawInput"
-                      @input="inputWithdraw"
-                      readonly
-                      placeholder="0"
-                      @focus="Max = 2"
-                      :style="{ 'border-color': Max === 2 ? '#2196f3' : '' }"
-                      onkeyup="value=value.replace(/[^\d^\.]/g,'')"
-                    >
-                      <template slot="append">
-                        <span
-                          class="Max"
-                          v-show="Max === 2"
-                          @click="setMax(Max, item)"
-                          >MAX</span
-                        >
-                      </template>
-                    </el-input>
-                  </li>
-                  <li>
-                    <el-slider
-                      v-model="withdrawVal"
-                      :step="0.1"
-                      :marks="marks"
-                      @change="setWithdrawVal"
-                      :show-tooltip="false"
-                    ></el-slider>
-                  </li>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="10">
                 <el-button
                   type="primary"
                   plain
                   style="float: right; width: 45%"
-                  v-if="item.code !== 'ETH' && isApprove"
                   @click="approve"
+                  :disabled="item.isApproved"
                   >Approve
                 </el-button>
-                <el-button
-                  type="primary"
-                  plain
-                  style="float: right; width: 45%"
-                  v-else
-                  @click="confirm(item)"
-                  :disabled="item.paused"
-                >
-                  Deposit</el-button
-                >
               </el-col>
               <el-col :span="10" :offset="3">
-                <div class="ratio">
-                  <span
-                    >Fees:
-                    {{
-                      withdrawInput > 0
-                        ? (withdrawInput * ratio).toFixed(2)
-                        : `${(ratio * 100).toString()}%`
-                    }}</span
-                  >
-                  <span>Slippage: {{ slippage }}%</span>
-                </div>
                 <el-button
                   type="primary"
                   plain
                   style="float: right; width: 50%"
-                  @click="withdrawItem(item)"
-                  :disabled="item.paused"
+                  @click="claim(item)"
+                  :disabled="item.isClaimed || item.user_assets == 0"
                 >
-                  Withdraw</el-button
+                  Claim</el-button
                 >
               </el-col>
             </el-row>
@@ -326,10 +214,10 @@
 import EchartsLine from "./EchartsLine.vue";
 import CffTableNew from "./CffTableNew.vue";
 import DialogForm from "../../components/DialogForm.vue";
-import LowRiskMixinNew from "../../components/mixins/LowRiskMixinNew";
+import LowRiskMixinUSDC from "../../components/mixins/LowRiskMixinUSDC";
 export default {
-  name: "LowRiskNew",
-  mixins: [LowRiskMixinNew],
+  name: "LowRiskPull",
+  mixins: [LowRiskMixinUSDC],
   components: {
     DialogForm,
     EchartsLine,

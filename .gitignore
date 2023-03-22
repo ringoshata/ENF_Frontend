@@ -1,8 +1,11 @@
 node_modules/
 .env
+.env.dev
 yarn.lock
 
 firebase.json
 .firebaserc
 .firebase/
 dist/
+.idea/
+package-lock.json

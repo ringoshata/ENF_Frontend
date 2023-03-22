@@ -206,7 +206,7 @@
                         }"
                         class="Max"
                         v-show="Max === 1"
-                        @click="setMax(Max, totalOf)"
+                        @click="setMax(1, totalOf)"
                         >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
                       >
                     </template>
@@ -267,8 +267,7 @@
                   <li class="input_li">
                     <el-input
                       v-model="withdrawInput"
-                      @input="inputWithdraw"
-                      readonly
+                      @change="inputWithdrawNew(arguments[0],item.user_assets)"
                       @focus="Max = 2"
                       onkeyup="value=value.replace(/[^\d^\.]/g,'')"
                       :style="{ 'border-color': Max === 2 ? '#fd8465' : '' }"
@@ -280,8 +279,8 @@
                               item.code !== 'USDC' ? '0px' : '20px',
                           }"
                           class="Max"
-                          v-show="Max === 2"
-                          @click="setMax(Max, item)"
+                          
+                          @click="setMax(2, item)"
                           >MAX</span
                         >
                       </template>

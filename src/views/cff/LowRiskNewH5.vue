@@ -44,7 +44,7 @@
 
       <div v-if="item.showContent" class="bottom">
         <div class="body">
-          <el-row>
+          <el-row >
             <el-col :span="6">
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">
