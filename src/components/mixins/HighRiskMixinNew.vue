@@ -525,6 +525,7 @@ export default {
     async changeContent(val) {
       this.isLoading();
       // this.withdrawInput = "Please slide to adjust the amount";
+      this.withdrawInput = 0;
       this.withdrawVal = 0;
       this.confirmInput = 0;
       this.confirmVal = 0;
