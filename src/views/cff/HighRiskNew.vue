@@ -206,7 +206,7 @@
                         }"
                         class="Max"
                         v-show="Max === 1"
-                        @click="setMax(Max, totalOf)"
+                        @click="setMax(1, totalOf)"
                         >{{ item.code === "ETH" ? "SAFE MAX" : "MAX" }}</span
                       >
                     </template>
@@ -280,7 +280,7 @@
                           }"
                           class="Max"
                           
-                          @click="setMax(Max, item)"
+                          @click="setMax(2, item)"
                           >MAX</span
                         >
                       </template>
