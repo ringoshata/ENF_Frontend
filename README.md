@@ -1,9 +1,9 @@
 # horizon-website
 
-## Project setup
+## Project setup node v14
 
 ```
-cnpm install
+npm install
 ```
 
 ### Compiles and hot-reloads for development
