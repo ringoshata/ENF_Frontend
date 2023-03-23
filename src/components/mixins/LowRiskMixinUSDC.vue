@@ -216,7 +216,7 @@ export default {
       const totalLP = await getPTotalAsset(item.toUpperCase())
       console.log("usdc total: ", totalLP)
 
-      const userAssets = (userInfo.userLP * total / totalLP).toFixed(2)
+      const userAssets = userInfo.userLP * total / totalLP
 
       console.log("usdc user: ", userAssets)
       // let userHistory = [];
@@ -268,7 +268,7 @@ export default {
         isApproved,
         paused: false,
         total: total / 1e6,
-        user_assets: userAssets ,
+        user_assets: userAssets / 1e6 ,
         user_profit: 0,
         sevendayProfit: 0,
         code: item.toUpperCase(),
