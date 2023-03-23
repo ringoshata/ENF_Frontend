@@ -216,7 +216,7 @@ export default {
       const totalLP = await getPTotalAsset(item.toUpperCase())
       console.log("usdc total: ", totalLP)
 
-      const userAssets = userInfo.userLP * total / totalLP
+      const userAssets = (userInfo.userLP * total / totalLP).toFixed(2)
 
       console.log("usdc user: ", userAssets)
       // let userHistory = [];
