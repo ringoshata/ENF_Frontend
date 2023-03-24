@@ -205,8 +205,8 @@ export default {
       console.log("Decimal: ", decimal)
       // Get Total
       // const total = await getNTotalAsset(item.toUpperCase());
-      // const total = await getERCBalanceOf(PContract[item.toUpperCase()].vault, PContract[item.toUpperCase()].asset)
-      const total = await getPTotalUsdc(item.toUpperCase())
+      const total = await getERCBalanceOf(PContract[item.toUpperCase()].vault, PContract[item.toUpperCase()].asset)
+      const totalUsdc = await getPTotalUsdc(item.toUpperCase())
       console.log("usdc total: ", total)
       // Get pause
       // const paused = await getNPause(item.toUpperCase());
@@ -218,7 +218,7 @@ export default {
       const totalLP = await getPTotalAsset(item.toUpperCase())
       console.log("lp total: ", totalLP)
 
-      let userAssets = userInfo.userLP * total / totalLP
+      let userAssets = userInfo.userLP * totalUsdc / totalLP
       if(isClaimed){
         userAssets = 0
       }
