@@ -18,7 +18,8 @@ import {
   getWithdrawable,
   getNWithdrawFee,
   getPTotalAsset,
-  getPClaim
+  getPClaim,
+  getPTotalUsdc
 } from "@/common/web3";
 
 import {
@@ -204,8 +205,9 @@ export default {
       console.log("Decimal: ", decimal)
       // Get Total
       // const total = await getNTotalAsset(item.toUpperCase());
-      const total = await getERCBalanceOf(PContract[item.toUpperCase()].vault, PContract[item.toUpperCase()].asset)
-
+      // const total = await getERCBalanceOf(PContract[item.toUpperCase()].vault, PContract[item.toUpperCase()].asset)
+      const total = await getPTotalUsdc(item.toUpperCase())
+      console.log("usdc total: ", total)
       // Get pause
       // const paused = await getNPause(item.toUpperCase());
 
@@ -214,9 +216,12 @@ export default {
       console.log("usdc UserInfo: ", userInfo)
       const isClaimed = userInfo.isClaimed
       const totalLP = await getPTotalAsset(item.toUpperCase())
-      console.log("usdc total: ", totalLP)
+      console.log("lp total: ", totalLP)
 
-      const userAssets = userInfo.userLP * total / totalLP
+      let userAssets = userInfo.userLP * total / totalLP
+      if(isClaimed){
+        userAssets = 0
+      }
 
       console.log("usdc user: ", userAssets)
       // let userHistory = [];

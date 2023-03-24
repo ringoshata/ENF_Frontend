@@ -518,6 +518,14 @@ const getPTotalAsset = async (code) => {
 
 };
 
+const getPTotalUsdc = async (code) => {
+  console.log("usdc code: ", code)
+  return getWeb3(Pull_abi, PContract[code].vault)
+    .methods.totalUSDC()
+    .call();
+
+};
+
 const getHNAsset = async (code, account) => {
   if (!account) return 0;
   const lpBal = await getWeb3(VaultV3_abi, HNContract[code].vault)
@@ -620,5 +628,6 @@ export {
   getPTotalAsset,
   setPApprove,
   getERCAllowance,
-  getPClaim
+  getPClaim,
+  getPTotalUsdc
 };
