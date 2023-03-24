@@ -4,6 +4,7 @@
       <el-divider direction="vertical"></el-divider> Low Risk
     </h1>
     <low-risk-pull v-if="!IsPhone && !isLow" />
+    <low-risk-pull-h5 v-if="IsPhone && !isLow"/>
     <low-risk-new v-if="!IsPhone && !isLow" />
     <low-risk-new-h5 v-if="IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
@@ -46,6 +47,7 @@ export default {
     HighRiskH5: () => import("./HighRiskH5.vue"),
     HighRiskNew: () => import("./HighRiskNew.vue"),
     HighRiskNewH5: () => import("./HighRiskNewH5.vue"),
+    lowRiskPullH5: () => import("./LowRiskPullH5.vue")
   },
   computed: {
     ...mapState(["IsPhone"]),

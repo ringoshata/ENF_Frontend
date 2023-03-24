@@ -318,6 +318,7 @@ export default {
         });
     },
     async approve() {
+      console.log('this is test')
       if (!this.MetaMaskAddress) return this.Warning("Please link wallet");
       this.isLoading();
       try {
