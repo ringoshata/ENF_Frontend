@@ -3,8 +3,8 @@
     <h1 class="low-title">
       <el-divider direction="vertical"></el-divider> Low Risk
     </h1>
-    <low-risk-pull v-if="!IsPhone && !isLow" />
-    <low-risk-pull-h5 v-if="IsPhone && !isLow"/>
+<!--    <low-risk-pull v-if="!IsPhone && !isLow" />-->
+<!--    <low-risk-pull-h5 v-if="IsPhone && !isLow"/>-->
     <low-risk-new v-if="!IsPhone && !isLow" />
     <low-risk-new-h5 v-if="IsPhone && !isLow" />
     <div class="divider" v-if="!isHigh"></div>
