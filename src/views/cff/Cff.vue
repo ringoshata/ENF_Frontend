@@ -21,8 +21,8 @@
         <i class="el-icon-question"></i>
       </el-tooltip> -->
     </h1>
-    <high-risk v-if="!IsPhone && !isHigh" />
-    <high-risk-h5 v-if="IsPhone && !isHigh" />
+<!--    <high-risk v-if="!IsPhone && !isHigh" />-->
+<!--    <high-risk-h5 v-if="IsPhone && !isHigh" />-->
     <high-risk-new v-if="!IsPhone && !isHigh" />
     <high-risk-new-h5 v-if="IsPhone && !isHigh" />
 <!--    <h1 class="low-title">-->
