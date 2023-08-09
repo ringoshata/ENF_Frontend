@@ -73,7 +73,7 @@
               <div class="cardsi">
                 <img src="../assets/imgs/card2.png" alt="" />
                 <p>Low Risk</p>
-                <span>Audited by Slowmist and PeckShield. Always select proven DEFI
+                <span>Audited by Slowmist. Always select proven DEFI
                   protocols and mature pools.</span>
               </div>
             </div>
